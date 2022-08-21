@@ -1,0 +1,3096 @@
+
+;; Function add (add, funcdef_no=0, decl_uid=1421, cgraph_uid=1, symbol_order=2)
+
+
+********** Local #1: **********
+
+	   Spilling non-eliminable hard regs: 3
+            alt=0: Bad operand -- refuse
+            1 Non-pseudo reload: reject+=2
+            1 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=609,losers=1,rld_nregs=1
+            alt=2: Bad operand -- refuse
+            0 Spill pseudo into memory: reject+=3
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            1 Non-pseudo reload: reject+=2
+            1 Non input pseudo reload: reject++
+          alt=3,overall=22,losers=2,rld_nregs=1
+	 Choosing alt 3 in insn 6:  (0) m  (1) r {*movdi}
+      Creating newreg=139 from oldreg=134, assigning class NO_REGS to r139
+      Creating newreg=140, assigning class GR_REGS to r140
+    6: r139:DI=r140:DI
+    Inserting insn reload before:
+   16: r140:DI=[`a']
+    Inserting insn reload after:
+   15: r134:DI=r139:DI
+
+            alt=0: Bad operand -- refuse
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=606,losers=1,rld_nregs=1
+            alt=2: Bad operand -- refuse
+            0 Spill pseudo into memory: reject+=3
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=619,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 15:  (0) r  (1) r {*movdi}
+      Creating newreg=141 from oldreg=139, assigning class GR_REGS to r141
+   15: r134:DI=r141:DI
+    Inserting insn reload before:
+   17: r141:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 17:  (0) r  (1) r {*movdi}
+      Creating newreg=142 from oldreg=139, assigning class GR_REGS to r142
+   17: r141:DI=r142:DI
+    Inserting insn reload before:
+   18: r142:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 18:  (0) r  (1) r {*movdi}
+      Creating newreg=143 from oldreg=139, assigning class GR_REGS to r143
+   18: r142:DI=r143:DI
+    Inserting insn reload before:
+   19: r143:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 19:  (0) r  (1) r {*movdi}
+      Creating newreg=144 from oldreg=139, assigning class GR_REGS to r144
+   19: r143:DI=r144:DI
+    Inserting insn reload before:
+   20: r144:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 20:  (0) r  (1) r {*movdi}
+      Creating newreg=145 from oldreg=139, assigning class GR_REGS to r145
+   20: r144:DI=r145:DI
+    Inserting insn reload before:
+   21: r145:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 21:  (0) r  (1) r {*movdi}
+      Creating newreg=146 from oldreg=139, assigning class GR_REGS to r146
+   21: r145:DI=r146:DI
+    Inserting insn reload before:
+   22: r146:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 22:  (0) r  (1) r {*movdi}
+      Creating newreg=147 from oldreg=139, assigning class GR_REGS to r147
+   22: r146:DI=r147:DI
+    Inserting insn reload before:
+   23: r147:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 23:  (0) r  (1) r {*movdi}
+      Creating newreg=148 from oldreg=139, assigning class GR_REGS to r148
+   23: r147:DI=r148:DI
+    Inserting insn reload before:
+   24: r148:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 24:  (0) r  (1) r {*movdi}
+      Creating newreg=149 from oldreg=139, assigning class GR_REGS to r149
+   24: r148:DI=r149:DI
+    Inserting insn reload before:
+   25: r149:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 25:  (0) r  (1) r {*movdi}
+      Creating newreg=150 from oldreg=139, assigning class GR_REGS to r150
+   25: r149:DI=r150:DI
+    Inserting insn reload before:
+   26: r150:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 26:  (0) r  (1) r {*movdi}
+      Creating newreg=151 from oldreg=139, assigning class GR_REGS to r151
+   26: r150:DI=r151:DI
+    Inserting insn reload before:
+   27: r151:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 27:  (0) r  (1) r {*movdi}
+      Creating newreg=152 from oldreg=139, assigning class GR_REGS to r152
+   27: r151:DI=r152:DI
+    Inserting insn reload before:
+   28: r152:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 28:  (0) r  (1) r {*movdi}
+      Creating newreg=153 from oldreg=139, assigning class GR_REGS to r153
+   28: r152:DI=r153:DI
+    Inserting insn reload before:
+   29: r153:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 29:  (0) r  (1) r {*movdi}
+      Creating newreg=154 from oldreg=139, assigning class GR_REGS to r154
+   29: r153:DI=r154:DI
+    Inserting insn reload before:
+   30: r154:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 30:  (0) r  (1) r {*movdi}
+      Creating newreg=155 from oldreg=139, assigning class GR_REGS to r155
+   30: r154:DI=r155:DI
+    Inserting insn reload before:
+   31: r155:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 31:  (0) r  (1) r {*movdi}
+      Creating newreg=156 from oldreg=139, assigning class GR_REGS to r156
+   31: r155:DI=r156:DI
+    Inserting insn reload before:
+   32: r156:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 32:  (0) r  (1) r {*movdi}
+      Creating newreg=157 from oldreg=139, assigning class GR_REGS to r157
+   32: r156:DI=r157:DI
+    Inserting insn reload before:
+   33: r157:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 33:  (0) r  (1) r {*movdi}
+      Creating newreg=158 from oldreg=139, assigning class GR_REGS to r158
+   33: r157:DI=r158:DI
+    Inserting insn reload before:
+   34: r158:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 34:  (0) r  (1) r {*movdi}
+      Creating newreg=159 from oldreg=139, assigning class GR_REGS to r159
+   34: r158:DI=r159:DI
+    Inserting insn reload before:
+   35: r159:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 35:  (0) r  (1) r {*movdi}
+      Creating newreg=160 from oldreg=139, assigning class GR_REGS to r160
+   35: r159:DI=r160:DI
+    Inserting insn reload before:
+   36: r160:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 36:  (0) r  (1) r {*movdi}
+      Creating newreg=161 from oldreg=139, assigning class GR_REGS to r161
+   36: r160:DI=r161:DI
+    Inserting insn reload before:
+   37: r161:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 37:  (0) r  (1) r {*movdi}
+      Creating newreg=162 from oldreg=139, assigning class GR_REGS to r162
+   37: r161:DI=r162:DI
+    Inserting insn reload before:
+   38: r162:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 38:  (0) r  (1) r {*movdi}
+      Creating newreg=163 from oldreg=139, assigning class GR_REGS to r163
+   38: r162:DI=r163:DI
+    Inserting insn reload before:
+   39: r163:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 39:  (0) r  (1) r {*movdi}
+      Creating newreg=164 from oldreg=139, assigning class GR_REGS to r164
+   39: r163:DI=r164:DI
+    Inserting insn reload before:
+   40: r164:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 40:  (0) r  (1) r {*movdi}
+      Creating newreg=165 from oldreg=139, assigning class GR_REGS to r165
+   40: r164:DI=r165:DI
+    Inserting insn reload before:
+   41: r165:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 41:  (0) r  (1) r {*movdi}
+      Creating newreg=166 from oldreg=139, assigning class GR_REGS to r166
+   41: r165:DI=r166:DI
+    Inserting insn reload before:
+   42: r166:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 42:  (0) r  (1) r {*movdi}
+      Creating newreg=167 from oldreg=139, assigning class GR_REGS to r167
+   42: r166:DI=r167:DI
+    Inserting insn reload before:
+   43: r167:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 43:  (0) r  (1) r {*movdi}
+      Creating newreg=168 from oldreg=139, assigning class GR_REGS to r168
+   43: r167:DI=r168:DI
+    Inserting insn reload before:
+   44: r168:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 44:  (0) r  (1) r {*movdi}
+      Creating newreg=169 from oldreg=139, assigning class GR_REGS to r169
+   44: r168:DI=r169:DI
+    Inserting insn reload before:
+   45: r169:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 45:  (0) r  (1) r {*movdi}
+      Creating newreg=170 from oldreg=139, assigning class GR_REGS to r170
+   45: r169:DI=r170:DI
+    Inserting insn reload before:
+   46: r170:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 46:  (0) r  (1) r {*movdi}
+      Creating newreg=171 from oldreg=139, assigning class GR_REGS to r171
+   46: r170:DI=r171:DI
+    Inserting insn reload before:
+   47: r171:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 47:  (0) r  (1) r {*movdi}
+      Creating newreg=172 from oldreg=139, assigning class GR_REGS to r172
+   47: r171:DI=r172:DI
+    Inserting insn reload before:
+   48: r172:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 48:  (0) r  (1) r {*movdi}
+      Creating newreg=173 from oldreg=139, assigning class GR_REGS to r173
+   48: r172:DI=r173:DI
+    Inserting insn reload before:
+   49: r173:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 49:  (0) r  (1) r {*movdi}
+      Creating newreg=174 from oldreg=139, assigning class GR_REGS to r174
+   49: r173:DI=r174:DI
+    Inserting insn reload before:
+   50: r174:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 50:  (0) r  (1) r {*movdi}
+      Creating newreg=175 from oldreg=139, assigning class GR_REGS to r175
+   50: r174:DI=r175:DI
+    Inserting insn reload before:
+   51: r175:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 51:  (0) r  (1) r {*movdi}
+      Creating newreg=176 from oldreg=139, assigning class GR_REGS to r176
+   51: r175:DI=r176:DI
+    Inserting insn reload before:
+   52: r176:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 52:  (0) r  (1) r {*movdi}
+      Creating newreg=177 from oldreg=139, assigning class GR_REGS to r177
+   52: r176:DI=r177:DI
+    Inserting insn reload before:
+   53: r177:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 53:  (0) r  (1) r {*movdi}
+      Creating newreg=178 from oldreg=139, assigning class GR_REGS to r178
+   53: r177:DI=r178:DI
+    Inserting insn reload before:
+   54: r178:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 54:  (0) r  (1) r {*movdi}
+      Creating newreg=179 from oldreg=139, assigning class GR_REGS to r179
+   54: r178:DI=r179:DI
+    Inserting insn reload before:
+   55: r179:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 55:  (0) r  (1) r {*movdi}
+      Creating newreg=180 from oldreg=139, assigning class GR_REGS to r180
+   55: r179:DI=r180:DI
+    Inserting insn reload before:
+   56: r180:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 56:  (0) r  (1) r {*movdi}
+      Creating newreg=181 from oldreg=139, assigning class GR_REGS to r181
+   56: r180:DI=r181:DI
+    Inserting insn reload before:
+   57: r181:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 57:  (0) r  (1) r {*movdi}
+      Creating newreg=182 from oldreg=139, assigning class GR_REGS to r182
+   57: r181:DI=r182:DI
+    Inserting insn reload before:
+   58: r182:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 58:  (0) r  (1) r {*movdi}
+      Creating newreg=183 from oldreg=139, assigning class GR_REGS to r183
+   58: r182:DI=r183:DI
+    Inserting insn reload before:
+   59: r183:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 59:  (0) r  (1) r {*movdi}
+      Creating newreg=184 from oldreg=139, assigning class GR_REGS to r184
+   59: r183:DI=r184:DI
+    Inserting insn reload before:
+   60: r184:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 60:  (0) r  (1) r {*movdi}
+      Creating newreg=185 from oldreg=139, assigning class GR_REGS to r185
+   60: r184:DI=r185:DI
+    Inserting insn reload before:
+   61: r185:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 61:  (0) r  (1) r {*movdi}
+      Creating newreg=186 from oldreg=139, assigning class GR_REGS to r186
+   61: r185:DI=r186:DI
+    Inserting insn reload before:
+   62: r186:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 62:  (0) r  (1) r {*movdi}
+      Creating newreg=187 from oldreg=139, assigning class GR_REGS to r187
+   62: r186:DI=r187:DI
+    Inserting insn reload before:
+   63: r187:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 63:  (0) r  (1) r {*movdi}
+      Creating newreg=188 from oldreg=139, assigning class GR_REGS to r188
+   63: r187:DI=r188:DI
+    Inserting insn reload before:
+   64: r188:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 64:  (0) r  (1) r {*movdi}
+      Creating newreg=189 from oldreg=139, assigning class GR_REGS to r189
+   64: r188:DI=r189:DI
+    Inserting insn reload before:
+   65: r189:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 65:  (0) r  (1) r {*movdi}
+      Creating newreg=190 from oldreg=139, assigning class GR_REGS to r190
+   65: r189:DI=r190:DI
+    Inserting insn reload before:
+   66: r190:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 66:  (0) r  (1) r {*movdi}
+      Creating newreg=191 from oldreg=139, assigning class GR_REGS to r191
+   66: r190:DI=r191:DI
+    Inserting insn reload before:
+   67: r191:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 67:  (0) r  (1) r {*movdi}
+      Creating newreg=192 from oldreg=139, assigning class GR_REGS to r192
+   67: r191:DI=r192:DI
+    Inserting insn reload before:
+   68: r192:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 68:  (0) r  (1) r {*movdi}
+      Creating newreg=193 from oldreg=139, assigning class GR_REGS to r193
+   68: r192:DI=r193:DI
+    Inserting insn reload before:
+   69: r193:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 69:  (0) r  (1) r {*movdi}
+      Creating newreg=194 from oldreg=139, assigning class GR_REGS to r194
+   69: r193:DI=r194:DI
+    Inserting insn reload before:
+   70: r194:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 70:  (0) r  (1) r {*movdi}
+      Creating newreg=195 from oldreg=139, assigning class GR_REGS to r195
+   70: r194:DI=r195:DI
+    Inserting insn reload before:
+   71: r195:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 71:  (0) r  (1) r {*movdi}
+      Creating newreg=196 from oldreg=139, assigning class GR_REGS to r196
+   71: r195:DI=r196:DI
+    Inserting insn reload before:
+   72: r196:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 72:  (0) r  (1) r {*movdi}
+      Creating newreg=197 from oldreg=139, assigning class GR_REGS to r197
+   72: r196:DI=r197:DI
+    Inserting insn reload before:
+   73: r197:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 73:  (0) r  (1) r {*movdi}
+      Creating newreg=198 from oldreg=139, assigning class GR_REGS to r198
+   73: r197:DI=r198:DI
+    Inserting insn reload before:
+   74: r198:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 74:  (0) r  (1) r {*movdi}
+      Creating newreg=199 from oldreg=139, assigning class GR_REGS to r199
+   74: r198:DI=r199:DI
+    Inserting insn reload before:
+   75: r199:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 75:  (0) r  (1) r {*movdi}
+      Creating newreg=200 from oldreg=139, assigning class GR_REGS to r200
+   75: r199:DI=r200:DI
+    Inserting insn reload before:
+   76: r200:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 76:  (0) r  (1) r {*movdi}
+      Creating newreg=201 from oldreg=139, assigning class GR_REGS to r201
+   76: r200:DI=r201:DI
+    Inserting insn reload before:
+   77: r201:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 77:  (0) r  (1) r {*movdi}
+      Creating newreg=202 from oldreg=139, assigning class GR_REGS to r202
+   77: r201:DI=r202:DI
+    Inserting insn reload before:
+   78: r202:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 78:  (0) r  (1) r {*movdi}
+      Creating newreg=203 from oldreg=139, assigning class GR_REGS to r203
+   78: r202:DI=r203:DI
+    Inserting insn reload before:
+   79: r203:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 79:  (0) r  (1) r {*movdi}
+      Creating newreg=204 from oldreg=139, assigning class GR_REGS to r204
+   79: r203:DI=r204:DI
+    Inserting insn reload before:
+   80: r204:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 80:  (0) r  (1) r {*movdi}
+      Creating newreg=205 from oldreg=139, assigning class GR_REGS to r205
+   80: r204:DI=r205:DI
+    Inserting insn reload before:
+   81: r205:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 81:  (0) r  (1) r {*movdi}
+      Creating newreg=206 from oldreg=139, assigning class GR_REGS to r206
+   81: r205:DI=r206:DI
+    Inserting insn reload before:
+   82: r206:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 82:  (0) r  (1) r {*movdi}
+      Creating newreg=207 from oldreg=139, assigning class GR_REGS to r207
+   82: r206:DI=r207:DI
+    Inserting insn reload before:
+   83: r207:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 83:  (0) r  (1) r {*movdi}
+      Creating newreg=208 from oldreg=139, assigning class GR_REGS to r208
+   83: r207:DI=r208:DI
+    Inserting insn reload before:
+   84: r208:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 84:  (0) r  (1) r {*movdi}
+      Creating newreg=209 from oldreg=139, assigning class GR_REGS to r209
+   84: r208:DI=r209:DI
+    Inserting insn reload before:
+   85: r209:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 85:  (0) r  (1) r {*movdi}
+      Creating newreg=210 from oldreg=139, assigning class GR_REGS to r210
+   85: r209:DI=r210:DI
+    Inserting insn reload before:
+   86: r210:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 86:  (0) r  (1) r {*movdi}
+      Creating newreg=211 from oldreg=139, assigning class GR_REGS to r211
+   86: r210:DI=r211:DI
+    Inserting insn reload before:
+   87: r211:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 87:  (0) r  (1) r {*movdi}
+      Creating newreg=212 from oldreg=139, assigning class GR_REGS to r212
+   87: r211:DI=r212:DI
+    Inserting insn reload before:
+   88: r212:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 88:  (0) r  (1) r {*movdi}
+      Creating newreg=213 from oldreg=139, assigning class GR_REGS to r213
+   88: r212:DI=r213:DI
+    Inserting insn reload before:
+   89: r213:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 89:  (0) r  (1) r {*movdi}
+      Creating newreg=214 from oldreg=139, assigning class GR_REGS to r214
+   89: r213:DI=r214:DI
+    Inserting insn reload before:
+   90: r214:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 90:  (0) r  (1) r {*movdi}
+      Creating newreg=215 from oldreg=139, assigning class GR_REGS to r215
+   90: r214:DI=r215:DI
+    Inserting insn reload before:
+   91: r215:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 91:  (0) r  (1) r {*movdi}
+      Creating newreg=216 from oldreg=139, assigning class GR_REGS to r216
+   91: r215:DI=r216:DI
+    Inserting insn reload before:
+   92: r216:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 92:  (0) r  (1) r {*movdi}
+      Creating newreg=217 from oldreg=139, assigning class GR_REGS to r217
+   92: r216:DI=r217:DI
+    Inserting insn reload before:
+   93: r217:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 93:  (0) r  (1) r {*movdi}
+      Creating newreg=218 from oldreg=139, assigning class GR_REGS to r218
+   93: r217:DI=r218:DI
+    Inserting insn reload before:
+   94: r218:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 94:  (0) r  (1) r {*movdi}
+      Creating newreg=219 from oldreg=139, assigning class GR_REGS to r219
+   94: r218:DI=r219:DI
+    Inserting insn reload before:
+   95: r219:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 95:  (0) r  (1) r {*movdi}
+      Creating newreg=220 from oldreg=139, assigning class GR_REGS to r220
+   95: r219:DI=r220:DI
+    Inserting insn reload before:
+   96: r220:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 96:  (0) r  (1) r {*movdi}
+      Creating newreg=221 from oldreg=139, assigning class GR_REGS to r221
+   96: r220:DI=r221:DI
+    Inserting insn reload before:
+   97: r221:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 97:  (0) r  (1) r {*movdi}
+      Creating newreg=222 from oldreg=139, assigning class GR_REGS to r222
+   97: r221:DI=r222:DI
+    Inserting insn reload before:
+   98: r222:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 98:  (0) r  (1) r {*movdi}
+      Creating newreg=223 from oldreg=139, assigning class GR_REGS to r223
+   98: r222:DI=r223:DI
+    Inserting insn reload before:
+   99: r223:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 99:  (0) r  (1) r {*movdi}
+      Creating newreg=224 from oldreg=139, assigning class GR_REGS to r224
+   99: r223:DI=r224:DI
+    Inserting insn reload before:
+  100: r224:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 100:  (0) r  (1) r {*movdi}
+      Creating newreg=225 from oldreg=139, assigning class GR_REGS to r225
+  100: r224:DI=r225:DI
+    Inserting insn reload before:
+  101: r225:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 101:  (0) r  (1) r {*movdi}
+      Creating newreg=226 from oldreg=139, assigning class GR_REGS to r226
+  101: r225:DI=r226:DI
+    Inserting insn reload before:
+  102: r226:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 102:  (0) r  (1) r {*movdi}
+      Creating newreg=227 from oldreg=139, assigning class GR_REGS to r227
+  102: r226:DI=r227:DI
+    Inserting insn reload before:
+  103: r227:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 103:  (0) r  (1) r {*movdi}
+      Creating newreg=228 from oldreg=139, assigning class GR_REGS to r228
+  103: r227:DI=r228:DI
+    Inserting insn reload before:
+  104: r228:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 104:  (0) r  (1) r {*movdi}
+      Creating newreg=229 from oldreg=139, assigning class GR_REGS to r229
+  104: r228:DI=r229:DI
+    Inserting insn reload before:
+  105: r229:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 105:  (0) r  (1) r {*movdi}
+      Creating newreg=230 from oldreg=139, assigning class GR_REGS to r230
+  105: r229:DI=r230:DI
+    Inserting insn reload before:
+  106: r230:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 106:  (0) r  (1) r {*movdi}
+      Creating newreg=231 from oldreg=139, assigning class GR_REGS to r231
+  106: r230:DI=r231:DI
+    Inserting insn reload before:
+  107: r231:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 107:  (0) r  (1) r {*movdi}
+      Creating newreg=232 from oldreg=139, assigning class GR_REGS to r232
+  107: r231:DI=r232:DI
+    Inserting insn reload before:
+  108: r232:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 108:  (0) r  (1) r {*movdi}
+      Creating newreg=233 from oldreg=139, assigning class GR_REGS to r233
+  108: r232:DI=r233:DI
+    Inserting insn reload before:
+  109: r233:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 109:  (0) r  (1) r {*movdi}
+      Creating newreg=234 from oldreg=139, assigning class GR_REGS to r234
+  109: r233:DI=r234:DI
+    Inserting insn reload before:
+  110: r234:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 110:  (0) r  (1) r {*movdi}
+      Creating newreg=235 from oldreg=139, assigning class GR_REGS to r235
+  110: r234:DI=r235:DI
+    Inserting insn reload before:
+  111: r235:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 111:  (0) r  (1) r {*movdi}
+      Creating newreg=236 from oldreg=139, assigning class GR_REGS to r236
+  111: r235:DI=r236:DI
+    Inserting insn reload before:
+  112: r236:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 112:  (0) r  (1) r {*movdi}
+      Creating newreg=237 from oldreg=139, assigning class GR_REGS to r237
+  112: r236:DI=r237:DI
+    Inserting insn reload before:
+  113: r237:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 113:  (0) r  (1) r {*movdi}
+      Creating newreg=238 from oldreg=139, assigning class GR_REGS to r238
+  113: r237:DI=r238:DI
+    Inserting insn reload before:
+  114: r238:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 114:  (0) r  (1) r {*movdi}
+      Creating newreg=239 from oldreg=139, assigning class GR_REGS to r239
+  114: r238:DI=r239:DI
+    Inserting insn reload before:
+  115: r239:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 115:  (0) r  (1) r {*movdi}
+      Creating newreg=240 from oldreg=139, assigning class GR_REGS to r240
+  115: r239:DI=r240:DI
+    Inserting insn reload before:
+  116: r240:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 116:  (0) r  (1) r {*movdi}
+      Creating newreg=241 from oldreg=139, assigning class GR_REGS to r241
+  116: r240:DI=r241:DI
+    Inserting insn reload before:
+  117: r241:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 117:  (0) r  (1) r {*movdi}
+      Creating newreg=242 from oldreg=139, assigning class GR_REGS to r242
+  117: r241:DI=r242:DI
+    Inserting insn reload before:
+  118: r242:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 118:  (0) r  (1) r {*movdi}
+      Creating newreg=243 from oldreg=139, assigning class GR_REGS to r243
+  118: r242:DI=r243:DI
+    Inserting insn reload before:
+  119: r243:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 119:  (0) r  (1) r {*movdi}
+      Creating newreg=244 from oldreg=139, assigning class GR_REGS to r244
+  119: r243:DI=r244:DI
+    Inserting insn reload before:
+  120: r244:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 120:  (0) r  (1) r {*movdi}
+      Creating newreg=245 from oldreg=139, assigning class GR_REGS to r245
+  120: r244:DI=r245:DI
+    Inserting insn reload before:
+  121: r245:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 121:  (0) r  (1) r {*movdi}
+      Creating newreg=246 from oldreg=139, assigning class GR_REGS to r246
+  121: r245:DI=r246:DI
+    Inserting insn reload before:
+  122: r246:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 122:  (0) r  (1) r {*movdi}
+      Creating newreg=247 from oldreg=139, assigning class GR_REGS to r247
+  122: r246:DI=r247:DI
+    Inserting insn reload before:
+  123: r247:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 123:  (0) r  (1) r {*movdi}
+      Creating newreg=248 from oldreg=139, assigning class GR_REGS to r248
+  123: r247:DI=r248:DI
+    Inserting insn reload before:
+  124: r248:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 124:  (0) r  (1) r {*movdi}
+      Creating newreg=249 from oldreg=139, assigning class GR_REGS to r249
+  124: r248:DI=r249:DI
+    Inserting insn reload before:
+  125: r249:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 125:  (0) r  (1) r {*movdi}
+      Creating newreg=250 from oldreg=139, assigning class GR_REGS to r250
+  125: r249:DI=r250:DI
+    Inserting insn reload before:
+  126: r250:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 126:  (0) r  (1) r {*movdi}
+      Creating newreg=251 from oldreg=139, assigning class GR_REGS to r251
+  126: r250:DI=r251:DI
+    Inserting insn reload before:
+  127: r251:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 127:  (0) r  (1) r {*movdi}
+      Creating newreg=252 from oldreg=139, assigning class GR_REGS to r252
+  127: r251:DI=r252:DI
+    Inserting insn reload before:
+  128: r252:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 128:  (0) r  (1) r {*movdi}
+      Creating newreg=253 from oldreg=139, assigning class GR_REGS to r253
+  128: r252:DI=r253:DI
+    Inserting insn reload before:
+  129: r253:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 129:  (0) r  (1) r {*movdi}
+      Creating newreg=254 from oldreg=139, assigning class GR_REGS to r254
+  129: r253:DI=r254:DI
+    Inserting insn reload before:
+  130: r254:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 130:  (0) r  (1) r {*movdi}
+      Creating newreg=255 from oldreg=139, assigning class GR_REGS to r255
+  130: r254:DI=r255:DI
+    Inserting insn reload before:
+  131: r255:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 131:  (0) r  (1) r {*movdi}
+      Creating newreg=256 from oldreg=139, assigning class GR_REGS to r256
+  131: r255:DI=r256:DI
+    Inserting insn reload before:
+  132: r256:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 132:  (0) r  (1) r {*movdi}
+      Creating newreg=257 from oldreg=139, assigning class GR_REGS to r257
+  132: r256:DI=r257:DI
+    Inserting insn reload before:
+  133: r257:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 133:  (0) r  (1) r {*movdi}
+      Creating newreg=258 from oldreg=139, assigning class GR_REGS to r258
+  133: r257:DI=r258:DI
+    Inserting insn reload before:
+  134: r258:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 134:  (0) r  (1) r {*movdi}
+      Creating newreg=259 from oldreg=139, assigning class GR_REGS to r259
+  134: r258:DI=r259:DI
+    Inserting insn reload before:
+  135: r259:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 135:  (0) r  (1) r {*movdi}
+      Creating newreg=260 from oldreg=139, assigning class GR_REGS to r260
+  135: r259:DI=r260:DI
+    Inserting insn reload before:
+  136: r260:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 136:  (0) r  (1) r {*movdi}
+      Creating newreg=261 from oldreg=139, assigning class GR_REGS to r261
+  136: r260:DI=r261:DI
+    Inserting insn reload before:
+  137: r261:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 137:  (0) r  (1) r {*movdi}
+      Creating newreg=262 from oldreg=139, assigning class GR_REGS to r262
+  137: r261:DI=r262:DI
+    Inserting insn reload before:
+  138: r262:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 138:  (0) r  (1) r {*movdi}
+      Creating newreg=263 from oldreg=139, assigning class GR_REGS to r263
+  138: r262:DI=r263:DI
+    Inserting insn reload before:
+  139: r263:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 139:  (0) r  (1) r {*movdi}
+      Creating newreg=264 from oldreg=139, assigning class GR_REGS to r264
+  139: r263:DI=r264:DI
+    Inserting insn reload before:
+  140: r264:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 140:  (0) r  (1) r {*movdi}
+      Creating newreg=265 from oldreg=139, assigning class GR_REGS to r265
+  140: r264:DI=r265:DI
+    Inserting insn reload before:
+  141: r265:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 141:  (0) r  (1) r {*movdi}
+      Creating newreg=266 from oldreg=139, assigning class GR_REGS to r266
+  141: r265:DI=r266:DI
+    Inserting insn reload before:
+  142: r266:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 142:  (0) r  (1) r {*movdi}
+      Creating newreg=267 from oldreg=139, assigning class GR_REGS to r267
+  142: r266:DI=r267:DI
+    Inserting insn reload before:
+  143: r267:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 143:  (0) r  (1) r {*movdi}
+      Creating newreg=268 from oldreg=139, assigning class GR_REGS to r268
+  143: r267:DI=r268:DI
+    Inserting insn reload before:
+  144: r268:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 144:  (0) r  (1) r {*movdi}
+      Creating newreg=269 from oldreg=139, assigning class GR_REGS to r269
+  144: r268:DI=r269:DI
+    Inserting insn reload before:
+  145: r269:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 145:  (0) r  (1) r {*movdi}
+      Creating newreg=270 from oldreg=139, assigning class GR_REGS to r270
+  145: r269:DI=r270:DI
+    Inserting insn reload before:
+  146: r270:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 146:  (0) r  (1) r {*movdi}
+      Creating newreg=271 from oldreg=139, assigning class GR_REGS to r271
+  146: r270:DI=r271:DI
+    Inserting insn reload before:
+  147: r271:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 147:  (0) r  (1) r {*movdi}
+      Creating newreg=272 from oldreg=139, assigning class GR_REGS to r272
+  147: r271:DI=r272:DI
+    Inserting insn reload before:
+  148: r272:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 148:  (0) r  (1) r {*movdi}
+      Creating newreg=273 from oldreg=139, assigning class GR_REGS to r273
+  148: r272:DI=r273:DI
+    Inserting insn reload before:
+  149: r273:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 149:  (0) r  (1) r {*movdi}
+      Creating newreg=274 from oldreg=139, assigning class GR_REGS to r274
+  149: r273:DI=r274:DI
+    Inserting insn reload before:
+  150: r274:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 150:  (0) r  (1) r {*movdi}
+      Creating newreg=275 from oldreg=139, assigning class GR_REGS to r275
+  150: r274:DI=r275:DI
+    Inserting insn reload before:
+  151: r275:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 151:  (0) r  (1) r {*movdi}
+      Creating newreg=276 from oldreg=139, assigning class GR_REGS to r276
+  151: r275:DI=r276:DI
+    Inserting insn reload before:
+  152: r276:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 152:  (0) r  (1) r {*movdi}
+      Creating newreg=277 from oldreg=139, assigning class GR_REGS to r277
+  152: r276:DI=r277:DI
+    Inserting insn reload before:
+  153: r277:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 153:  (0) r  (1) r {*movdi}
+      Creating newreg=278 from oldreg=139, assigning class GR_REGS to r278
+  153: r277:DI=r278:DI
+    Inserting insn reload before:
+  154: r278:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 154:  (0) r  (1) r {*movdi}
+      Creating newreg=279 from oldreg=139, assigning class GR_REGS to r279
+  154: r278:DI=r279:DI
+    Inserting insn reload before:
+  155: r279:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 155:  (0) r  (1) r {*movdi}
+      Creating newreg=280 from oldreg=139, assigning class GR_REGS to r280
+  155: r279:DI=r280:DI
+    Inserting insn reload before:
+  156: r280:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 156:  (0) r  (1) r {*movdi}
+      Creating newreg=281 from oldreg=139, assigning class GR_REGS to r281
+  156: r280:DI=r281:DI
+    Inserting insn reload before:
+  157: r281:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 157:  (0) r  (1) r {*movdi}
+      Creating newreg=282 from oldreg=139, assigning class GR_REGS to r282
+  157: r281:DI=r282:DI
+    Inserting insn reload before:
+  158: r282:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 158:  (0) r  (1) r {*movdi}
+      Creating newreg=283 from oldreg=139, assigning class GR_REGS to r283
+  158: r282:DI=r283:DI
+    Inserting insn reload before:
+  159: r283:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 159:  (0) r  (1) r {*movdi}
+      Creating newreg=284 from oldreg=139, assigning class GR_REGS to r284
+  159: r283:DI=r284:DI
+    Inserting insn reload before:
+  160: r284:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 160:  (0) r  (1) r {*movdi}
+      Creating newreg=285 from oldreg=139, assigning class GR_REGS to r285
+  160: r284:DI=r285:DI
+    Inserting insn reload before:
+  161: r285:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 161:  (0) r  (1) r {*movdi}
+      Creating newreg=286 from oldreg=139, assigning class GR_REGS to r286
+  161: r285:DI=r286:DI
+    Inserting insn reload before:
+  162: r286:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 162:  (0) r  (1) r {*movdi}
+      Creating newreg=287 from oldreg=139, assigning class GR_REGS to r287
+  162: r286:DI=r287:DI
+    Inserting insn reload before:
+  163: r287:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 163:  (0) r  (1) r {*movdi}
+      Creating newreg=288 from oldreg=139, assigning class GR_REGS to r288
+  163: r287:DI=r288:DI
+    Inserting insn reload before:
+  164: r288:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 164:  (0) r  (1) r {*movdi}
+      Creating newreg=289 from oldreg=139, assigning class GR_REGS to r289
+  164: r288:DI=r289:DI
+    Inserting insn reload before:
+  165: r289:DI=r139:DI
+
+            0 Non pseudo reload: reject++
+            alt=0: Bad operand -- refuse
+            0 Non pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=1,overall=607,losers=1,rld_nregs=1
+            0 Non pseudo reload: reject++
+            alt=2: Bad operand -- refuse
+            Using memory insn operand 0: reject+=3
+            0 Non input pseudo reload: reject++
+            Cycle danger: overall += LRA_MAX_REJECT
+          alt=3,overall=616,losers=2,rld_nregs=1
+	 Choosing alt 1 in insn 165:  (0) r  (1) r {*movdi}
+      Creating newreg=290 from oldreg=139, assigning class GR_REGS to r290
+  165: r289:DI=r290:DI
+    Inserting insn reload before:
+  166: r290:DI=r139:DI
+
+
+
+
+EMERGENCY DUMP:
+
+
+
+add
+
+Dataflow summary:
+;;  fully invalidated by EH 	 0 [ZERO] 1 [PC] 5 [BC] 6 [R6] 7 [R7] 16 [R16] 17 [R17] 18 [R18] 19 [R19] 20 [R20] 21 [R21] 22 [R22] 23 [R23] 24 [R24] 25 [R25] 26 [R26] 27 [R27] 28 [R28] 29 [R29] 30 [R30] 31 [R31] 32 [R32] 33 [R34] 34 [R35] 35 [R36] 36 [R37] 37 [R38] 38 [R39] 39 [R40] 40 [R41] 41 [R42] 42 [R43] 43 [R44] 44 [R45] 45 [R46] 46 [R47] 47 [R48] 48 [R49] 49 [R50] 50 [R51] 51 [R52] 52 [R53] 53 [R54] 54 [R55] 55 [R56] 56 [R57] 57 [R58] 58 [R59] 59 [R60] 60 [R61] 61 [R62] 62 [R63] 63 [R64] 64 [R65] 65 [R66] 66 [R67] 67 [R68] 68 [R69] 69 [R70] 70 [R71] 71 [R72] 72 [R73] 73 [R74] 74 [R75] 75 [R76] 76 [R77] 77 [R78] 78 [R79] 79 [R80] 80 [R81] 81 [R82] 82 [R83] 83 [R84] 84 [R85] 85 [R86] 86 [R87] 87 [R88] 88 [R89] 89 [R90] 90 [R91] 91 [R92] 92 [R93] 93 [R94] 94 [R95] 95 [R96] 96 [R97] 97 [R98] 98 [R99] 99 [R100] 100 [R101] 101 [R102] 102 [R103] 103 [R104] 104 [R105] 105 [R106] 106 [R107] 107 [R108] 108 [R109] 109 [R110] 110 [R111] 111 [R112] 112 [R113] 113 [R114] 114 [R115] 115 [R116] 116 [R117] 117 [R118] 118 [R119] 119 [R120] 120 [R121] 121 [R122] 122 [R123] 123 [R124] 124 [R125] 125 [R126] 126 [R127] 127 [R128]
+;;  hardware regs used 	 2 [SP] 3 [RA]
+;;  regular block artificial uses 	 2 [SP] 3 [RA] 4 [FP]
+;;  eh block artificial uses 	 2 [SP] 3 [RA] 4 [FP]
+;;  entry block defs 	 2 [SP] 3 [RA] 4 [FP] 5 [BC] 8 [R8] 9 [R9] 10 [R10] 11 [R11] 12 [R12] 13 [R13] 14 [R14] 15 [R15] 16 [R16]
+;;  exit block uses 	 2 [SP] 3 [RA] 4 [FP]
+;;  regs ever live 	 4 [FP] 9 [R9] 10 [R10]
+;;  ref usage 	r2={1d,3u} r3={1d,3u} r4={1d,3u} r5={1d} r8={1d} r9={1d} r10={1d} r11={1d} r12={1d} r13={1d} r14={1d} r15={1d} r16={1d} r134={1d,1u} r135={1d,1u} r136={1d,1u} 
+;;    total ref usage 28{16d,12u,0e} in 157{157 regular + 0 call} insns.
+(note 1 0 4 NOTE_INSN_DELETED)
+;; basic block 2, loop depth 0, maybe hot
+;;  prev block 0, next block 3, flags: (REACHABLE, RTL, MODIFIED)
+;;  pred:       ENTRY (FALLTHRU)
+;; bb 2 artificial_defs: { }
+;; bb 2 artificial_uses: { u-1(2){ }u-1(3){ }u-1(4){ }}
+;; lr  in  	 2 [SP] 3 [RA] 4 [FP]
+;; lr  use 	 2 [SP] 3 [RA] 4 [FP]
+;; lr  def 	 134 135 136
+(note 4 1 3 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+(note 3 4 16 2 NOTE_INSN_FUNCTION_BEG)
+(insn 16 3 6 2 (set (reg:DI 140)
+        (mem/c:DI (symbol_ref:SI ("a") [flags 0x2]  <var_decl 0x7f539da01090 a>) [1 a+0 S8 A64])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 6 16 166 2 (set (reg:DI 139 [orig:134 a.0_1 ] [134])
+        (reg:DI 140)) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 166 6 165 2 (set (reg:DI 290 [orig:134 a.0_1 ] [134])
+        (reg:DI 139 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 165 166 164 2 (set (reg:DI 289 [orig:134 a.0_1 ] [134])
+        (reg:DI 290 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 164 165 163 2 (set (reg:DI 288 [orig:134 a.0_1 ] [134])
+        (reg:DI 289 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 163 164 162 2 (set (reg:DI 287 [orig:134 a.0_1 ] [134])
+        (reg:DI 288 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 162 163 161 2 (set (reg:DI 286 [orig:134 a.0_1 ] [134])
+        (reg:DI 287 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 161 162 160 2 (set (reg:DI 285 [orig:134 a.0_1 ] [134])
+        (reg:DI 286 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 160 161 159 2 (set (reg:DI 284 [orig:134 a.0_1 ] [134])
+        (reg:DI 285 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 159 160 158 2 (set (reg:DI 283 [orig:134 a.0_1 ] [134])
+        (reg:DI 284 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 158 159 157 2 (set (reg:DI 282 [orig:134 a.0_1 ] [134])
+        (reg:DI 283 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 157 158 156 2 (set (reg:DI 281 [orig:134 a.0_1 ] [134])
+        (reg:DI 282 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 156 157 155 2 (set (reg:DI 280 [orig:134 a.0_1 ] [134])
+        (reg:DI 281 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 155 156 154 2 (set (reg:DI 279 [orig:134 a.0_1 ] [134])
+        (reg:DI 280 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 154 155 153 2 (set (reg:DI 278 [orig:134 a.0_1 ] [134])
+        (reg:DI 279 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 153 154 152 2 (set (reg:DI 277 [orig:134 a.0_1 ] [134])
+        (reg:DI 278 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 152 153 151 2 (set (reg:DI 276 [orig:134 a.0_1 ] [134])
+        (reg:DI 277 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 151 152 150 2 (set (reg:DI 275 [orig:134 a.0_1 ] [134])
+        (reg:DI 276 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 150 151 149 2 (set (reg:DI 274 [orig:134 a.0_1 ] [134])
+        (reg:DI 275 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 149 150 148 2 (set (reg:DI 273 [orig:134 a.0_1 ] [134])
+        (reg:DI 274 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 148 149 147 2 (set (reg:DI 272 [orig:134 a.0_1 ] [134])
+        (reg:DI 273 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 147 148 146 2 (set (reg:DI 271 [orig:134 a.0_1 ] [134])
+        (reg:DI 272 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 146 147 145 2 (set (reg:DI 270 [orig:134 a.0_1 ] [134])
+        (reg:DI 271 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 145 146 144 2 (set (reg:DI 269 [orig:134 a.0_1 ] [134])
+        (reg:DI 270 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 144 145 143 2 (set (reg:DI 268 [orig:134 a.0_1 ] [134])
+        (reg:DI 269 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 143 144 142 2 (set (reg:DI 267 [orig:134 a.0_1 ] [134])
+        (reg:DI 268 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 142 143 141 2 (set (reg:DI 266 [orig:134 a.0_1 ] [134])
+        (reg:DI 267 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 141 142 140 2 (set (reg:DI 265 [orig:134 a.0_1 ] [134])
+        (reg:DI 266 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 140 141 139 2 (set (reg:DI 264 [orig:134 a.0_1 ] [134])
+        (reg:DI 265 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 139 140 138 2 (set (reg:DI 263 [orig:134 a.0_1 ] [134])
+        (reg:DI 264 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 138 139 137 2 (set (reg:DI 262 [orig:134 a.0_1 ] [134])
+        (reg:DI 263 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 137 138 136 2 (set (reg:DI 261 [orig:134 a.0_1 ] [134])
+        (reg:DI 262 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 136 137 135 2 (set (reg:DI 260 [orig:134 a.0_1 ] [134])
+        (reg:DI 261 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 135 136 134 2 (set (reg:DI 259 [orig:134 a.0_1 ] [134])
+        (reg:DI 260 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 134 135 133 2 (set (reg:DI 258 [orig:134 a.0_1 ] [134])
+        (reg:DI 259 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 133 134 132 2 (set (reg:DI 257 [orig:134 a.0_1 ] [134])
+        (reg:DI 258 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 132 133 131 2 (set (reg:DI 256 [orig:134 a.0_1 ] [134])
+        (reg:DI 257 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 131 132 130 2 (set (reg:DI 255 [orig:134 a.0_1 ] [134])
+        (reg:DI 256 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 130 131 129 2 (set (reg:DI 254 [orig:134 a.0_1 ] [134])
+        (reg:DI 255 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 129 130 128 2 (set (reg:DI 253 [orig:134 a.0_1 ] [134])
+        (reg:DI 254 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 128 129 127 2 (set (reg:DI 252 [orig:134 a.0_1 ] [134])
+        (reg:DI 253 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 127 128 126 2 (set (reg:DI 251 [orig:134 a.0_1 ] [134])
+        (reg:DI 252 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 126 127 125 2 (set (reg:DI 250 [orig:134 a.0_1 ] [134])
+        (reg:DI 251 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 125 126 124 2 (set (reg:DI 249 [orig:134 a.0_1 ] [134])
+        (reg:DI 250 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 124 125 123 2 (set (reg:DI 248 [orig:134 a.0_1 ] [134])
+        (reg:DI 249 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 123 124 122 2 (set (reg:DI 247 [orig:134 a.0_1 ] [134])
+        (reg:DI 248 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 122 123 121 2 (set (reg:DI 246 [orig:134 a.0_1 ] [134])
+        (reg:DI 247 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 121 122 120 2 (set (reg:DI 245 [orig:134 a.0_1 ] [134])
+        (reg:DI 246 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 120 121 119 2 (set (reg:DI 244 [orig:134 a.0_1 ] [134])
+        (reg:DI 245 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 119 120 118 2 (set (reg:DI 243 [orig:134 a.0_1 ] [134])
+        (reg:DI 244 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 118 119 117 2 (set (reg:DI 242 [orig:134 a.0_1 ] [134])
+        (reg:DI 243 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 117 118 116 2 (set (reg:DI 241 [orig:134 a.0_1 ] [134])
+        (reg:DI 242 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 116 117 115 2 (set (reg:DI 240 [orig:134 a.0_1 ] [134])
+        (reg:DI 241 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 115 116 114 2 (set (reg:DI 239 [orig:134 a.0_1 ] [134])
+        (reg:DI 240 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 114 115 113 2 (set (reg:DI 238 [orig:134 a.0_1 ] [134])
+        (reg:DI 239 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 113 114 112 2 (set (reg:DI 237 [orig:134 a.0_1 ] [134])
+        (reg:DI 238 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 112 113 111 2 (set (reg:DI 236 [orig:134 a.0_1 ] [134])
+        (reg:DI 237 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 111 112 110 2 (set (reg:DI 235 [orig:134 a.0_1 ] [134])
+        (reg:DI 236 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 110 111 109 2 (set (reg:DI 234 [orig:134 a.0_1 ] [134])
+        (reg:DI 235 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 109 110 108 2 (set (reg:DI 233 [orig:134 a.0_1 ] [134])
+        (reg:DI 234 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 108 109 107 2 (set (reg:DI 232 [orig:134 a.0_1 ] [134])
+        (reg:DI 233 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 107 108 106 2 (set (reg:DI 231 [orig:134 a.0_1 ] [134])
+        (reg:DI 232 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 106 107 105 2 (set (reg:DI 230 [orig:134 a.0_1 ] [134])
+        (reg:DI 231 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 105 106 104 2 (set (reg:DI 229 [orig:134 a.0_1 ] [134])
+        (reg:DI 230 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 104 105 103 2 (set (reg:DI 228 [orig:134 a.0_1 ] [134])
+        (reg:DI 229 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 103 104 102 2 (set (reg:DI 227 [orig:134 a.0_1 ] [134])
+        (reg:DI 228 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 102 103 101 2 (set (reg:DI 226 [orig:134 a.0_1 ] [134])
+        (reg:DI 227 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 101 102 100 2 (set (reg:DI 225 [orig:134 a.0_1 ] [134])
+        (reg:DI 226 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 100 101 99 2 (set (reg:DI 224 [orig:134 a.0_1 ] [134])
+        (reg:DI 225 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 99 100 98 2 (set (reg:DI 223 [orig:134 a.0_1 ] [134])
+        (reg:DI 224 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 98 99 97 2 (set (reg:DI 222 [orig:134 a.0_1 ] [134])
+        (reg:DI 223 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 97 98 96 2 (set (reg:DI 221 [orig:134 a.0_1 ] [134])
+        (reg:DI 222 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 96 97 95 2 (set (reg:DI 220 [orig:134 a.0_1 ] [134])
+        (reg:DI 221 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 95 96 94 2 (set (reg:DI 219 [orig:134 a.0_1 ] [134])
+        (reg:DI 220 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 94 95 93 2 (set (reg:DI 218 [orig:134 a.0_1 ] [134])
+        (reg:DI 219 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 93 94 92 2 (set (reg:DI 217 [orig:134 a.0_1 ] [134])
+        (reg:DI 218 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 92 93 91 2 (set (reg:DI 216 [orig:134 a.0_1 ] [134])
+        (reg:DI 217 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 91 92 90 2 (set (reg:DI 215 [orig:134 a.0_1 ] [134])
+        (reg:DI 216 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 90 91 89 2 (set (reg:DI 214 [orig:134 a.0_1 ] [134])
+        (reg:DI 215 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 89 90 88 2 (set (reg:DI 213 [orig:134 a.0_1 ] [134])
+        (reg:DI 214 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 88 89 87 2 (set (reg:DI 212 [orig:134 a.0_1 ] [134])
+        (reg:DI 213 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 87 88 86 2 (set (reg:DI 211 [orig:134 a.0_1 ] [134])
+        (reg:DI 212 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 86 87 85 2 (set (reg:DI 210 [orig:134 a.0_1 ] [134])
+        (reg:DI 211 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 85 86 84 2 (set (reg:DI 209 [orig:134 a.0_1 ] [134])
+        (reg:DI 210 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 84 85 83 2 (set (reg:DI 208 [orig:134 a.0_1 ] [134])
+        (reg:DI 209 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 83 84 82 2 (set (reg:DI 207 [orig:134 a.0_1 ] [134])
+        (reg:DI 208 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 82 83 81 2 (set (reg:DI 206 [orig:134 a.0_1 ] [134])
+        (reg:DI 207 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 81 82 80 2 (set (reg:DI 205 [orig:134 a.0_1 ] [134])
+        (reg:DI 206 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 80 81 79 2 (set (reg:DI 204 [orig:134 a.0_1 ] [134])
+        (reg:DI 205 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 79 80 78 2 (set (reg:DI 203 [orig:134 a.0_1 ] [134])
+        (reg:DI 204 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 78 79 77 2 (set (reg:DI 202 [orig:134 a.0_1 ] [134])
+        (reg:DI 203 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 77 78 76 2 (set (reg:DI 201 [orig:134 a.0_1 ] [134])
+        (reg:DI 202 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 76 77 75 2 (set (reg:DI 200 [orig:134 a.0_1 ] [134])
+        (reg:DI 201 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 75 76 74 2 (set (reg:DI 199 [orig:134 a.0_1 ] [134])
+        (reg:DI 200 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 74 75 73 2 (set (reg:DI 198 [orig:134 a.0_1 ] [134])
+        (reg:DI 199 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 73 74 72 2 (set (reg:DI 197 [orig:134 a.0_1 ] [134])
+        (reg:DI 198 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 72 73 71 2 (set (reg:DI 196 [orig:134 a.0_1 ] [134])
+        (reg:DI 197 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 71 72 70 2 (set (reg:DI 195 [orig:134 a.0_1 ] [134])
+        (reg:DI 196 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 70 71 69 2 (set (reg:DI 194 [orig:134 a.0_1 ] [134])
+        (reg:DI 195 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 69 70 68 2 (set (reg:DI 193 [orig:134 a.0_1 ] [134])
+        (reg:DI 194 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 68 69 67 2 (set (reg:DI 192 [orig:134 a.0_1 ] [134])
+        (reg:DI 193 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 67 68 66 2 (set (reg:DI 191 [orig:134 a.0_1 ] [134])
+        (reg:DI 192 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 66 67 65 2 (set (reg:DI 190 [orig:134 a.0_1 ] [134])
+        (reg:DI 191 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 65 66 64 2 (set (reg:DI 189 [orig:134 a.0_1 ] [134])
+        (reg:DI 190 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 64 65 63 2 (set (reg:DI 188 [orig:134 a.0_1 ] [134])
+        (reg:DI 189 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 63 64 62 2 (set (reg:DI 187 [orig:134 a.0_1 ] [134])
+        (reg:DI 188 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 62 63 61 2 (set (reg:DI 186 [orig:134 a.0_1 ] [134])
+        (reg:DI 187 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 61 62 60 2 (set (reg:DI 185 [orig:134 a.0_1 ] [134])
+        (reg:DI 186 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 60 61 59 2 (set (reg:DI 184 [orig:134 a.0_1 ] [134])
+        (reg:DI 185 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 59 60 58 2 (set (reg:DI 183 [orig:134 a.0_1 ] [134])
+        (reg:DI 184 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 58 59 57 2 (set (reg:DI 182 [orig:134 a.0_1 ] [134])
+        (reg:DI 183 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 57 58 56 2 (set (reg:DI 181 [orig:134 a.0_1 ] [134])
+        (reg:DI 182 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 56 57 55 2 (set (reg:DI 180 [orig:134 a.0_1 ] [134])
+        (reg:DI 181 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 55 56 54 2 (set (reg:DI 179 [orig:134 a.0_1 ] [134])
+        (reg:DI 180 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 54 55 53 2 (set (reg:DI 178 [orig:134 a.0_1 ] [134])
+        (reg:DI 179 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 53 54 52 2 (set (reg:DI 177 [orig:134 a.0_1 ] [134])
+        (reg:DI 178 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 52 53 51 2 (set (reg:DI 176 [orig:134 a.0_1 ] [134])
+        (reg:DI 177 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 51 52 50 2 (set (reg:DI 175 [orig:134 a.0_1 ] [134])
+        (reg:DI 176 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 50 51 49 2 (set (reg:DI 174 [orig:134 a.0_1 ] [134])
+        (reg:DI 175 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 49 50 48 2 (set (reg:DI 173 [orig:134 a.0_1 ] [134])
+        (reg:DI 174 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 48 49 47 2 (set (reg:DI 172 [orig:134 a.0_1 ] [134])
+        (reg:DI 173 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 47 48 46 2 (set (reg:DI 171 [orig:134 a.0_1 ] [134])
+        (reg:DI 172 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 46 47 45 2 (set (reg:DI 170 [orig:134 a.0_1 ] [134])
+        (reg:DI 171 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 45 46 44 2 (set (reg:DI 169 [orig:134 a.0_1 ] [134])
+        (reg:DI 170 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 44 45 43 2 (set (reg:DI 168 [orig:134 a.0_1 ] [134])
+        (reg:DI 169 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 43 44 42 2 (set (reg:DI 167 [orig:134 a.0_1 ] [134])
+        (reg:DI 168 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 42 43 41 2 (set (reg:DI 166 [orig:134 a.0_1 ] [134])
+        (reg:DI 167 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 41 42 40 2 (set (reg:DI 165 [orig:134 a.0_1 ] [134])
+        (reg:DI 166 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 40 41 39 2 (set (reg:DI 164 [orig:134 a.0_1 ] [134])
+        (reg:DI 165 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 39 40 38 2 (set (reg:DI 163 [orig:134 a.0_1 ] [134])
+        (reg:DI 164 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 38 39 37 2 (set (reg:DI 162 [orig:134 a.0_1 ] [134])
+        (reg:DI 163 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 37 38 36 2 (set (reg:DI 161 [orig:134 a.0_1 ] [134])
+        (reg:DI 162 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 36 37 35 2 (set (reg:DI 160 [orig:134 a.0_1 ] [134])
+        (reg:DI 161 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 35 36 34 2 (set (reg:DI 159 [orig:134 a.0_1 ] [134])
+        (reg:DI 160 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 34 35 33 2 (set (reg:DI 158 [orig:134 a.0_1 ] [134])
+        (reg:DI 159 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 33 34 32 2 (set (reg:DI 157 [orig:134 a.0_1 ] [134])
+        (reg:DI 158 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 32 33 31 2 (set (reg:DI 156 [orig:134 a.0_1 ] [134])
+        (reg:DI 157 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 31 32 30 2 (set (reg:DI 155 [orig:134 a.0_1 ] [134])
+        (reg:DI 156 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 30 31 29 2 (set (reg:DI 154 [orig:134 a.0_1 ] [134])
+        (reg:DI 155 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 29 30 28 2 (set (reg:DI 153 [orig:134 a.0_1 ] [134])
+        (reg:DI 154 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 28 29 27 2 (set (reg:DI 152 [orig:134 a.0_1 ] [134])
+        (reg:DI 153 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 27 28 26 2 (set (reg:DI 151 [orig:134 a.0_1 ] [134])
+        (reg:DI 152 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 26 27 25 2 (set (reg:DI 150 [orig:134 a.0_1 ] [134])
+        (reg:DI 151 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 25 26 24 2 (set (reg:DI 149 [orig:134 a.0_1 ] [134])
+        (reg:DI 150 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 24 25 23 2 (set (reg:DI 148 [orig:134 a.0_1 ] [134])
+        (reg:DI 149 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 23 24 22 2 (set (reg:DI 147 [orig:134 a.0_1 ] [134])
+        (reg:DI 148 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 22 23 21 2 (set (reg:DI 146 [orig:134 a.0_1 ] [134])
+        (reg:DI 147 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 21 22 20 2 (set (reg:DI 145 [orig:134 a.0_1 ] [134])
+        (reg:DI 146 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 20 21 19 2 (set (reg:DI 144 [orig:134 a.0_1 ] [134])
+        (reg:DI 145 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 19 20 18 2 (set (reg:DI 143 [orig:134 a.0_1 ] [134])
+        (reg:DI 144 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 18 19 17 2 (set (reg:DI 142 [orig:134 a.0_1 ] [134])
+        (reg:DI 143 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 17 18 15 2 (set (reg:DI 141 [orig:134 a.0_1 ] [134])
+        (reg:DI 142 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 15 17 7 2 (set (reg:DI 134 [ a.0_1 ])
+        (reg:DI 141 [orig:134 a.0_1 ] [134])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 7 15 8 2 (set (reg:DI 135 [ b.1_2 ])
+        (mem/c:DI (symbol_ref:SI ("b") [flags 0x2]  <var_decl 0x7f539da01120 b>) [1 b+0 S8 A64])) "test.c":3:5 55 {*movdi}
+     (nil))
+(insn 8 7 9 2 (set (reg:DI 136 [ _3 ])
+        (plus:DI (reg:DI 134 [ a.0_1 ])
+            (reg:DI 135 [ b.1_2 ]))) "test.c":3:5 5 {adddi3}
+     (expr_list:REG_DEAD (reg:DI 135 [ b.1_2 ])
+        (expr_list:REG_DEAD (reg:DI 134 [ a.0_1 ])
+            (nil))))
+(insn 9 8 12 2 (set (mem/c:DI (symbol_ref:SI ("a") [flags 0x2]  <var_decl 0x7f539da01090 a>) [1 a+0 S8 A64])
+        (reg:DI 136 [ _3 ])) "test.c":3:5 55 {*movdi}
+     (expr_list:REG_DEAD (reg:DI 136 [ _3 ])
+        (nil)))
+;;  succ:       3 [always]  (FALLTHRU) test.c:4:1
+;; lr  out 	 2 [SP] 3 [RA] 4 [FP]
+
+;; basic block 3, loop depth 0, maybe hot
+;;  prev block 2, next block 1, flags: (REACHABLE, RTL)
+;;  pred:       2 [always]  (FALLTHRU) test.c:4:1
+;; bb 3 artificial_defs: { }
+;; bb 3 artificial_uses: { u-1(2){ }u-1(3){ }u-1(4){ }}
+;; lr  in  	 2 [SP] 3 [RA] 4 [FP]
+;; lr  use 	 2 [SP] 3 [RA] 4 [FP]
+;; lr  def 	
+(note 12 9 13 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+(insn 13 12 14 3 (const_int 0 [0]) "test.c":4:1 1 {nop}
+     (nil))
+;;  succ:       EXIT [always]  (FALLTHRU)
+;; lr  out 	 2 [SP] 3 [RA] 4 [FP]
+
+(note 14 13 0 NOTE_INSN_DELETED)

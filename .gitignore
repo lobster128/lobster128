@@ -1,0 +1,13 @@
+obj_dir/
+*.o
+*.a
+*.so
+*.obj
+
+vasm/
+build-vasm*/
+
+gcc/
+build-gcc*/
+
+.vscode/
