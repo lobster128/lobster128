@@ -1,6 +1,6 @@
 # lobster128
 
-!(lobster128)[https://raw.githubusercontent.com/lobster128/lobster128/master/lobster.png]
+!(lobster128)[https://raw.githubusercontent.com/lobster128/lobster128/master/lobster1.png]
 
 128-bit FPGA CPU in SystemVerilog.
 
