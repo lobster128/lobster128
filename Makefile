@@ -13,6 +13,7 @@ GCC_CONFIG_OPT := --disable-nls \
 	--disable-gnu-unique-object \
 	--disable-lto \
 	--without-headers \
+	--disable-plugin \
 	--prefix="$(HOME)/opt/cross"
 
 all: build build-toolchain
