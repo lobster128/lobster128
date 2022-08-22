@@ -43,9 +43,34 @@ module lobster_CPU
     localparam DELEG_MEM  = 4'b1100;        // Memory operation
     localparam DELEG_LOCK = 4'b1???;        // Atomic operation
     // ------------------------------------------------------------------------
+    // Memory
+    // Instructions can have a memory modifier telling it the data size on
+    // which the operation should be done, even if no memory is touched
+    // and a noop is used, the size modifier will affect the behaviour of some
+    // instructions.
+    // ------------------------------------------------------------------------
+    wire [3:0] inst_mem    = data_in[9:6];  // Memory operation
+    wire [1:0] inst_memop  = data_in[7:6];  // - Operation
+    wire [1:0] inst_memsz  = data_in[9:8];  // - Size
+    localparam MEM_8       = 2'b00;
+    localparam MEM_16      = 2'b01;
+    localparam MEM_32      = 2'b10;
+    localparam MEM_64      = 2'b11;
+    localparam MEM_NOOP    = 4'b??00;
+    localparam MEM_LOAD    = 2'b01;
+    localparam MEM_LOAD8   = 4'b0001;
+    localparam MEM_LOAD16  = 4'b0101;
+    localparam MEM_LOAD32  = 4'b1001;
+    localparam MEM_LOAD64  = 4'b1101;
+    localparam MEM_STORE   = 2'b10;
+    localparam MEM_STORE8  = 4'b0010;
+    localparam MEM_STORE16 = 4'b0110;
+    localparam MEM_STORE32 = 4'b1010;
+    localparam MEM_STORE64 = 4'b1110;
+    // ------------------------------------------------------------------------
     // Arithmethic unit delegation
     // ------------------------------------------------------------------------
-    wire [3:0] inst_xluop = data_in[9:6];   // (V/A/F)LU operation
+    wire [3:0] inst_xluop = data_in[13:10]; // (V/A/F)LU operation
     localparam XLU_ADD  = 4'b0000;          // Add
     localparam XLU_SUB  = 4'b0001;          // Subtract
     localparam XLU_AND  = 4'b0010;          // AND
@@ -57,9 +82,10 @@ module lobster_CPU
     localparam XLU_MUL  = 4'b1000;          // Multiply
     localparam XLU_DIV  = 4'b1001;          // Divide
     localparam XLU_REM  = 4'b1011;          // Remainder
-    localparam XLU_MULS = 4'b1100;          // Multiply with self
-    localparam XLU_DIVS = 4'b1101;          // ???
-    localparam XLU_REMS = 4'b1110;          // ???
+    localparam XLU_SEX  = 4'b1100;          // Sign extend
+    localparam XLU_PUSH = 4'b1101;          // Push (increment A, place D to A + B)
+    localparam XLU_POP  = 4'b1110;          // Pop (decrement A, place D to A + B)
+    localparam XLU_EXT  = 4'b1111;          // Delegator-specific extensions
     function [127:0] alu_op_result(
         input [3:0] op,
         input [6:0] a, // Source
@@ -164,11 +190,6 @@ module lobster_CPU
             gp_regs[c] <= gp_regs[c] % gp_regs[a];
             gp_regs[d] <= gp_regs[d] % gp_regs[a];
             end
-        XLU_MULS: begin // MULS [a], [b], [c], [d]
-            gp_regs[b] <= gp_regs[b] * gp_regs[b];
-            gp_regs[c] <= gp_regs[c] * gp_regs[c];
-            gp_regs[d] <= gp_regs[d] * gp_regs[d];
-            end
         XLU_NOT: begin // NOT [a], [b], [c], [d]
             // A is ignored in this case
             gp_regs[b] <= ~gp_regs[b];
@@ -183,7 +204,7 @@ module lobster_CPU
     // ------------------------------------------------------------------------
     // Control
     // ------------------------------------------------------------------------
-    wire [3:0] inst_ctrlop = data_in[9:6];  // Control operation
+    wire [3:0] inst_ctrlop = data_in[13:10];// Control operation
     localparam CTL_TLBSET  = 4'b0000;       // Set TLB entry
     localparam CTL_TLBFLSH = 4'b0001;       // Flush TLB bucket
     localparam CTL_TLBPERM = 4'b0010;       // Set permissions for TLB entry
@@ -191,20 +212,6 @@ module lobster_CPU
     localparam CTL_TSSL    = 4'b1000;       // Load hardware task context
     localparam CTL_TSSS    = 4'b1001;       // Store hardware task context
     localparam CTL_TSCSWT  = 4'b1010;       // Perform a task switch
-    // ------------------------------------------------------------------------
-    // Memory
-    // ------------------------------------------------------------------------
-    wire [3:0] inst_memop  = data_in[9:6];  // Memory operation
-    localparam MEM_LOAD    = 4'b00??;
-    localparam MEM_LOAD8   = 4'b0000;
-    localparam MEM_LOAD16  = 4'b0001;
-    localparam MEM_LOAD32  = 4'b0010;
-    localparam MEM_LOAD64  = 4'b0011;
-    localparam MEM_STORE   = 4'b10??;
-    localparam MEM_STORE8  = 4'b1000;
-    localparam MEM_STORE16 = 4'b1001;
-    localparam MEM_STORE32 = 4'b1010;
-    localparam MEM_STORE64 = 4'b1011;
 
     // ------------------------------------------------------------------------
     // Execution engine

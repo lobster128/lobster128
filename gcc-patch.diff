@@ -140,10 +140,10 @@ index 00000000000..92eca311d45
 +
 diff --git a/gcc/config/lobster128/lobster128.cc b/gcc/config/lobster128/lobster128.cc
 new file mode 100644
-index 00000000000..8b21715c1b8
+index 00000000000..f476ee2ac57
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.cc
-@@ -0,0 +1,490 @@
+@@ -0,0 +1,495 @@
 +/* Subroutines used for code generation on Vitesse lobster128 processors
 +   Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -570,14 +570,19 @@ index 00000000000..8b21715c1b8
 +      internal_error("internal error: bad register: %d", REGNO(operand));
 +    fprintf(file, "%s", reg_names[REGNO(operand)]);
 +    return;
-+
 +  case MEM:
 +    output_address(GET_MODE(XEXP(operand, 0)), XEXP(operand, 0));
 +    return;
-+
++  case CONST_INT:
++  case SYMBOL_REF:
++  case CONST:
++  case LABEL_REF:
++    fprintf(file, "#");
++    lobster128_print_operand_address(file, VOIDmode, x);
++    break;
 +  default:
 +    /* No need to handle all strange variants, let output_addr_const
-+ do it for us.  */
++       do it for us.  */
 +    if (CONSTANT_P(operand))
 +    {
 +      output_addr_const(file, operand);
@@ -1085,10 +1090,10 @@ index 00000000000..7cf7e7f3fe4
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..63f21ed0185
+index 00000000000..d867c8d17a4
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
-@@ -0,0 +1,322 @@
+@@ -0,0 +1,340 @@
 +;;  lobster128.md	     Machine Description for lobster128 processors
 +;;  Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -1224,7 +1229,7 @@ index 00000000000..63f21ed0185
 +
 +(define_insn "mov<mode>"
 +  [(set (match_operand:MODE 0 "nonimmediate_operand" "=r,r,m,r,r,r,r,r")
-+	(match_operand:MODE 1 "general_operand" "O,r,r,m,I,J,K,L"))]
++	(match_operand:MODE 1 "lobster128_general_movsrc_operand" "O,r,r,m,I,J,K,L"))]
 +  ""
 +  "@
 +   Z.XOR<lenx> %0,%1
@@ -1239,7 +1244,7 @@ index 00000000000..63f21ed0185
 +
 +(define_insn "*mov<mode>"
 +  [(set (match_operand:MODE 0 "nonimmediate_operand" "=r,r,m,r,r,r,r,r")
-+	(match_operand:MODE 1 "general_operand" "O,r,r,m,I,J,K,L"))]
++	(match_operand:MODE 1 "lobster128_general_movsrc_operand" "O,r,r,m,I,J,K,L"))]
 +  ""
 +  "@
 +   Z.XOR<lenx> %0,%1
@@ -1252,24 +1257,18 @@ index 00000000000..63f21ed0185
 +   Z.LOAD<lenx> %0,%1"
 +  )
 +
-+(define_insn "zero_extend<mode>ti2"
++(define_insn "zero_extend<mode>di2"
 +  [(set (match_operand:MODE 0 "register_operand" "=r,m,r")
-+	(zero_extend:MODE (match_operand:TI 1 "nonimmediate_operand" "r,r,m")))]
++	(zero_extend:MODE (match_operand:DI 1 "nonimmediate_operand" "r,r,m")))]
 +  ""
-+  "@
-+  <sgnprefix>EXT<lenx> %0,%1
-+  <sgnprefix>EXT<lenx> %0,%1
-+  <sgnprefix>EXT<lenx> %0,%1"
++  "<sgnprefix>EXT<lenx>.DI %0,%1"
 +)
 +
-+(define_insn "sign_extend<mode>ti2"
++(define_insn "sign_extend<mode>di2"
 +  [(set (match_operand:MODE 0 "register_operand" "=r,m,r")
-+	(sign_extend:MODE (match_operand:TI 1 "nonimmediate_operand" "r,r,m")))]
++	(sign_extend:MODE (match_operand:DI 1 "nonimmediate_operand" "r,r,m")))]
 +  ""
-+  "@
-+  <sgnprefix>SXT<lenx> %0,%1
-+  <sgnprefix>SXT<lenx> %0,%1
-+  <sgnprefix>SXT<lenx> %0,%1"
++  "<sgnprefix>SXT<lenx>.DI %0,%1"
 +)
 +
 +;; -------------------------------------------------------------------------
@@ -1277,13 +1276,10 @@ index 00000000000..63f21ed0185
 +;; -------------------------------------------------------------------------
 +(define_insn "cmp<mode>"
 +  [(set (reg:CC CC_REG) (compare
-+	 (match_operand:MODE 0 "general_operand" "r,m,r")
-+	 (match_operand:MODE 1 "general_operand" "r,r,m")))]
++	 (match_operand:MODE 0 "register_operand" "r")
++	 (match_operand:MODE 1 "register_operand" "r")))]
 +  ""
-+  "@
-+  Z.CMP<lenx> %0,%1
-+  Z.CMP<lenx> %0,%1
-+  Z.CMP<lenx> %0,%1")
++  "Z.CMP<lenx> %0,%1")
 +
 +;; Push a register onto the stack
 +(define_insn "mov<mode>_push"
@@ -1307,6 +1303,33 @@ index 00000000000..63f21ed0185
 +(define_code_attr rCC [(ne "EQU") (eq "NEQ") (lt "GTE") (ltu "GEU") 
 +		       (gt "LTE") (gtu "LEU") (ge "LTH") (le "GTH") 
 +		       (geu "LTU") (leu "GTU") ])
++
++(define_expand "cbranchdi4"
++  [(set (reg:CC CC_REG)
++        (compare:CC
++         (match_operand:DI 1 "general_operand" "")
++         (match_operand:DI 2 "general_operand" "")))
++   (set (pc)
++        (if_then_else (match_operator 0 "comparison_operator"
++                       [(reg:CC CC_REG) (const_int 0)])
++                      (label_ref (match_operand 3 "" ""))
++                      (pc)))]
++  ""
++  "
++  /* Force the compare operands into registers.  */
++  if (GET_CODE (operands[1]) != REG)
++	operands[1] = force_reg (DImode, operands[1]);
++  if (GET_CODE (operands[2]) != REG)
++	operands[2] = force_reg (DImode, operands[2]);
++  ")
++
++(define_insn "*cmpdi"
++  [(set (reg:CC CC_REG)
++	(compare
++	 (match_operand:DI 0 "register_operand" "r")
++	 (match_operand:DI 1 "register_operand"	"r")))]
++  ""
++  "Z.CMP.DWO %0, %1")
 +
 +(define_insn "*b<cond:code>"
 +  [(set (pc)
@@ -1350,7 +1373,7 @@ index 00000000000..63f21ed0185
 +
 +(define_expand "call_value"
 +  [(set (match_operand 0 "" "")
-+		(call (match_operand:TI 1 "memory_operand" "")
++		(call (match_operand:DI 1 "memory_operand" "")
 +		 (match_operand 2 "" "")))]
 +  ""
 +{
@@ -1359,7 +1382,7 @@ index 00000000000..63f21ed0185
 +
 +(define_insn "*call_value"
 +  [(set (match_operand 0 "register_operand" "=r")
-+	(call (mem:TI (match_operand:TI
++	(call (mem:DI (match_operand:DI
 +		       1 "immediate_operand" "i"))
 +	      (match_operand 2 "" "")))]
 +  ""
@@ -1367,14 +1390,14 @@ index 00000000000..63f21ed0185
 +
 +(define_insn "*call_value_indirect"
 +  [(set (match_operand 0 "register_operand" "=r")
-+	(call (mem:TI (match_operand:TI
++	(call (mem:DI (match_operand:DI
 +		       1 "register_operand" "r"))
 +	      (match_operand 2 "" "")))]
 +  ""
 +  "Z.JMP %1")
 +
 +(define_insn "indirect_jump"
-+  [(set (pc) (match_operand:TI 0 "nonimmediate_operand" "r"))]
++  [(set (pc) (match_operand:DI 0 "nonimmediate_operand" "r"))]
 +  ""
 +  "Z.JMP %0")
 +
@@ -1438,10 +1461,10 @@ index 00000000000..6aa28006001
 +; <http://www.gnu.org/licenses/>.
 diff --git a/gcc/config/lobster128/predicates.md b/gcc/config/lobster128/predicates.md
 new file mode 100644
-index 00000000000..f9a3154b67a
+index 00000000000..e7a6a30b476
 --- /dev/null
 +++ b/gcc/config/lobster128/predicates.md
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,40 @@
 +;; Predicate definitions for LOBSTER128.
 +;; Copyright (C) 2005-2022 Free Software Foundation, Inc.
 +;;
@@ -1460,6 +1483,23 @@ index 00000000000..f9a3154b67a
 +;; You should have received a copy of the GNU General Public License
 +;; along with GCC; see the file COPYING3.  If not see
 +;; <http://www.gnu.org/licenses/>.
++
++(define_predicate "lobster128_general_movsrc_operand"
++  (match_code "mem,const_int,reg,subreg,symbol_ref,label_ref,const")
++{
++  /* Any (MEM LABEL_REF) is OK.  That is a pc-relative load.  */
++  if (MEM_P (op) && GET_CODE (XEXP (op, 0)) == LABEL_REF)
++    return 1;
++
++  if (MEM_P (op)
++      && GET_CODE (XEXP (op, 0)) == PLUS
++      && GET_CODE (XEXP (XEXP (op, 0), 0)) == REG
++      && GET_CODE (XEXP (XEXP (op, 0), 1)) == CONST_INT
++      && IN_RANGE (INTVAL (XEXP (XEXP (op, 0), 1)), -32768, 32767))
++    return 1;
++
++  return general_operand (op, mode);
++})
 +
 +(define_predicate "lobster128_arith_operand"
 +  (ior (match_code "reg")
