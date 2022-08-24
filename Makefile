@@ -30,14 +30,12 @@ build:
 .PHONY: all run build
 
 # Toolchain
-build-toolchain: build-gcc-lobster128
+build-toolchain: build-gcc
 
 .PHONY: build-toolchain
 
-vasm:
-	-git clone https://github.com/mbitsnbites/vasm-mirror $@
-
-gcc: vasm
+# GCC toolchain
+gcc:
 	-git clone git://gcc.gnu.org/git/gcc.git $@
 
 build-gcc-lobster128/Makefile: build-gcc-lobster128
@@ -48,4 +46,5 @@ build-gcc-lobster128: gcc build-gcc-lobster128/Makefile
 	$(MAKE) -C $@ all-gcc
 	$(MAKE) -C $@ install-gcc
 
-.PHONY: build-gcc-lobster128
+build-gcc: build-gcc-lobster128
+.PHONY: build-gcc build-gcc-lobster128
