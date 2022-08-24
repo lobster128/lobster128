@@ -146,10 +146,10 @@ index 00000000000..92eca311d45
 +
 diff --git a/gcc/config/lobster128/lobster128.cc b/gcc/config/lobster128/lobster128.cc
 new file mode 100644
-index 00000000000..f45f9416b67
+index 00000000000..de568488fcf
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.cc
-@@ -0,0 +1,564 @@
+@@ -0,0 +1,578 @@
 +/* Subroutines used for code generation on Vitesse lobster128 processors
 +   Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -354,7 +354,7 @@ index 00000000000..f45f9416b67
 +  else
 +    size = GET_MODE_SIZE(arg.mode);
 +
-+  int bytes_left = (4 * 6) - ((*cum - 2) * 4);
++  int bytes_left = (UNITS_PER_WORD * 6) - ((*cum - 2) * UNITS_PER_WORD);
 +  if (size > bytes_left)
 +    return bytes_left;
 +  else
@@ -478,6 +478,20 @@ index 00000000000..f45f9416b67
 +  return ret;
 +}
 +
++static rtx
++lobster128_gen_push (rtx arg)
++{
++  machine_function *m = cfun->machine;
++  m->local_vars_size += UNITS_PER_WORD;
++  if (REG_P (arg) && GET_MODE (arg) != word_mode)
++    arg = gen_rtx_REG (word_mode, REGNO (arg));
++
++  return gen_rtx_SET (gen_rtx_MEM (word_mode,
++				   gen_rtx_PRE_DEC (Pmode,
++						    stack_pointer_rtx)),
++		      arg);
++}
++
 +void lobster128_expand_prologue(void)
 +{
 +  lobster128_compute_frame();
@@ -490,7 +504,7 @@ index 00000000000..f45f9416b67
 +  {
 +    if (df_regs_ever_live_p(regno) && !call_used_or_fixed_reg_p(regno))
 +    {
-+      insn = emit_insn(gen_movti_push(gen_rtx_REG(Pmode, regno)));
++      insn = emit_insn(lobster128_gen_push(gen_rtx_REG(Pmode, regno)));
 +      RTX_FRAME_RELATED_P(insn) = 1;
 +    }
 +  }
@@ -498,13 +512,13 @@ index 00000000000..f45f9416b67
 +  if (cfun->machine->size_for_adjusting_sp > 0)
 +  {
 +    int i = cfun->machine->size_for_adjusting_sp;
-+    while ((i >= 65535))
++    while ((i >= MOVE_MAX))
 +    {
 +      insn = emit_insn(gen_subti3(stack_pointer_rtx,
 +                                  stack_pointer_rtx,
-+                                  GEN_INT(65535)));
++                                  GEN_INT(MOVE_MAX)));
 +      RTX_FRAME_RELATED_P(insn) = 1;
-+      i -= 65535;
++      i -= MOVE_MAX;
 +    }
 +
 +    /* TODO: We could do better and generate a Z.PUSH / Z.POP */
@@ -716,10 +730,10 @@ index 00000000000..f45f9416b67
 +#include "gt-lobster128.h"
 diff --git a/gcc/config/lobster128/lobster128.h b/gcc/config/lobster128/lobster128.h
 new file mode 100644
-index 00000000000..811a9b1e402
+index 00000000000..caee5e12730
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.h
-@@ -0,0 +1,477 @@
+@@ -0,0 +1,479 @@
 +/* Definitions of target machine for GNU compiler.  
 +   lobster128 processors
 +   Copyright (C) 2003-2022 Free Software Foundation, Inc.
@@ -804,6 +818,8 @@ index 00000000000..811a9b1e402
 +#define LONG_DOUBLE_TYPE_SIZE	64
 +
 +#define DEFAULT_SIGNED_CHAR 1
++
++/* TODO: 128-bit UNITS_PER_WORD */
 +
 +/* Number of storage units in a word; normally the size of a
 +   general-purpose register, a power of two from 1 or 8.  */
@@ -1199,7 +1215,7 @@ index 00000000000..811a9b1e402
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..55ddec7367c
+index 00000000000..a3f566070fd
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
 @@ -0,0 +1,363 @@
@@ -1336,6 +1352,20 @@ index 00000000000..55ddec7367c
 +;; -------------------------------------------------------------------------
 +;; Move instructions
 +;; -------------------------------------------------------------------------
++;; Push a register onto the stack
++(define_insn "mov<mode>_push"
++  [(set (mem:MODE (pre_dec:MODE (match_operand:MODE 0 "lobster128_general_movsrc_operand" "r,m")))
++  	(match_operand:MODE 1 "register_operand" "r,r"))]
++  ""
++  "z.push<lenx> %0,%1")
++
++;; Pop a register from the stack
++(define_insn "mov<mode>_pop"
++  [(set (match_operand:MODE 0 "register_operand" "=r,r")
++  	(mem:MODE (post_inc:MODE (match_operand:MODE 1 "lobster128_general_movsrc_operand" "r,m"))))]
++  ""
++  "z.pop<lenx> %0,%1")
++
 +(define_expand "mov<mode>"
 +  [(set (match_operand:MODE 0 "general_operand" "")
 +	      (match_operand:MODE 1 "general_operand" ""))]
@@ -1373,20 +1403,6 @@ index 00000000000..55ddec7367c
 +  "register_operand (operands[0], <MODE>mode)
 +    || register_operand (operands[1], <MODE>mode)"
 +  "z.mov<lenx> %0,%1")
-+
-+;; Push a register onto the stack
-+(define_insn "mov<mode>_push"
-+  [(set (mem:MODE (pre_dec:MODE (reg:MODE 1)))
-+  	(match_operand:MODE 0 "lobster128_arith_operand" ""))]
-+  ""
-+  "z.push<lenx> %0")
-+
-+;; Pop a register from the stack
-+(define_insn "mov<mode>_pop"
-+  [(set (match_operand:MODE 1 "register_operand" "=r")
-+  	(mem:MODE (post_inc:MODE (match_operand:MODE 0 "lobster128_arith_operand" ""))))]
-+  ""
-+  "z.pop<lenx> %0")
 +
 +;{
 +;  /* If this is a store, force the value into a register.  */
