@@ -1,6 +1,5 @@
 VERILATOR := verilator
 VERILATOR_FLAGS := -O3 --cc --exe --build
-VERILATOR_FLAGS += --top-module lobster_CPU
 
 PREFIX := $(HOME)/opt/cross
 
@@ -24,20 +23,34 @@ BINUTILS_CONFIG_OPT := --disable-nls \
 	--with-sysroot \
 	--prefix="$(PREFIX)"
 
+################################################################################
+#
+# Simulator
+#
+################################################################################
 all: build build-toolchain
 
 run: build
 	cd obj_dir && ./Vlobster_CPU
 
-build:
-	$(VERILATOR) $(VERILATOR_FLAGS) \
-		main.cpp rtl/lobster.sv \
+build: obj_dir/Vlobster_CPU
+
+obj_dir/Vlobster_CPU: rtl/lobster.sv main.cpp rtl/cache.sv
+	$(VERILATOR) $(VERILATOR_FLAGS) --top-module lobster_CPU \
+		main.cpp $< \
 		-CFLAGS "$(sdl2-config --cflags)" \
 		-LDFLAGS "$(sdl2-config --libs)" || exit
 
-.PHONY: all run build
+clean:
+	$(RM) -r obj_dir
 
+.PHONY: all run build clean
+
+################################################################################
+#
 # Toolchain
+#
+################################################################################
 build-toolchain: build-gcc
 
 .PHONY: build-toolchain

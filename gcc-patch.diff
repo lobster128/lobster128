@@ -25,21 +25,22 @@ index 38f3d037a78..9fe774727ee 100755
  			| m32c | m32r | m32rle \
  			| m5200 | m68000 | m680[012346]0 | m68360 | m683?2 | m68k \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 02f58970db0..814e9df3b2b 100644
+index 02f58970db0..2b83c6f006e 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -453,6 +453,10 @@ mips*-*-*)
+@@ -453,6 +453,11 @@ mips*-*-*)
  	extra_objs="frame-header-opt.o"
  	extra_options="${extra_options} g.opt fused-madd.opt mips/mips-tables.opt"
  	;;
 +lobster128*)
 +    cpu_type=lobster128
++	extra_modes=lobster128/lobster128-modes.def
 +	target_has_targetm_common=no
 +    ;;
  loongarch*-*-*)
  	cpu_type=loongarch
  	extra_headers="larchintrin.h"
-@@ -2502,7 +2506,12 @@ riscv*-*-freebsd*)
+@@ -2502,7 +2507,12 @@ riscv*-*-freebsd*)
  	# automatically detect that GAS supports it, yet we require it.
  	gcc_cv_initfini_array=yes
  	;;
@@ -55,10 +56,10 @@ index 02f58970db0..814e9df3b2b 100644
  	tm_file="${tm_file} loongarch/gnu-user.h loongarch/linux.h"
 diff --git a/gcc/config/lobster128/constraints.md b/gcc/config/lobster128/constraints.md
 new file mode 100644
-index 00000000000..a0903344bf4
+index 00000000000..8c8ea1e4a37
 --- /dev/null
 +++ b/gcc/config/lobster128/constraints.md
-@@ -0,0 +1,55 @@
+@@ -0,0 +1,58 @@
 +;; Constraints for Vitesse IQ2000 processors
 +;; Copyright (C) 2011-2022 Free Software Foundation, Inc.
 +
@@ -77,6 +78,9 @@ index 00000000000..a0903344bf4
 +;; You should have received a copy of the GNU General Public License
 +;; along with GCC; see the file COPYING3.  If not see
 +;; <http://www.gnu.org/licenses/>.
++
++(define_register_constraint "f" "GR_REGS"
++  "A floating-point register.")
 +
 +;; Integer constraints.
 +(define_constraint "O"
@@ -114,6 +118,42 @@ index 00000000000..a0903344bf4
 +  (and (match_code "mem")
 +       (match_test "REG_P (XEXP (op, 0))
 +		    && REGNO_OK_FOR_BASE_P (REGNO (XEXP (op, 0)))")))
+diff --git a/gcc/config/lobster128/lobster128-modes.def b/gcc/config/lobster128/lobster128-modes.def
+new file mode 100644
+index 00000000000..70b4fbbdc23
+--- /dev/null
++++ b/gcc/config/lobster128/lobster128-modes.def
+@@ -0,0 +1,30 @@
++/* Definitions of target machine GNU compiler.
++   Copyright (C) 2002-2022 Free Software Foundation, Inc.
++
++This file is part of GCC.
++
++GCC is free software; you can redistribute it and/or modify
++it under the terms of the GNU General Public License as published by
++the Free Software Foundation; either version 3, or (at your option)
++any later version.
++
++GCC is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with GCC; see the file COPYING3.  If not see
++<http://www.gnu.org/licenses/>.  */
++
++FRACTIONAL_FLOAT_MODE (XF, 127, 16, ieee_extended_intel_128_format);
++FLOAT_MODE (TF, 16, ieee_quad_format);
++
++/* Vector modes.  */
++VECTOR_MODES (INT, 4);		/* V4QI V2HI */
++VECTOR_MODES (INT, 8);		/* V8QI V4HI V2SI */
++VECTOR_MODE (INT, QI, 16);
++VECTOR_MODE (INT, HI, 8);
++VECTOR_MODE (INT, SI, 4);
++VECTOR_MODE (FLOAT, SF, 2);
++VECTOR_MODE (FLOAT, SF, 4);
 diff --git a/gcc/config/lobster128/lobster128-protos.h b/gcc/config/lobster128/lobster128-protos.h
 new file mode 100644
 index 00000000000..92eca311d45
@@ -146,10 +186,10 @@ index 00000000000..92eca311d45
 +
 diff --git a/gcc/config/lobster128/lobster128.cc b/gcc/config/lobster128/lobster128.cc
 new file mode 100644
-index 00000000000..de568488fcf
+index 00000000000..620d9501681
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.cc
-@@ -0,0 +1,578 @@
+@@ -0,0 +1,575 @@
 +/* Subroutines used for code generation on Vitesse lobster128 processors
 +   Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -219,10 +259,7 @@ index 00000000000..de568488fcf
 +
 +void lobster128_init_builtins(void)
 +{
-+  /*(*lang_hooks.types.register_builtin_type) (long_double_type_node,
-+                  "__float128");
-+  (*lang_hooks.types.register_builtin_type) (intTI_type_node,
-+                  "__int128");*/
++
 +}
 +
 +/* Worker function for TARGET_SETUP_INCOMING_VARARGS.  */
@@ -269,7 +306,7 @@ index 00000000000..de568488fcf
 +lobster128_return_in_memory(const_tree type, const_tree fntype ATTRIBUTE_UNUSED)
 +{
 +  const HOST_WIDE_INT size = int_size_in_bytes(type);
-+  return (size == -1 || size > 2 * UNITS_PER_WORD);
++  return (size == -1 || size > UNITS_PER_WORD);
 +}
 +
 +/* Zero initialization is OK for all current fields.  */
@@ -730,7 +767,7 @@ index 00000000000..de568488fcf
 +#include "gt-lobster128.h"
 diff --git a/gcc/config/lobster128/lobster128.h b/gcc/config/lobster128/lobster128.h
 new file mode 100644
-index 00000000000..caee5e12730
+index 00000000000..07a324f19f0
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.h
 @@ -0,0 +1,479 @@
@@ -815,7 +852,7 @@ index 00000000000..caee5e12730
 +
 +#define DOUBLE_TYPE_SIZE 64
 +
-+#define LONG_DOUBLE_TYPE_SIZE	64
++#define LONG_DOUBLE_TYPE_SIZE	128
 +
 +#define DEFAULT_SIGNED_CHAR 1
 +
@@ -1215,10 +1252,10 @@ index 00000000000..caee5e12730
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..a3f566070fd
+index 00000000000..91bdfd35a1d
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
-@@ -0,0 +1,363 @@
+@@ -0,0 +1,464 @@
 +;;  lobster128.md	     Machine Description for lobster128 processors
 +;;  Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -1253,8 +1290,9 @@ index 00000000000..a3f566070fd
 +
 +; Lenght of operands
 +(define_mode_iterator MODE [QI HI SI DI TI])
-+;(define_mode_attr mode [(QI "qi") (HI "hi") (SI "si") (DI "di") (TI "ti")])
 +(define_mode_attr lenx [(QI ".chr") (HI ".hlf") (SI ".wrd") (DI ".dwo") (TI ".owo")])
++(define_mode_iterator FMODE [SF DF TF])
++(define_mode_attr flenx [(SF ".fwr") (DF ".fdw") (TF ".fow")])
 +
 +; Handle both unsigned and signed arithmethics
 +(define_code_iterator EXTEND [sign_extend zero_extend])
@@ -1268,6 +1306,97 @@ index 00000000000..a3f566070fd
 +  [(const_int 0)]
 +  ""
 +  "z.nop.owo")
++
++;; -------------------------------------------------------------------------
++;; Micro-arithmethic instruction ops
++;; -------------------------------------------------------------------------
++(define_insn "addti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (plus:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.add.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "subti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (minus:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.sub.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "multi2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (mult:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.mul.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "divti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (div:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.div.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "modti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (mod:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.mod.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "ashlti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (ashift:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.ashl.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "ashrti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (ashiftrt:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.ashr.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "lshrti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (ashiftrt:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.lshr.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "xorti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (lshiftrt:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.xor.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "iorti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (ior:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.or.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
++
++(define_insn "andti2"
++  [(set (match_operand:TI 0 "register_operand" "+r")
++	  (and:TI (match_operand:TI 1 "register_operand" "%0")
++	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
++  ""
++  "z.and.owo %0,%1,%2"
++  [(set (attr "length") (const_int 2))])
 +
 +;; -------------------------------------------------------------------------
 +;; Arithmetic instructions
@@ -1556,6 +1685,15 @@ index 00000000000..a3f566070fd
 +  "z.j %0")
 +
 +;; -------------------------------------------------------------------------
++;; Floating point instructions
++;; -------------------------------------------------------------------------
++(define_insn "sqrt<mode>"
++  [(set (match_operand:FMODE 0 "register_operand" "=f")
++    (sqrt:FMODE (match_operand:FMODE 1 "register_operand" "f")) )]
++  ""
++  "z.sqrt<flenx> %0,%1")
++
++;; -------------------------------------------------------------------------
 +;; Prologue & Epilogue
 +;; -------------------------------------------------------------------------
 +(define_expand "prologue"
@@ -1609,10 +1747,10 @@ index 00000000000..6aa28006001
 +; <http://www.gnu.org/licenses/>.
 diff --git a/gcc/config/lobster128/predicates.md b/gcc/config/lobster128/predicates.md
 new file mode 100644
-index 00000000000..2023a21abb9
+index 00000000000..f6ffb18bb93
 --- /dev/null
 +++ b/gcc/config/lobster128/predicates.md
-@@ -0,0 +1,32 @@
+@@ -0,0 +1,36 @@
 +;; Predicate definitions for LOBSTER128.
 +;; Copyright (C) 2005-2022 Free Software Foundation, Inc.
 +;;
@@ -1645,6 +1783,10 @@ index 00000000000..2023a21abb9
 +  (ior (match_code "reg")
 +       (and (match_code "const_int")
 +	    (match_test "IN_RANGE (INTVAL (op), 0, 0xffffffffffffffff)"))))
++
++(define_predicate "lobster128_micro_op_operand"
++  (and (match_code "reg")
++       (match_test "REGNO (op) < 64")))
 diff --git a/gcc/lra-int.h b/gcc/lra-int.h
 index 04baefef348..710c9483226 100644
 --- a/gcc/lra-int.h
