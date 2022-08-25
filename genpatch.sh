@@ -6,3 +6,10 @@ git pull || exit
 git add . || exit
 git diff --cached >../gcc-patch.diff || exit
 cd .. || exit
+
+cd binutils || exit
+git pull || exit
+git add . || exit
+git diff --cached >../binutils-patch.diff || exit
+cd .. || exit
+

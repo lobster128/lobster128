@@ -4,10 +4,12 @@ obj_dir/
 *.so
 *.obj
 
-vasm/
-build-vasm*/
+binutils/
+build-binutils*/
 
 gcc/
 build-gcc*/
 
 .vscode/
+log.txt
+examples/
