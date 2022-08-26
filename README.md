@@ -10,7 +10,7 @@
 * [ ] Paging.
 * [ ] D-cache and I-cache.
 * [x] GCC backend.
-* [ ] Binutils backend.
+* [x] Binutils backend.
 * [ ] Fully pipelined with minimal stalls.
 * [ ] Hardware task switch.
 * [ ] VLIW instructions (aka. not RISC).

@@ -12,4 +12,4 @@ build-gcc*/
 
 .vscode/
 log.txt
-examples/
+example*/

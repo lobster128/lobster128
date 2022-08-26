@@ -24,6 +24,34 @@ index 38f3d037a78..9fe774727ee 100755
  			| loongarch32 | loongarch64 | loongarchx32 \
  			| m32c | m32r | m32rle \
  			| m5200 | m68000 | m680[012346]0 | m68360 | m683?2 | m68k \
+diff --git a/configure b/configure
+index 81c034b553f..6ef3bb10dcb 100755
+--- a/configure
++++ b/configure
+@@ -4026,6 +4026,9 @@ case "${target}" in
+   wasm32-*-*)
+     noconfigdirs="$noconfigdirs ld"
+     ;;
++  lobster128-*-*)
++    noconfigdirs="$noconfigdirs binutils gas gdb ld opcodes target-libgloss"
++    ;;
+   loongarch*-*-linux*)
+     ;;
+   loongarch*-*-*)
+diff --git a/configure.ac b/configure.ac
+index 13f8c5f2a9f..46284647c6c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1283,6 +1283,9 @@ case "${target}" in
+   wasm32-*-*)
+     noconfigdirs="$noconfigdirs ld"
+     ;;
++  lobster128-*-*)
++    noconfigdirs="$noconfigdirs binutils gas gdb ld opcodes target-libgloss"
++    ;;
+   loongarch*-*-linux*)
+     ;;
+   loongarch*-*-*)
 diff --git a/gcc/config.gcc b/gcc/config.gcc
 index 02f58970db0..2b83c6f006e 100644
 --- a/gcc/config.gcc
@@ -1252,7 +1280,7 @@ index 00000000000..07a324f19f0
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..91bdfd35a1d
+index 00000000000..a906a89b856
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
 @@ -0,0 +1,464 @@
@@ -1315,7 +1343,7 @@ index 00000000000..91bdfd35a1d
 +	  (plus:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.add.owo %0,%1,%2"
++  "z.add.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "subti2"
@@ -1323,7 +1351,7 @@ index 00000000000..91bdfd35a1d
 +	  (minus:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.sub.owo %0,%1,%2"
++  "z.sub.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "multi2"
@@ -1331,7 +1359,7 @@ index 00000000000..91bdfd35a1d
 +	  (mult:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.mul.owo %0,%1,%2"
++  "z.mul.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "divti2"
@@ -1339,7 +1367,7 @@ index 00000000000..91bdfd35a1d
 +	  (div:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.div.owo %0,%1,%2"
++  "z.div.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "modti2"
@@ -1347,7 +1375,7 @@ index 00000000000..91bdfd35a1d
 +	  (mod:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.mod.owo %0,%1,%2"
++  "z.mod.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "ashlti2"
@@ -1355,7 +1383,7 @@ index 00000000000..91bdfd35a1d
 +	  (ashift:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.ashl.owo %0,%1,%2"
++  "z.ashl.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "ashrti2"
@@ -1363,7 +1391,7 @@ index 00000000000..91bdfd35a1d
 +	  (ashiftrt:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.ashr.owo %0,%1,%2"
++  "z.ashr.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "lshrti2"
@@ -1371,7 +1399,7 @@ index 00000000000..91bdfd35a1d
 +	  (ashiftrt:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.lshr.owo %0,%1,%2"
++  "z.lshr.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "xorti2"
@@ -1379,7 +1407,7 @@ index 00000000000..91bdfd35a1d
 +	  (lshiftrt:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.xor.owo %0,%1,%2"
++  "z.xor.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "iorti2"
@@ -1387,7 +1415,7 @@ index 00000000000..91bdfd35a1d
 +	  (ior:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.or.owo %0,%1,%2"
++  "z.or.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "andti2"
@@ -1395,7 +1423,7 @@ index 00000000000..91bdfd35a1d
 +	  (and:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.and.owo %0,%1,%2"
++  "z.and.owo %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +;; -------------------------------------------------------------------------

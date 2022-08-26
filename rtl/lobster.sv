@@ -52,7 +52,7 @@ module lobster_CPU
   wire [1:0] inst_prefix = data_in[1:0];    // Prefix, LOCK and REP
   localparam PREFIX_MICROINST = 2'b00;      // Micro instruction
   localparam PREFIX_LONGINST  = 2'b01;      // Long VLIW instruction
-  localparam PREFIX_REP       = 2'b01;      // Repeat prefix
+  localparam PREFIX_REP       = 2'b11;      // Repeat prefix
   // ---------------------------------------------------------------------------
   // uinst -> Micro instruction format
   // sinst -> Short instruction format
@@ -106,6 +106,7 @@ module lobster_CPU
   localparam XLU_XOR  = 4'b0111;            // XOR
   localparam XLU_MUL  = 4'b1000;            // Multiply
   localparam XLU_DIV  = 4'b1001;            // Divide
+  localparam XLU_BAD  = 4'b1010;            // Bad
   localparam XLU_REM  = 4'b1011;            // Remainder
   localparam XLU_SEX  = 4'b1100;            // Sign extend
   localparam XLU_PUSH = 4'b1101;            // Push increment A, place D
