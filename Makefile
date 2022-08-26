@@ -76,6 +76,7 @@ binutils:
 # Sourceware is awfuly slow, use github mirror
 #	-git clone git://sourceware.org/git/binutils-gdb.git $@
 	-git clone https://github.com/bminor/binutils-gdb $@
+	cd $@ && git apply ../binutils-patch.diff
 
 build-binutils-lobster128/Makefile:
 	mkdir -p build-binutils-lobster128 $(PREFIX)

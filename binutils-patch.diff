@@ -117,7 +117,7 @@ index fb8795bdffc..ec4723bd526 100644
      loongarch64_pei_vec)	 tb="$tb pei-loongarch64.lo pe-loongarch64igen.lo $coff"; target_size=64 ;;
 diff --git a/bfd/cpu-lobster128.c b/bfd/cpu-lobster128.c
 new file mode 100644
-index 00000000000..59c0deec07c
+index 00000000000..b19c97ea28b
 --- /dev/null
 +++ b/bfd/cpu-lobster128.c
 @@ -0,0 +1,41 @@
@@ -147,20 +147,20 @@ index 00000000000..59c0deec07c
 +
 +const bfd_arch_info_type bfd_lobster128_arch =
 +{
-+  128,			/* 128 bits in a word.  */
-+  32,				/* 64 bits in an address.  */
-+  8,				/* 8 bits in a byte.  */
++  128,			/* Bits in a word.  */
++  64,				/* Bits in an address.  */
++  8,				/* Bits in a byte.  */
 +  bfd_arch_lobster128,		/* Architecture.  */
 +  bfd_mach_lobster128, 	/* Machine number - 0 for now.  */
 +  "lobster128",		/* Architecture name.  */
-+  "lobster128",		/* Printable name.  */
++  "Lobster128",		/* Printable name.  */
 +  6,				/* Section align power.  */
 +  true,			/* This is the default architecture.  */
 +  bfd_default_compatible,	/* Architecture comparison function.  */
 +  bfd_default_scan,		/* String to architecture conversion.  */
 +  bfd_arch_default_fill,	/* Default fill.  */
 +  NULL, 			/* Next in list.  */
-+  0,
++  0,          /* Maximum offset of a reloc from the start of an insn.  */
 +};
 diff --git a/bfd/elf64-lobster128.c b/bfd/elf64-lobster128.c
 new file mode 100644
@@ -575,7 +575,7 @@ index c57d78f82c4..f5c07c6c463 100644
  @AMDEP_TRUE@@am__include@ @am__quote@config/$(DEPDIR)/tc-m32r.Po@am__quote@
 diff --git a/gas/config/tc-lobster128.c b/gas/config/tc-lobster128.c
 new file mode 100644
-index 00000000000..86d137db36d
+index 00000000000..cb671956705
 --- /dev/null
 +++ b/gas/config/tc-lobster128.c
 @@ -0,0 +1,377 @@
@@ -641,7 +641,7 @@ index 00000000000..86d137db36d
 +  for (count = 0, opcode = lobster128_opc_info; count++ < LOBSTER128_NUM_OPCODES; opcode++)
 +    str_hash_insert(opcode_hash_control, opcode->name, opcode, 0);
 +
-+  bfd_set_arch_mach(stdoutput, TARGET_ARCH, bfd_mach_lobster128);
++  bfd_set_arch_mach(stdoutput, TARGET_ARCH, 0);
 +}
 +
 +/* Parse an expression and then restore the input line pointer.  */
@@ -958,10 +958,10 @@ index 00000000000..86d137db36d
 +}
 diff --git a/gas/config/tc-lobster128.h b/gas/config/tc-lobster128.h
 new file mode 100644
-index 00000000000..df592dac26f
+index 00000000000..661a4bbc31c
 --- /dev/null
 +++ b/gas/config/tc-lobster128.h
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,38 @@
 +/* tc-lobster128.h -- Header file for tc-lobster128.c.
 +
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
@@ -990,7 +990,6 @@ index 00000000000..df592dac26f
 +
 +/* This macro is the BFD architecture to pass to `bfd_set_arch_mach'.  */
 +#define TARGET_FORMAT "elf64-lobster128"
-+
 +#define TARGET_ARCH bfd_arch_lobster128
 +
 +#define md_undefined_symbol(NAME)           0
