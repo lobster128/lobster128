@@ -52,6 +52,8 @@ module lobster_CPU
   wire [1:0] inst_prefix = data_in[1:0];    // Prefix, LOCK and REP
   localparam PREFIX_MICROINST = 2'b00;      // Micro instruction
   localparam PREFIX_LONGINST  = 2'b01;      // Long VLIW instruction
+  localparam PREFIX_MINIINST  = 2'b10;      // Bigger than micro, smaller than
+                                            // long instruction
   localparam PREFIX_REP       = 2'b11;      // Repeat prefix
   // ---------------------------------------------------------------------------
   // uinst -> Micro instruction format
@@ -81,13 +83,13 @@ module lobster_CPU
   localparam MEM_16      = 2'b01;
   localparam MEM_32      = 2'b10;
   localparam MEM_64      = 2'b11;
-  localparam MEM_NOOP    = 4'b??00;
-  localparam MEM_LOAD    = 2'b01;
+  localparam MEM_NOOP    = 4'b??00;         // Nop, usually register transfer
+  localparam MEM_LOAD    = 4'b??01;         // Load
   localparam MEM_LOAD8   = 4'b0001;
   localparam MEM_LOAD16  = 4'b0101;
   localparam MEM_LOAD32  = 4'b1001;
   localparam MEM_LOAD64  = 4'b1101;
-  localparam MEM_STORE   = 2'b10;
+  localparam MEM_STORE   = 4'b??10;         // Store
   localparam MEM_STORE8  = 4'b0010;
   localparam MEM_STORE16 = 4'b0110;
   localparam MEM_STORE32 = 4'b1010;
@@ -95,6 +97,7 @@ module lobster_CPU
   // ---------------------------------------------------------------------------
   // Arithmethic unit delegation
   // ---------------------------------------------------------------------------
+  wire [3:0] uinst_xluop = data_in[5:2];    // Micro variant
   wire [3:0] sinst_xluop = data_in[13:10];  // (V/A/F)LU operation
   localparam XLU_ADD  = 4'b0000;            // Add
   localparam XLU_SUB  = 4'b0001;            // Subtract
@@ -113,7 +116,7 @@ module lobster_CPU
                                             // to A + B
   localparam XLU_POP  = 4'b1110;            // Pop decrement A, place D to A + B
   localparam XLU_EXT  = 4'b1111;            // Delegator-specific extensions
-  function [127:0] alu_op_imm_result(
+  function automatic [127:0] alu_op_imm_result(
     input [3:0] op,
     input [127:0] a,
     input [127:0] b
@@ -157,7 +160,7 @@ module lobster_CPU
       end
     endcase
   endfunction
-  function void alu_op_result(
+  function automatic void alu_op_result(
     input [3:0] op,
     input [6:0] d, // Dest
     input [6:0] a, // Source
@@ -165,7 +168,7 @@ module lobster_CPU
   );
     gp_regs[d] <= alu_op_imm_result(op, gp_regs[a], gp_regs[b]);
   endfunction
-  function void vpu_op_result(
+  function automatic void vpu_op_result(
     input [3:0] op, // Operation
     input [6:0] b, // Desinations
     input [6:0] c,
@@ -181,13 +184,29 @@ module lobster_CPU
   // [ 5-bits Register A ][ 5-bits Register B ][ 4 bits OP ][ 00 ]
   // 0                16
   // aaaa abbb bboo oo00
-  function void uinst_execute(
+  function automatic void uinst_execute(
     input [15:0] inst
   );
-    wire [3:0] uinst_op    = inst[5:2];         // Operation
-    wire [4:0] uinst_reg_a = inst[10:6];        // Register A
-    wire [4:0] uinst_reg_b = inst[15:11];       // Register B
-    alu_op_result(uinst_op, { 2'b00, uinst_reg_a }, { 2'b00, uinst_reg_b }, { 2'b00, uinst_reg_a });
+    //wire [3:0] uinst_op    = inst[5:2];         // Operation
+    //wire [4:0] uinst_reg_a = inst[10:6];        // Register A
+    //wire [4:0] uinst_reg_b = inst[15:11];       // Register B
+    alu_op_result(inst[5:2], { 2'b00, inst[10:6] }, { 2'b00, inst[15:11] }, { 2'b00, inst[10:6] });
+  endfunction
+  // Mini inst format:
+  // [ ... ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
+  // 0                16                  32
+  // 0000 0000 0000 0000 00oo oomm mmdd dd10
+  //
+  // Depending on the memory value, if it's a NOP (aka. register):
+  // [ 6 rs ][ 6 rS ][ 6 rd ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
+  // ssss ssSS SSSS DDDD DDoo oomm mmdd dd10
+  function automatic void sinst_execute(
+    input [15:0] inst
+  );
+    //wire [3:0] uinst_op    = inst[5:2];         // Operation
+    //wire [4:0] uinst_reg_a = inst[10:6];        // Register A
+    //wire [4:0] uinst_reg_b = inst[15:11];       // Register B
+    alu_op_result(inst[5:2], { 2'b00, inst[10:6] }, { 2'b00, inst[15:11] }, { 2'b00, inst[10:6] });
   endfunction
   // ---------------------------------------------------------------------------
   // Control

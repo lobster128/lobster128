@@ -1280,10 +1280,10 @@ index 00000000000..07a324f19f0
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..a906a89b856
+index 00000000000..214feb2fd71
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
-@@ -0,0 +1,464 @@
+@@ -0,0 +1,467 @@
 +;;  lobster128.md	     Machine Description for lobster128 processors
 +;;  Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -1343,7 +1343,7 @@ index 00000000000..a906a89b856
 +	  (plus:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.add.owo %0,%2"
++  "u.addr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "subti2"
@@ -1351,7 +1351,7 @@ index 00000000000..a906a89b856
 +	  (minus:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.sub.owo %0,%2"
++  "u.subr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "multi2"
@@ -1359,7 +1359,7 @@ index 00000000000..a906a89b856
 +	  (mult:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.mul.owo %0,%2"
++  "u.mulr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "divti2"
@@ -1367,7 +1367,7 @@ index 00000000000..a906a89b856
 +	  (div:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.div.owo %0,%2"
++  "u.divr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "modti2"
@@ -1375,7 +1375,7 @@ index 00000000000..a906a89b856
 +	  (mod:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.mod.owo %0,%2"
++  "u.modr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "ashlti2"
@@ -1383,7 +1383,7 @@ index 00000000000..a906a89b856
 +	  (ashift:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.ashl.owo %0,%2"
++  "u.ashlr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "ashrti2"
@@ -1391,7 +1391,7 @@ index 00000000000..a906a89b856
 +	  (ashiftrt:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.ashr.owo %0,%2"
++  "u.ashrr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "lshrti2"
@@ -1399,7 +1399,7 @@ index 00000000000..a906a89b856
 +	  (ashiftrt:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.lshr.owo %0,%2"
++  "u.lshrr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "xorti2"
@@ -1407,7 +1407,7 @@ index 00000000000..a906a89b856
 +	  (lshiftrt:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.xor.owo %0,%2"
++  "u.xorr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "iorti2"
@@ -1415,7 +1415,7 @@ index 00000000000..a906a89b856
 +	  (ior:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.or.owo %0,%2"
++  "u.orr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +(define_insn "andti2"
@@ -1423,7 +1423,7 @@ index 00000000000..a906a89b856
 +	  (and:TI (match_operand:TI 1 "register_operand" "%0")
 +	   (match_operand:TI 2 "lobster128_arith_operand" "r")))]
 +  ""
-+  "z.and.owo %0,%2"
++  "u.andr %0,%2"
 +  [(set (attr "length") (const_int 2))])
 +
 +;; -------------------------------------------------------------------------
@@ -1434,7 +1434,10 @@ index 00000000000..a906a89b856
 +	  (plus:MODE (match_operand:MODE 1 "register_operand" "r,r,r")
 +	   (match_operand:MODE 2 "lobster128_arith_operand" "m,r,i")))]
 +  ""
-+  "z.add<lenx> %0,%1,%2")
++  "@
++  m.addr<lenx> %0,%1,%2
++  m.addm<lenx> %0,%1,%2
++  m.addi<lenx> %0,%1,%2")
 +
 +(define_insn "sub<mode>3"
 +  [(set (match_operand:MODE 0 "register_operand" "=r,r,r")
@@ -1532,7 +1535,7 @@ index 00000000000..a906a89b856
 +  if(<MODE>mode == TImode)
 +  {
 +    /* If this is a store, force the value into a register.  */
-+    if (! (reload_in_progress || reload_completed))
++    if ( (reload_in_progress || reload_completed))
 +    {
 +      if (MEM_P (operands[0]))
 +      {
@@ -1775,7 +1778,7 @@ index 00000000000..6aa28006001
 +; <http://www.gnu.org/licenses/>.
 diff --git a/gcc/config/lobster128/predicates.md b/gcc/config/lobster128/predicates.md
 new file mode 100644
-index 00000000000..f6ffb18bb93
+index 00000000000..fcf2db9341e
 --- /dev/null
 +++ b/gcc/config/lobster128/predicates.md
 @@ -0,0 +1,36 @@
@@ -1814,7 +1817,7 @@ index 00000000000..f6ffb18bb93
 +
 +(define_predicate "lobster128_micro_op_operand"
 +  (and (match_code "reg")
-+       (match_test "REGNO (op) < 64")))
++       (match_test "REGNO (op) < 0x20")))
 diff --git a/gcc/lra-int.h b/gcc/lra-int.h
 index 04baefef348..710c9483226 100644
 --- a/gcc/lra-int.h

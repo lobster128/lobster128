@@ -606,10 +606,10 @@ index c57d78f82c4..f5c07c6c463 100644
  @AMDEP_TRUE@@am__include@ @am__quote@config/$(DEPDIR)/tc-m32r.Po@am__quote@
 diff --git a/gas/config/tc-lobster128.c b/gas/config/tc-lobster128.c
 new file mode 100644
-index 00000000000..3794e4b9d19
+index 00000000000..b37b25a79a3
 --- /dev/null
 +++ b/gas/config/tc-lobster128.c
-@@ -0,0 +1,379 @@
+@@ -0,0 +1,381 @@
 +/* tc-lobster128.c -- Assemble code for lobster128
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -651,9 +651,19 @@ index 00000000000..3794e4b9d19
 +const char FLT_CHARS[] = "rRsSfFdDxXpP";
 +const char EXP_CHARS[] = "eE";
 +
++extern int target_big_endian;
++
++struct option md_longopts[] =
++{
++  { NULL,          no_argument, NULL, 0}
++};
++
++size_t md_longopts_size = sizeof (md_longopts);
++const char *md_shortopts = "";
++
 +static valueT md_chars_to_number(char *buf, int n);
 +
-+void md_operand(expressionS *op __attribute__((unused)))
++void md_operand(expressionS *op ATTRIBUTE_UNUSED)
 +{
 +  /* Empty for now. */
 +}
@@ -671,7 +681,8 @@ index 00000000000..3794e4b9d19
 +  /* Insert names into hash table.  */
 +  for (count = 0, opcode = lobster128_opc_info; count++ < LOBSTER128_NUM_OPCODES; opcode++)
 +    str_hash_insert(opcode_hash_control, opcode->name, opcode, 0);
-+
++  
++  target_big_endian = 0;
 +  bfd_set_arch_mach(stdoutput, TARGET_ARCH, 0);
 +}
 +
@@ -763,7 +774,7 @@ index 00000000000..3794e4b9d19
 +
 +  /* Instructions for the lobtser128 architecture can vary from 16-bits,
 +     or 32-bits and can extend up until 128-bit instruction colossus */
-+  if (opcode->type == LOBSTER128_MICRO_OP) {
++  if (opcode->type == MICRO_OP) {
 +    /* Micro ops have 16-bits each and can only operate on registers
 +       r0 to r63, for both destination and source, they also have to be
 +       aligned */
@@ -881,7 +892,6 @@ index 00000000000..3794e4b9d19
 +}
 +
 +/* Put number into target byte order.  */
-+extern int target_big_endian;
 +void md_number_to_chars(char *ptr, valueT use, int nbytes)
 +{
 +  if (target_big_endian)
@@ -969,14 +979,6 @@ index 00000000000..3794e4b9d19
 +    return addr;
 +  }
 +}
-+
-+struct option md_longopts[] =
-+{
-+  { NULL,          no_argument, NULL, 0}
-+};
-+
-+size_t md_longopts_size = sizeof (md_longopts);
-+const char *md_shortopts = "";
 +
 +void
 +md_show_usage (FILE *stream ATTRIBUTE_UNUSED)
@@ -1099,10 +1101,10 @@ index 00000000000..2c000132937
 +#endif /* _ELF_LOBSTER128_H */
 diff --git a/include/opcode/lobster128.h b/include/opcode/lobster128.h
 new file mode 100644
-index 00000000000..d0a35db952e
+index 00000000000..b24eb518fdb
 --- /dev/null
 +++ b/include/opcode/lobster128.h
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,84 @@
 +/* Definitions for decoding the lobster128 opcode table.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1123,6 +1125,7 @@ index 00000000000..d0a35db952e
 +
 +#define PREFIX_MICROINST  0b00
 +#define PREFIX_LONGINST   0b01
++#define PREFIX_MINIINST   0b10
 +#define PREFIX_REP        0b11
 +
 +#define XLU_ADD   0b0000
@@ -1135,17 +1138,46 @@ index 00000000000..d0a35db952e
 +#define XLU_XOR   0b0111
 +#define XLU_MUL   0b1000
 +#define XLU_DIV   0b1001
++#define XLU_BAD   0b1010 /* Oops! */
 +#define XLU_REM   0b1011
 +#define XLU_SEX   0b1100
 +#define XLU_PUSH  0b1101
 +#define XLU_POP   0b1110
 +#define XLU_EXT   0b1111
 +
++#define DELEG_ALU 0b0000
++#define DELEG_FPU 0b0001
++#define DELEG_VPU 0b0010
++#define DELEG_VFPU 0b0011
++#define DELEG_CTRL 0b1011
++#define DELEG_MEM 0b1100
++#define DELEG_LOCK 0b1000 /* Bitmask */
++
++#define MEM_8 0b0000
++#define MEM_16 0b0100
++#define MEM_32 0b1000
++#define MEM_64 0b1100
++#define MEM_NOOP 0b0000
++#define MEM_REG MEM_NOOP
++#define MEM_LOAD 0b0001
++#define MEM_LOAD8 0b0001
++#define MEM_LOAD16 0b0101
++#define MEM_LOAD32 0b1001
++#define MEM_LOAD64 0b1101
++#define MEM_STORE 0b0010
++#define MEM_STORE8 0b0010
++#define MEM_STORE16 0b0110
++#define MEM_STORE32 0b1010
++#define MEM_STORE64 0b1110
++
++#define UINST(op) { ((op) << 2) | PREFIX_MICROINST, 0, 0, 0 }
++#define SINST(op, deleg, memop) { ((op) << 10) | ((memop) << 6) | ((deleg) << 2) | PREFIX_MINIINST, 0, 0, 0 }
++
 +typedef enum lobster128_opc_type_t
 +{
-+  LOBSTER128_MICRO_OP, /* 16-bits */
-+  LOBSTER128_MINI_OP, /* 32-bits */
-+  LOBSTER128_MACRO_OP, /* 64-bits */
++  MICRO_OP, /* 16-bits */
++  MINI_OP, /* 32-bits */
++  MACRO_OP, /* 64-bits */
 +} lobster128_opc_type_t;
 +
 +typedef struct lobster128_opc_info_t
@@ -1155,7 +1187,7 @@ index 00000000000..d0a35db952e
 +  const char *          name;
 +} lobster128_opc_info_t;
 +
-+#define LOBSTER128_NUM_OPCODES 15
++#define LOBSTER128_NUM_OPCODES 16
 +extern const lobster128_opc_info_t lobster128_opc_info[LOBSTER128_NUM_OPCODES];
 diff --git a/ld/Makefile.am b/ld/Makefile.am
 index d31021c13e2..b0b290c3c3e 100644
@@ -1310,7 +1342,7 @@ index 2c4c1348099..efc7d84b392 100644
  extern int print_insn_m68hc12		(bfd_vma, disassemble_info *);
 diff --git a/opcodes/lobster128-dis.c b/opcodes/lobster128-dis.c
 new file mode 100644
-index 00000000000..74d26528827
+index 00000000000..b9bcd38c075
 --- /dev/null
 +++ b/opcodes/lobster128-dis.c
 @@ -0,0 +1,82 @@
@@ -1386,7 +1418,7 @@ index 00000000000..74d26528827
 +    unsigned char opcode = (iword >> 2) & 0x0f; /* Extract nibble 4-bits for opcode */
 +    unsigned char rd = (iword >> 6) & 0x1f;
 +    unsigned char rs = (iword >> 11) & 0x1f;
-+    fpr(stream, "z.%s.r %s, %s", op_names[opcode], reg_names[rd], reg_names[rs]);
++    fpr(stream, "u.%sr %s, %s", op_names[opcode], reg_names[rd], reg_names[rs]);
 +    return 2;
 +  } else {
 +    fpr(stream, "z.nop %x", iword);
@@ -1398,10 +1430,10 @@ index 00000000000..74d26528827
 +}
 diff --git a/opcodes/lobster128-opc.c b/opcodes/lobster128-opc.c
 new file mode 100644
-index 00000000000..bb9fcc904d2
+index 00000000000..e7eae4b40a0
 --- /dev/null
 +++ b/opcodes/lobster128-opc.c
-@@ -0,0 +1,62 @@
+@@ -0,0 +1,58 @@
 +/* lobster128-opc.c -- Definitions for lobster128 opcodes.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1425,42 +1457,38 @@ index 00000000000..bb9fcc904d2
 +#include "sysdep.h"
 +#include "opcode/lobster128.h"
 +
-+#define PREFIX_MICROINST  0b00
-+#define PREFIX_LONGINST   0b01
-+#define PREFIX_REP        0b11
-+
-+#define XLU_ADD   0b0000
-+#define XLU_SUB   0b0001
-+#define XLU_AND   0b0010
-+#define XLU_NOT   0b0011
-+#define XLU_LSH   0b0100
-+#define XLU_RSH   0b0101
-+#define XLU_OR    0b0110
-+#define XLU_XOR   0b0111
-+#define XLU_MUL   0b1000
-+#define XLU_DIV   0b1001
-+#define XLU_BAD   0b1010 /* Oops! */
-+#define XLU_REM   0b1011
-+#define XLU_SEX   0b1100
-+#define XLU_PUSH  0b1101
-+#define XLU_POP   0b1110
-+#define XLU_EXT   0b1111
-+
 +const lobster128_opc_info_t lobster128_opc_info[LOBSTER128_NUM_OPCODES] = {
-+  {{ XLU_ADD | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.add.r" },
-+  {{ XLU_SUB | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.sub.r" },
-+  {{ XLU_AND | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.and.r" },
-+  {{ XLU_NOT | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.not.r" },
-+  {{ XLU_LSH | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.lsh.r" },
-+  {{ XLU_RSH | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.rsh.r" },
-+  {{ XLU_OR | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.or.r" },
-+  {{ XLU_XOR | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.xor.r" },
-+  {{ XLU_MUL | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.mul.r" },
-+  {{ XLU_DIV | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.div.r" },
-+  {{ XLU_BAD | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.bad.r" },
-+  {{ XLU_REM | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.rem.r" },
-+  {{ XLU_SEX | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.sex.r" },
-+  {{ XLU_PUSH | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.push.r" },
-+  {{ XLU_POP | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.pop.r" },
-+  {{ XLU_EXT | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.ext.r" },
++  { UINST(XLU_ADD), MICRO_OP, "u.addr" },
++  { UINST(XLU_SUB), MICRO_OP, "u.subr" },
++  { UINST(XLU_AND), MICRO_OP, "u.andr" },
++  { UINST(XLU_NOT), MICRO_OP, "u.notr" },
++  { UINST(XLU_LSH), MICRO_OP, "u.lshr" },
++  { UINST(XLU_RSH), MICRO_OP, "u.rshr" },
++  { UINST(XLU_OR), MICRO_OP, "u.orr" },
++  { UINST(XLU_XOR), MICRO_OP, "u.xorr" },
++  { UINST(XLU_MUL), MICRO_OP, "u.mulr" },
++  { UINST(XLU_DIV), MICRO_OP, "u.divr" },
++  { UINST(XLU_BAD), MICRO_OP, "u.bad" },
++  { UINST(XLU_REM), MICRO_OP, "u.remr" },
++  { UINST(XLU_SEX), MICRO_OP, "u.sexr" },
++  { UINST(XLU_PUSH), MICRO_OP, "u.pushr" },
++  { UINST(XLU_POP), MICRO_OP, "u.popr" },
++  { UINST(XLU_EXT), MICRO_OP, "u.extr" },
++
++  { SINST(XLU_ADD, DELEG_ALU, MEM_REG), MICRO_OP, "m.addr" },
++  { SINST(XLU_SUB, DELEG_ALU, MEM_REG), MICRO_OP, "m.subr" },
++  { SINST(XLU_AND, DELEG_ALU, MEM_REG), MICRO_OP, "m.andr" },
++  { SINST(XLU_NOT, DELEG_ALU, MEM_REG), MICRO_OP, "m.notr" },
++  { SINST(XLU_LSH, DELEG_ALU, MEM_REG), MICRO_OP, "m.lshr" },
++  { SINST(XLU_RSH, DELEG_ALU, MEM_REG), MICRO_OP, "m.rshr" },
++  { SINST(XLU_OR, DELEG_ALU, MEM_REG), MICRO_OP, "m.orr" },
++  { SINST(XLU_XOR, DELEG_ALU, MEM_REG), MICRO_OP, "m.xorr" },
++  { SINST(XLU_MUL, DELEG_ALU, MEM_REG), MICRO_OP, "m.mulr" },
++  { SINST(XLU_DIV, DELEG_ALU, MEM_REG), MICRO_OP, "m.divr" },
++  { SINST(XLU_BAD, DELEG_ALU, MEM_REG), MICRO_OP, "m.bad" },
++  { SINST(XLU_REM, DELEG_ALU, MEM_REG), MICRO_OP, "m.remr" },
++  { SINST(XLU_SEX, DELEG_ALU, MEM_REG), MICRO_OP, "m.sexr" },
++  { SINST(XLU_PUSH, DELEG_ALU, MEM_REG), MICRO_OP, "m.pushr" },
++  { SINST(XLU_POP, DELEG_ALU, MEM_REG), MICRO_OP, "m.popr" },
++  { SINST(XLU_EXT, DELEG_ALU, MEM_REG), MICRO_OP, "m.extr" },
 +};
