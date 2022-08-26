@@ -164,10 +164,10 @@ index 00000000000..b19c97ea28b
 +};
 diff --git a/bfd/elf64-lobster128.c b/bfd/elf64-lobster128.c
 new file mode 100644
-index 00000000000..1174deac998
+index 00000000000..d894301eda1
 --- /dev/null
 +++ b/bfd/elf64-lobster128.c
-@@ -0,0 +1,318 @@
+@@ -0,0 +1,317 @@
 +/* lobster128-specific support for 32-bit ELF.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -466,12 +466,11 @@ index 00000000000..1174deac998
 +  return true;
 +}
 +
++#define TARGET_LITTLE_SYM lobster128_elf64_vec
++#define TARGET_LITTLE_NAME "elf64-lobster128"
 +#define ELF_ARCH bfd_arch_lobster128
 +#define ELF_MACHINE_CODE EM_LOBSTER128
 +#define ELF_MAXPAGESIZE 1
-+
-+#define TARGET_LITTLE_SYM lobster128_elf64_vec
-+#define TARGET_LITTLE_NAME "elf64-lobster128"
 +
 +#define elf_info_to_howto_rel NULL
 +#define elf_info_to_howto lobster128_info_to_howto_rela
@@ -506,6 +505,26 @@ index 8ad3ef366ce..77ed21b4373 100644
  	&loongarch_elf32_vec,
  	&loongarch_elf64_vec,
  	&loongarch64_pei_vec,
+diff --git a/binutils/readelf.c b/binutils/readelf.c
+index cafba9a4f56..21f5a9502f0 100644
+--- a/binutils/readelf.c
++++ b/binutils/readelf.c
+@@ -1046,6 +1046,7 @@ guess_is_rela (unsigned int e_machine)
+     case EM_IP2K_OLD:
+     case EM_IQ2000:
+     case EM_LATTICEMICO32:
++	case EM_LOBSTER128:
+     case EM_M32C_OLD:
+     case EM_M32C:
+     case EM_M32R:
+@@ -2940,6 +2941,7 @@ get_machine_name (unsigned e_machine)
+     case EM_KF32:		return "ChipON KungFu32";
+ 
+       /* Large numbers...  */
++	case EM_LOBSTER128:	return "Lobster128";
+     case EM_MT:                 return "Morpho Techologies MT processor";
+     case EM_ALPHA:		return "Alpha";
+     case EM_WEBASSEMBLY:	return "Web Assembly";
 diff --git a/config.sub b/config.sub
 index dba16e84c77..859f91fb75e 100755
 --- a/config.sub
@@ -532,6 +551,18 @@ index 16139e3bfa3..e6a5b430413 100755
    mmix-*-*)
      noconfigdirs="$noconfigdirs gdb"
      ;;
+diff --git a/elfcpp/elfcpp.h b/elfcpp/elfcpp.h
+index 3ca2d614947..e852fd36f20 100644
+--- a/elfcpp/elfcpp.h
++++ b/elfcpp/elfcpp.h
+@@ -271,6 +271,7 @@ enum EM
+   EM_TI_PRU = 144,
+   EM_AARCH64 = 183,
+   EM_TILEGX = 191,
++  EM_LOBSTER128 = 290,
+   // The Morph MT.
+   EM_MT = 0x2530,
+   // DLX.
 diff --git a/gas/Makefile.am b/gas/Makefile.am
 index bd597398671..3756714703a 100644
 --- a/gas/Makefile.am
@@ -575,10 +606,10 @@ index c57d78f82c4..f5c07c6c463 100644
  @AMDEP_TRUE@@am__include@ @am__quote@config/$(DEPDIR)/tc-m32r.Po@am__quote@
 diff --git a/gas/config/tc-lobster128.c b/gas/config/tc-lobster128.c
 new file mode 100644
-index 00000000000..cb671956705
+index 00000000000..3794e4b9d19
 --- /dev/null
 +++ b/gas/config/tc-lobster128.c
-@@ -0,0 +1,377 @@
+@@ -0,0 +1,379 @@
 +/* tc-lobster128.c -- Assemble code for lobster128
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -613,9 +644,9 @@ index 00000000000..cb671956705
 +static int pending_reloc;
 +static htab_t opcode_hash_control;
 +
-+const pseudo_typeS md_pseudo_table[] =
-+    {
-+        {0, 0, 0}};
++const pseudo_typeS md_pseudo_table[] = {
++  {0, 0, 0}
++};
 +
 +const char FLT_CHARS[] = "rRsSfFdDxXpP";
 +const char EXP_CHARS[] = "eE";
@@ -738,7 +769,6 @@ index 00000000000..cb671956705
 +       aligned */
 +    /* TODO: Enforce alignment requirements/emit a warn about said alignment */
 +    char *p = frag_more(2);
-+    unsigned short iword = opcode->opcode;
 +    while (ISSPACE(*op_end))
 +      op_end++;
 +
@@ -748,11 +778,11 @@ index 00000000000..cb671956705
 +      as_warn(_("expecting comma delimited register operands"));
 +    op_end++;
 +    int rs = parse_register_operand(&op_end);
-+
 +    if(rd >= 0x20 || rs >= 0x20)
 +      as_bad(_("register is out of scope for micro-instruction"));
-+
-+    iword |= ((rs << 5) | rd) << 6; /* 4bits op, 2bit prefix */
++    
++    unsigned short iword = (opcode->opcode[0] & 0x3f);
++    iword |= ((rs << 5) + rd) << 6; /* 4bits op, 2bit prefix */
 +    while (ISSPACE(*op_end))
 +      op_end++;
 +    if (*op_end != 0)
@@ -851,10 +881,13 @@ index 00000000000..cb671956705
 +}
 +
 +/* Put number into target byte order.  */
-+
++extern int target_big_endian;
 +void md_number_to_chars(char *ptr, valueT use, int nbytes)
 +{
-+  number_to_chars_littleendian(ptr, use, nbytes);
++  if (target_big_endian)
++    number_to_chars_bigendian (ptr, use, nbytes);
++  else
++    number_to_chars_littleendian (ptr, use, nbytes);
 +}
 +
 +/* Generate a machine-dependent relocation.  */
@@ -958,10 +991,10 @@ index 00000000000..cb671956705
 +}
 diff --git a/gas/config/tc-lobster128.h b/gas/config/tc-lobster128.h
 new file mode 100644
-index 00000000000..661a4bbc31c
+index 00000000000..df8cdd1c57b
 --- /dev/null
 +++ b/gas/config/tc-lobster128.h
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,41 @@
 +/* tc-lobster128.h -- Header file for tc-lobster128.c.
 +
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
@@ -982,15 +1015,18 @@ index 00000000000..661a4bbc31c
 +   with GAS; see the file COPYING.  If not, write to the Free Software
 +   Foundation, 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 +
-+#define TC_LOBSTER128 1
-+#ifndef TARGET_BYTES_LITTLE_ENDIAN
++#define TC_LOBSTER128
++
 +#define TARGET_BYTES_LITTLE_ENDIAN 1
-+#endif
 +#define WORKING_DOT_WORD
++
++/* Permit temporary numeric labels.  */
++#define LOCAL_LABELS_FB 1
 +
 +/* This macro is the BFD architecture to pass to `bfd_set_arch_mach'.  */
 +#define TARGET_FORMAT "elf64-lobster128"
 +#define TARGET_ARCH bfd_arch_lobster128
++#define TARGET_MACH bfd_mach_lobster128
 +
 +#define md_undefined_symbol(NAME)           0
 +
@@ -1014,14 +1050,14 @@ index 62f806bdfe8..aa505962788 100644
    loongarch*)				fmt=elf ;;
  
 diff --git a/include/elf/common.h b/include/elf/common.h
-index ebcd8f9e82c..ff8ccbc930f 100644
+index ebcd8f9e82c..853494c8fbc 100644
 --- a/include/elf/common.h
 +++ b/include/elf/common.h
 @@ -360,6 +360,7 @@
  #define EM_U16_U8CORE	260	/* LAPIS nX-U16/U8 */
  #define EM_TACHYUM	261	/* Tachyum */
  #define EM_56800EF	262	/* NXP 56800EF Digital Signal Controller (DSC) */
-+#define EM_LOBSTER128 263  /* Lobster128 */
++#define EM_LOBSTER128 290  /* Lobster128 */
  
  /* If it is necessary to assign new unofficial EM_* values, please pick large
     random numbers (0x8523, 0xa7f2, etc.) to minimize the chances of collision
@@ -1063,10 +1099,10 @@ index 00000000000..2c000132937
 +#endif /* _ELF_LOBSTER128_H */
 diff --git a/include/opcode/lobster128.h b/include/opcode/lobster128.h
 new file mode 100644
-index 00000000000..cfb096a22ef
+index 00000000000..d0a35db952e
 --- /dev/null
 +++ b/include/opcode/lobster128.h
-@@ -0,0 +1,55 @@
+@@ -0,0 +1,54 @@
 +/* Definitions for decoding the lobster128 opcode table.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1114,8 +1150,7 @@ index 00000000000..cfb096a22ef
 +
 +typedef struct lobster128_opc_info_t
 +{
-+  long long             opcode;
-+  long long             opcode2; /* For lengthy VLIW opcodes */
++  unsigned long         opcode[4];
 +  lobster128_opc_type_t type;
 +  const char *          name;
 +} lobster128_opc_info_t;
@@ -1188,28 +1223,26 @@ index 00000000000..cc08734809d
 +ARCH=lobster128
 +EMBEDDED=yes
 diff --git a/opcodes/Makefile.am b/opcodes/Makefile.am
-index 87be5e7edb2..d733ddbe46c 100644
+index 87be5e7edb2..bb3426444f6 100644
 --- a/opcodes/Makefile.am
 +++ b/opcodes/Makefile.am
-@@ -173,6 +173,9 @@ TARGET32_LIBOPCODES_CFILES = \
+@@ -173,6 +173,8 @@ TARGET32_LIBOPCODES_CFILES = \
  	iq2000-dis.c \
  	iq2000-ibld.c \
  	iq2000-opc.c \
-+	lobster128-asm.c \
 +	lobster128-dis.c \
 +	lobster128-opc.c \
  	lm32-asm.c \
  	lm32-desc.c \
  	lm32-dis.c \
 diff --git a/opcodes/Makefile.in b/opcodes/Makefile.in
-index 581747edb7b..925594af22e 100644
+index 581747edb7b..e6b7fbba4b1 100644
 --- a/opcodes/Makefile.in
 +++ b/opcodes/Makefile.in
-@@ -565,6 +565,9 @@ TARGET32_LIBOPCODES_CFILES = \
+@@ -565,6 +565,8 @@ TARGET32_LIBOPCODES_CFILES = \
  	iq2000-dis.c \
  	iq2000-ibld.c \
  	iq2000-opc.c \
-+	lobster128-asm.c \
 +	lobster128-dis.c \
 +	lobster128-opc.c \
  	lm32-asm.c \
@@ -1239,12 +1272,48 @@ index e998d613436..653f4318f27 100644
  	bfd_lm32_arch)		ta="$ta lm32-asm.lo lm32-desc.lo lm32-dis.lo lm32-ibld.lo lm32-opc.lo lm32-opinst.lo" using_cgen=yes ;;
  	bfd_m32c_arch)		ta="$ta m32c-asm.lo m32c-desc.lo m32c-dis.lo m32c-ibld.lo m32c-opc.lo" using_cgen=yes ;;
  	bfd_m32r_arch)		ta="$ta m32r-asm.lo m32r-desc.lo m32r-dis.lo m32r-ibld.lo m32r-opc.lo m32r-opinst.lo" using_cgen=yes ;;
+diff --git a/opcodes/disassemble.c b/opcodes/disassemble.c
+index 79a2f3dabe5..936faeb3930 100644
+--- a/opcodes/disassemble.c
++++ b/opcodes/disassemble.c
+@@ -58,6 +58,7 @@
+ #define ARCH_ip2k
+ #define ARCH_iq2000
+ #define ARCH_lm32
++#define ARCH_lobster128
+ #define ARCH_m32c
+ #define ARCH_m32r
+ #define ARCH_m68hc11
+@@ -261,6 +262,11 @@ disassembler (enum bfd_architecture a,
+       disassemble = print_insn_lm32;
+       break;
+ #endif
++#ifdef ARCH_lobster128
++    case bfd_arch_lobster128:
++      disassemble = print_insn_lobster128;
++      break;
++#endif
+ #ifdef ARCH_m32r
+     case bfd_arch_m32r:
+       disassemble = print_insn_m32r;
+diff --git a/opcodes/disassemble.h b/opcodes/disassemble.h
+index 2c4c1348099..efc7d84b392 100644
+--- a/opcodes/disassemble.h
++++ b/opcodes/disassemble.h
+@@ -58,6 +58,7 @@ extern int print_insn_little_mips	(bfd_vma, disassemble_info *);
+ extern int print_insn_little_powerpc	(bfd_vma, disassemble_info *);
+ extern int print_insn_little_score      (bfd_vma, disassemble_info *);
+ extern int print_insn_lm32		(bfd_vma, disassemble_info *);
++extern int print_insn_lobster128	(bfd_vma, disassemble_info *);
+ extern int print_insn_m32r		(bfd_vma, disassemble_info *);
+ extern int print_insn_m68hc11		(bfd_vma, disassemble_info *);
+ extern int print_insn_m68hc12		(bfd_vma, disassemble_info *);
 diff --git a/opcodes/lobster128-dis.c b/opcodes/lobster128-dis.c
 new file mode 100644
-index 00000000000..85cea475979
+index 00000000000..74d26528827
 --- /dev/null
 +++ b/opcodes/lobster128-dis.c
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,82 @@
 +/* Disassemble lobster128 instructions.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1277,23 +1346,24 @@ index 00000000000..85cea475979
 +static fprintf_ftype fpr;
 +static void *stream;
 +
-+static const char * reg_names[128] =
-+    { "zero", "pc",   "sp",   "fp",   "r4",   "r5",   "r6",   "r7",
-+      "r8",   "r9",   "r10",  "r11",  "r12",  "r13",  "r14",  "r15",
-+      "r16",  "r17",  "r18",  "r19",  "r20",  "r21",  "r22",  "r23",
-+      "r24",  "r25",  "r26",  "r27",  "r28",  "r29",  "r30",  "r31",
-+      "r32",  "r34",  "r35",  "r36",  "r37",  "r38",  "r39",  "r40",
-+      "r41",  "r42",  "r43",  "r44",  "r45",  "r46",  "r47",  "r48",
-+      "r49",  "r50",  "r51",  "r52",  "r53",  "r54",  "r55",  "r56",
-+      "r57",  "r58",  "r59",  "r60",  "r61",  "r62",  "r63",  "r64",
-+      "r65",  "r66",  "r67",  "r68",  "r69",  "r70",  "r71",  "r72",
-+      "r73",  "r74",  "r75",  "r76",  "r77",  "r78",  "r79",  "r80",
-+      "r81",  "r82",  "r83",  "r84",  "r85",  "r86",  "r87",  "r88",  
-+      "r89",  "r90",  "r91",  "r92",  "r93",  "r94",  "r95",  "r96", 
-+      "r97",  "r98",  "r99",  "r100", "r101", "r102", "r103", "r104", 
-+      "r105", "r106", "r107", "r108", "r109", "r110", "r111", "r112", 
-+      "r113", "r114", "r115", "r116", "r117", "r118", "r119", "r120", 
-+      "r121", "r122", "r123", "r124", "r125", "r126", "r127", "r128" };
++static const char * reg_names[128] = {
++  "zero", "pc",   "sp",   "fp",   "r4",   "r5",   "r6",   "r7",
++  "r8",   "r9",   "r10",  "r11",  "r12",  "r13",  "r14",  "r15",
++  "r16",  "r17",  "r18",  "r19",  "r20",  "r21",  "r22",  "r23",
++  "r24",  "r25",  "r26",  "r27",  "r28",  "r29",  "r30",  "r31",
++  "r32",  "r34",  "r35",  "r36",  "r37",  "r38",  "r39",  "r40",
++  "r41",  "r42",  "r43",  "r44",  "r45",  "r46",  "r47",  "r48",
++  "r49",  "r50",  "r51",  "r52",  "r53",  "r54",  "r55",  "r56",
++  "r57",  "r58",  "r59",  "r60",  "r61",  "r62",  "r63",  "r64",
++  "r65",  "r66",  "r67",  "r68",  "r69",  "r70",  "r71",  "r72",
++  "r73",  "r74",  "r75",  "r76",  "r77",  "r78",  "r79",  "r80",
++  "r81",  "r82",  "r83",  "r84",  "r85",  "r86",  "r87",  "r88",  
++  "r89",  "r90",  "r91",  "r92",  "r93",  "r94",  "r95",  "r96", 
++  "r97",  "r98",  "r99",  "r100", "r101", "r102", "r103", "r104", 
++  "r105", "r106", "r107", "r108", "r109", "r110", "r111", "r112", 
++  "r113", "r114", "r115", "r116", "r117", "r118", "r119", "r120", 
++  "r121", "r122", "r123", "r124", "r125", "r126", "r127", "r128"
++};
 +
 +static const char *op_names[16] = {
 +  "add", "sub", "and", "not", "lsh", "rsh", "or", "xor", "mul", "div",
@@ -1304,33 +1374,34 @@ index 00000000000..85cea475979
 +print_insn_lobster128 (bfd_vma addr, struct disassemble_info * info)
 +{
 +  int status;
-+  unsigned long iword;
 +  bfd_byte buffer[4];
++  stream = info->stream;
 +  fpr = info->fprintf_func;
 +  if ((status = info->read_memory_func (addr, buffer, 2, info)))
 +    goto fail;
 +  
++  unsigned short iword = info->endian == BFD_ENDIAN_BIG ? bfd_getb16 (buffer) : bfd_getl16 (buffer);
 +  /* We will start from the bottom down, micro insntruction first */
-+  iword = bfd_getl16(buffer);
-+  if(iword & 0x03 == PREFIX_MICROINST) {
-+    char opcode = (iword >> 2) & 0x0f; /* Extract nibble 4-bits for opcode */
-+    char rd = (iword >> 6) & 0x1f;
-+    char rs = (iword >> 11) & 0x1f;
-+    fpr(stream, "z.%s.r %s, %s\n", op_names[opcode & 0x0f], reg_names[rd], reg_names[rs]);
++  if((iword & 0x03) == PREFIX_MICROINST) {
++    unsigned char opcode = (iword >> 2) & 0x0f; /* Extract nibble 4-bits for opcode */
++    unsigned char rd = (iword >> 6) & 0x1f;
++    unsigned char rs = (iword >> 11) & 0x1f;
++    fpr(stream, "z.%s.r %s, %s", op_names[opcode], reg_names[rd], reg_names[rs]);
++    return 2;
 +  } else {
-+    fpr(stream, "todo: non-micro insn\n");
++    fpr(stream, "z.nop %x", iword);
++    return 2;
 +  }
-+
-+ fail:
++fail:
 +  info->memory_error_func (status, addr, info);
 +  return -1;
 +}
 diff --git a/opcodes/lobster128-opc.c b/opcodes/lobster128-opc.c
 new file mode 100644
-index 00000000000..e53b159a035
+index 00000000000..bb9fcc904d2
 --- /dev/null
 +++ b/opcodes/lobster128-opc.c
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,62 @@
 +/* lobster128-opc.c -- Definitions for lobster128 opcodes.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1368,6 +1439,7 @@ index 00000000000..e53b159a035
 +#define XLU_XOR   0b0111
 +#define XLU_MUL   0b1000
 +#define XLU_DIV   0b1001
++#define XLU_BAD   0b1010 /* Oops! */
 +#define XLU_REM   0b1011
 +#define XLU_SEX   0b1100
 +#define XLU_PUSH  0b1101
@@ -1375,19 +1447,20 @@ index 00000000000..e53b159a035
 +#define XLU_EXT   0b1111
 +
 +const lobster128_opc_info_t lobster128_opc_info[LOBSTER128_NUM_OPCODES] = {
-+  { XLU_ADD | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.add.r" },
-+  { XLU_SUB | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.sub.r" },
-+  { XLU_AND | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.and.r" },
-+  { XLU_NOT | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.not.r" },
-+  { XLU_LSH | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.lsh.r" },
-+  { XLU_RSH | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.rsh.r" },
-+  { XLU_OR | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.or.r" },
-+  { XLU_XOR | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.xor.r" },
-+  { XLU_MUL | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.mul.r" },
-+  { XLU_DIV | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.div.r" },
-+  { XLU_REM | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.rem.r" },
-+  { XLU_SEX | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.sex.r" },
-+  { XLU_PUSH | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.push.r" },
-+  { XLU_POP | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.pop.r" },
-+  { XLU_EXT | PREFIX_MICROINST, 0, LOBSTER128_MICRO_OP, "z.ext.r" },
++  {{ XLU_ADD | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.add.r" },
++  {{ XLU_SUB | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.sub.r" },
++  {{ XLU_AND | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.and.r" },
++  {{ XLU_NOT | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.not.r" },
++  {{ XLU_LSH | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.lsh.r" },
++  {{ XLU_RSH | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.rsh.r" },
++  {{ XLU_OR | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.or.r" },
++  {{ XLU_XOR | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.xor.r" },
++  {{ XLU_MUL | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.mul.r" },
++  {{ XLU_DIV | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.div.r" },
++  {{ XLU_BAD | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.bad.r" },
++  {{ XLU_REM | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.rem.r" },
++  {{ XLU_SEX | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.sex.r" },
++  {{ XLU_PUSH | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.push.r" },
++  {{ XLU_POP | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.pop.r" },
++  {{ XLU_EXT | PREFIX_MICROINST, 0, 0, 0 }, LOBSTER128_MICRO_OP, "z.ext.r" },
 +};

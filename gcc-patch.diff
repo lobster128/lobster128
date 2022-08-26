@@ -1829,10 +1829,10 @@ index 04baefef348..710c9483226 100644
  typedef struct lra_live_range *lra_live_range_t;
  
 diff --git a/libgcc/config.host b/libgcc/config.host
-index b2a0a8e1aa9..c0d8883225e 100644
+index 9a28b10ac7f..41f984fdee2 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
-@@ -138,6 +138,9 @@ hppa*-*-*)
+@@ -136,6 +136,9 @@ hppa*-*-*)
  lm32*-*-*)
  	cpu_type=lm32
  	;;
@@ -1890,7 +1890,7 @@ index 00000000000..063d2025a33
 +_fini:
 diff --git a/libgcc/config/lobster128/crtn.S b/libgcc/config/lobster128/crtn.S
 new file mode 100644
-index 00000000000..904914fa050
+index 00000000000..65858d947e3
 --- /dev/null
 +++ b/libgcc/config/lobster128/crtn.S
 @@ -0,0 +1,34 @@
@@ -1924,10 +1924,10 @@ index 00000000000..904914fa050
 +	.file		"crtn.S"
 +
 +	.section	".init"
-+	Z.RET.OWO
++	z.ret.owo
 +	
 +	.section	".fini"
-+	Z.RET.OWO
++	z.ret.owo
 diff --git a/libgcc/config/lobster128/sfp-machine.h b/libgcc/config/lobster128/sfp-machine.h
 new file mode 100644
 index 00000000000..7874081fdab
