@@ -109,7 +109,7 @@ module lobster_CPU
   localparam XLU_XOR  = 4'b0111;            // XOR
   localparam XLU_MUL  = 4'b1000;            // Multiply
   localparam XLU_DIV  = 4'b1001;            // Divide
-  localparam XLU_BAD  = 4'b1010;            // Bad
+  localparam XLU_SET  = 4'b1010;            // Set
   localparam XLU_REM  = 4'b1011;            // Remainder
   localparam XLU_SEX  = 4'b1100;            // Sign extend
   localparam XLU_PUSH = 4'b1101;            // Push increment A, place D
@@ -166,8 +166,8 @@ module lobster_CPU
       alu_op_imm_result <= ~(a | b);
       $display("%m: XLU %x | %x", a, b);
       end
-    XLU_BAD: begin // BAD [a], [b], [d]
-      alu_op_imm_result <= b;
+    XLU_SET: begin // SET [a], [b], [d]
+      alu_op_imm_result <= a;
       $display("%m: XLU bad %x", b);
       end
     default: begin
