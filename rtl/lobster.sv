@@ -49,7 +49,7 @@ module lobster_CPU
   // ---------------------------------------------------------------------------
   wire [63:0] exec_inst = data_in[63:0];
   // Prefixed instructions
-  wire [1:0] inst_prefix = data_in[1:0];    // Prefix, LOCK and REP
+  wire [1:0] inst_prefix = exec_inst[1:0];    // Prefix, LOCK and REP
   localparam PREFIX_MICROINST = 2'b00;      // Micro instruction
   localparam PREFIX_LONGINST  = 2'b01;      // Long VLIW instruction
   localparam PREFIX_MINIINST  = 2'b10;      // Bigger than micro, smaller than
@@ -61,7 +61,7 @@ module lobster_CPU
   // rinst -> Repeating instruction control format
   // vinst -> Length instruction format
   // ---------------------------------------------------------------------------
-  wire [3:0] sinst_deleg = data_in[5:2];    // Delegator value
+  wire [3:0] sinst_deleg = exec_inst[5:2];    // Delegator value
   localparam DELEG_ALU  = 4'b0000;          // Arithmethic
   localparam DELEG_FPU  = 4'b0001;          // Floating Point
   localparam DELEG_VPU  = 4'b0010;          // Vector
@@ -76,9 +76,9 @@ module lobster_CPU
   // and a noop is used, the size modifier will affect the behaviour of some
   // instructions.
   // ---------------------------------------------------------------------------
-  wire [3:0] sinst_mem   = data_in[9:6];    // Memory operation
-  wire [1:0] sinst_memop = data_in[7:6];    // - Operation
-  wire [1:0] sinst_memsz = data_in[9:8];    // - Size
+  wire [3:0] sinst_mem   = exec_inst[9:6];    // Memory operation
+  wire [1:0] sinst_memop = exec_inst[7:6];    // - Operation
+  wire [1:0] sinst_memsz = exec_inst[9:8];    // - Size
   localparam MEM_8       = 2'b00;
   localparam MEM_16      = 2'b01;
   localparam MEM_32      = 2'b10;
@@ -97,8 +97,8 @@ module lobster_CPU
   // ---------------------------------------------------------------------------
   // Arithmethic unit delegation
   // ---------------------------------------------------------------------------
-  wire [3:0] uinst_xluop = data_in[5:2];    // Micro variant
-  wire [3:0] sinst_xluop = data_in[13:10];  // (V/A/F)LU operation
+  wire [3:0] uinst_xluop = exec_inst[5:2];    // Micro variant
+  wire [3:0] sinst_xluop = exec_inst[13:10];  // (V/A/F)LU operation
   localparam XLU_ADD  = 4'b0000;            // Add
   localparam XLU_SUB  = 4'b0001;            // Subtract
   localparam XLU_AND  = 4'b0010;            // AND
@@ -124,39 +124,54 @@ module lobster_CPU
     casez(op)
     XLU_ADD: begin // ADD [a], [b], [d]
       alu_op_imm_result <= a + b;
+      $display("%m: XLU %x + %x", a, b);
       end
     XLU_SUB: begin // SUB [a], [b], [d]
       alu_op_imm_result <= a - b;
+      $display("%m: XLU %x - %x", a, b);
       end
     XLU_OR: begin // OR [a], [b], [d]
       alu_op_imm_result <= a | b;
+      $display("%m: XLU %x | %x", a, b);
       end
     XLU_XOR: begin // XOR [a], [b], [d]
       alu_op_imm_result <= a ^ b;
+      $display("%m: XLU %x ^ %x", a, b);
       end
     XLU_AND: begin // AND [a], [b], [d]
       alu_op_imm_result <= a & b;
+      $display("%m: XLU %x & %x", a, b);
       end
     XLU_LSH: begin // LSH [a], [b], [d]
       alu_op_imm_result <= a << b;
+      $display("%m: XLU %x << %x", a, b);
       end
     XLU_RSH: begin // RSH [a], [b], [d]
       alu_op_imm_result <= a >> b;
+      $display("%m: XLU %x >> %x", a, b);
       end
     XLU_MUL: begin // MUL [a], [b], [d]
       alu_op_imm_result <= a * b;
+      $display("%m: XLU %x * %x", a, b);
       end
     XLU_DIV: begin // DIV [a], [b], [d]
       alu_op_imm_result <= a / b;
+      $display("%m: XLU %x / %x", a, b);
       end
     XLU_REM: begin // MUL [a], [b], [d]
       alu_op_imm_result <= a % b;
+      $display("%m: XLU %x %% %x", a, b);
       end
     XLU_NOT: begin // NOT [a], [b], [d]
       alu_op_imm_result <= ~(a | b);
+      $display("%m: XLU %x | %x", a, b);
+      end
+    XLU_BAD: begin // BAD [a], [b], [d]
+      alu_op_imm_result <= b;
+      $display("%m: XLU bad %x", b);
       end
     default: begin
-      $display("Unhandled ALU case %x", op);
+      $display("%m: Unhandled ALU case %x", op);
       end
     endcase
   endfunction
@@ -190,6 +205,7 @@ module lobster_CPU
     //wire [3:0] uinst_op    = inst[5:2];         // Operation
     //wire [4:0] uinst_reg_a = inst[10:6];        // Register A
     //wire [4:0] uinst_reg_b = inst[15:11];       // Register B
+    $display("%m: executing micro insn Op(%x) R%x, R%x", inst[5:2], inst[10:6], inst[15:11]);
     alu_op_result(inst[5:2], { 2'b00, inst[10:6] }, { 2'b00, inst[15:11] }, { 2'b00, inst[10:6] });
   endfunction
   // Mini inst format:
@@ -198,20 +214,29 @@ module lobster_CPU
   // 0000 0000 0000 0000 00oo oomm mmdd dd10
   //
   // Depending on the memory value, if it's a NOP (aka. register):
-  // [ 6 rs ][ 6 rS ][ 6 rd ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
-  // ssss ssSS SSSS DDDD DDoo oomm mmdd dd10
+  // [ 13 bits immediate ][ 5 bits reg ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
+  // 0                16                  32
+  // iiii iiii iiii iDDD DDoo oomm mmdd dd10
   function automatic void sinst_execute(
-    input [15:0] inst
+    input [31:0] inst
   );
-    //wire [3:0] uinst_op    = inst[5:2];         // Operation
-    //wire [4:0] uinst_reg_a = inst[10:6];        // Register A
-    //wire [4:0] uinst_reg_b = inst[15:11];       // Register B
-    alu_op_result(inst[5:2], { 2'b00, inst[10:6] }, { 2'b00, inst[15:11] }, { 2'b00, inst[10:6] });
+    //wire [3:0] sinst_op;        // Operation
+    //wire [3:0] sinst_mem    = inst[9:6];        // Memory operation
+    //wire [4:0] sinst_reg_d  = inst[18:14];
+    //wire [12:0] sinst_imm13 = inst[31:19];
+    if(inst[9:6] == MEM_NOOP) begin
+      // Register D is used for the arithmethic & also used
+      // to store the result
+      $display("%m: executing mini insn Op(%x), Imm13=%x, R%x", inst[5:2], inst[31:19], inst[18:14]);
+      gp_regs[{ 2'b00, inst[18:14] }] = alu_op_imm_result(inst[5:2], { 115'b00, inst[31:19] }, gp_regs[{ 2'b00, inst[18:14] }]);
+    end else begin
+
+    end
   endfunction
   // ---------------------------------------------------------------------------
   // Control
   // ---------------------------------------------------------------------------
-  wire [3:0] sinst_ctrlop = data_in[13:10];// Control operation
+  wire [3:0] sinst_ctrlop = exec_inst[13:10];// Control operation
   localparam CTL_TLBSET  = 4'b0000;       // Set TLB entry
   localparam CTL_TLBFLSH = 4'b0001;       // Flush TLB bucket
   localparam CTL_TLBPERM = 4'b0010;       // Set permissions for TLB entry
@@ -247,13 +272,15 @@ module lobster_CPU
     // Pipeline - Executor
     // -------------------------------------------------------------------------
     if(pipeline_active[PIPELINE_EXEC]) begin
+      /*
       // Long instruction
-      if(inst_prefix[0] == 1) begin
+      casez(inst_prefix)
+      PREFIX_LONGINST: begin
         casez(sinst_deleg)
         DELEG_MEM: begin
           // Activate load pipe side - otherwise activate store one
           // remember they're mutually exclusive
-          casez(sinst_memop)
+          casez(sinst_mem)
           MEM_LOAD: begin
             dbus_mode <= DBUS_LOAD;
             we <= 0;
@@ -271,9 +298,11 @@ module lobster_CPU
           $display("%m: invalid delegator %b", sinst_deleg);
           end
         endcase
-      end else begin
+        end
+      default: begin
         uinst_execute(exec_inst[15:0]);
-      end
+        end
+      endcase*/
       $display("%m: execute");
     // -------------------------------------------------------------------------
     // Pipeline - Accesor
@@ -281,15 +310,29 @@ module lobster_CPU
     end if(pipeline_active[PIPELINE_DBUS]) begin
       ce <= 1; // Tell SRAM we want to read
       addr_in <= gp_regs[REG_PC][ADDR_WIDTH - 1:0];
+      $display("%m: fetching addr=%x", addr_in);
       if(rdy) begin
+        // Micro instructions only take 1 cycle to execute
         case(dbus_mode)
         DBUS_FETCH: begin
-          if(inst_prefix == PREFIX_MICROINST) begin
+          case(inst_prefix)
+          // 32-bits mini-instruction
+          PREFIX_MINIINST: begin
+            sinst_execute(exec_inst[31:0]);
+            sinst_execute(exec_inst[63:32]);
+            gp_regs[REG_PC] <= gp_regs[REG_PC] + 8;
+            end
+          // 16-bits micro-instruction
+          PREFIX_MICROINST: begin
             uinst_execute(exec_inst[15:0]);
-            uinst_execute(exec_inst[31:15]);
+            uinst_execute(exec_inst[31:16]);
             uinst_execute(exec_inst[47:32]);
             uinst_execute(exec_inst[63:48]);
-          end
+            gp_regs[REG_PC] <= gp_regs[REG_PC] + 8;
+            end
+          default: begin
+            end
+          endcase
           end
         default: begin end
         endcase
