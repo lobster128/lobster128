@@ -1,3 +1,6 @@
+`ifndef CACHE_SV
+`define CACHE_SV
+
 // https://stackoverflow.com/questions/664014/what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
 // x = ((x >> 30) ^ x) * c1;
 // x = ((x >> 27) ^ x) * c2;
@@ -111,3 +114,5 @@ module lobster_cache_tb;
     $stop;
   end
 endmodule
+
+`endif

@@ -73,9 +73,17 @@ module lobster_mini_exec
   // AAAA AABB BBBB DDDD DDoo oomm mmdd dd10
   // Load address in register D, then perform OP between B and the
   // value stored at D - save on A
-  wire [3:0] mem      = inst[9:6]; // Memory operation
-  wire [1:0] memop    = inst[7:6];    // - Operation
-  wire [1:0] memsz    = inst[9:8];    // - Size
+  wire [3:0] deleg       = inst[5:2];    // Delegator value
+  localparam DELEG_ALU   = 4'b0000;      // Arithmethic
+  localparam DELEG_FPU   = 4'b0001;      // Floating Point
+  localparam DELEG_VPU   = 4'b0010;      // Vector
+  localparam DELEG_VFPU  = 4'b0011;      // Vector Floating Point
+  localparam DELEG_CTRL  = 4'b1011;      // Control operation
+  localparam DELEG_MEM   = 4'b1100;      // Memory operation
+  localparam DELEG_LOCK  = 4'b1???;      // Atomic operation
+  wire [3:0] mem         = inst[9:6];    // Memory operation
+  wire [1:0] memop       = inst[7:6];    // - Operation
+  wire [1:0] memsz       = inst[9:8];    // - Size
   localparam MEM_8       = 2'b00;
   localparam MEM_16      = 2'b01;
   localparam MEM_32      = 2'b10;
@@ -143,7 +151,8 @@ module lobster_execman
   input rst,
   input clk,
   input [ADDR_WIDTH - 1:0] addr_in,
-  input [63:0] data_in
+  input [63:0] data_in,
+  output [ADDR_WIDTH - 1:0] ip_out // IP
 );
   reg i_cache_we;
   reg [35:0] i_cache_addr_out;
@@ -228,7 +237,6 @@ module lobster_execman
   localparam PREFIX_MINIINST  = 2'b10;      // Bigger than micro, smaller than
                                             // long instruction
   localparam PREFIX_REP       = 2'b11;      // Repeat prefix
-
   always @(posedge clk) begin
     $display("%m: data_in=0x%x", data_in);
     i_cache_we <= 1; // Enable writing by default
@@ -256,6 +264,14 @@ module lobster_execman
 
   always @(posedge clk) begin
     integer j;
+    if(rst) begin
+      for(j = 0; j < 128; j += 1) begin
+        gp_regs[j] = 0;
+      end
+      gp_regs[REG_PC] <= 128'hF800;
+    end
+
+    gp_regs[REG_ZERO] <= 0;
     for(j = 0; j < 128; j += 4) begin
       $display("r%3d=0x%x, r%3d=0x%x, r%3d=0x%x, r%3d=0x%x",
         j, gp_regs[j],
