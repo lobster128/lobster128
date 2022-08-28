@@ -1,21 +1,5 @@
-// STL
-#include <cstdio>
-#include <memory>
-#include <stdexcept>
-#include <exception>
-#include <unordered_map>
-#include <array>
-
-// Verilator
-#include <verilated.h>
-#include <verilated_vpi.h>
-
-// SDL
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-
-// Project
-#include "Vlobster_CPU.h"
+#ifndef __RAM_HPP__
+#define __RAM_HPP__ 1
 
 class RAM_Manager {
     static constexpr auto bitmask = 0xffff;
@@ -68,66 +52,4 @@ public:
     }
 };
 
-int main(int argc, char **argv, char **env)
-{
-    // Create the system
-    auto top = std::make_unique<Vlobster_CPU>();
-
-    Verilated::debug(0);
-    Verilated::randReset(2);
-    Verilated::traceEverOn(true);
-    Verilated::commandArgs(argc, argv);
-    Verilated::mkdir("logs");
-
-    auto ram = RAM_Manager();
-
-    // Write bootrom
-    ram.write(0xf800 + (8 * 0), 0x02000a0002401200);
-    ram.write(0xf800 + (8 * 1), 0x0280220002c04200);
-    ram.write(0xf800 + (8 * 2), 0x0200830002400301);
-    ram.write(0xf800 + (8 * 3), 0x0280030202c00304);
-    ram.write(0xf800 + (8 * 4), 0x0200c43f02400480);
-    ram.write(0xf800 + (8 * 5), 0x0280fcff02680000);
-
-    vluint64_t main_time = 0;
-    while (!Verilated::gotFinish())
-    {
-        top->rst = (main_time < 10) ? 1 : 0;
-        top->clk = !top->clk;
-        main_time++;
-#if VM_COVERAGE
-        if (main_time < 5)
-        {
-            // Zero coverage if still early in reset, otherwise toggles there may
-            // falsely indicate a signal is covered
-            VerilatedCov::zero();
-        }
 #endif
-        if(main_time >= 50)
-        {
-            break;
-        }
-
-        top->rdy = 0;
-        if(top->ce && top->clk)
-        {
-            if(top->we)
-            {
-                ram.write(top->addr_out, top->data_out);
-                printf("mem_ballon: write 0x%llx <- 0x%llx\n", top->addr_out, top->data_out);
-            }
-            top->data_in = ram.read(top->addr_in);
-            printf("mem_ballon: read 0x%llx -> %llx\n", top->addr_in, top->data_in);
-            top->rdy = 1;
-        }
-        top->eval();
-    }
-    top->final();
-
-    //  Coverage analysis (since test passed)
-#if VM_COVERAGE
-    Verilated::mkdir("logs");
-    VerilatedCov::write("logs/coverage.dat");
-#endif
-    return 0;
-}
