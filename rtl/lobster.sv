@@ -1,5 +1,7 @@
+// Top computer module SoC
+
 `timescale 1ns / 1ps
-`include "rtl/cache.sv"
+`include "rtl/execman.sv"
 
 module lobster_CPU
 #( // Parameter
@@ -175,13 +177,12 @@ module lobster_CPU
       end
     endcase
   endfunction
-  function automatic void alu_op_result(
+  function automatic [127:0] alu_op_result(
     input [3:0] op,
-    input [6:0] d, // Dest
     input [6:0] a, // Source
-    input [6:0] b, // Operand 2
+    input [6:0] b // Operand 2
   );
-    gp_regs[d] <= alu_op_imm_result(op, gp_regs[a], gp_regs[b]);
+    alu_op_result <= alu_op_imm_result(op, gp_regs[a], gp_regs[b]);
   endfunction
   function automatic void vpu_op_result(
     input [3:0] op, // Operation
@@ -190,9 +191,9 @@ module lobster_CPU
     input [6:0] d,
     input [6:0] a, // Source
   );
-    alu_op_result(op, b, b, a);
-    alu_op_result(op, c, c, a);
-    alu_op_result(op, d, d, a);
+    gp_regs[b] <= alu_op_result(op, a, b);
+    gp_regs[c] <= alu_op_result(op, a, c);
+    gp_regs[d] <= alu_op_result(op, a, d);
   endfunction
 
   // Micro inst format:
@@ -206,7 +207,7 @@ module lobster_CPU
     //wire [4:0] uinst_reg_a = inst[10:6];        // Register A
     //wire [4:0] uinst_reg_b = inst[15:11];       // Register B
     $display("%m: executing micro insn Op(%x) R%x, R%x", inst[5:2], inst[10:6], inst[15:11]);
-    alu_op_result(inst[5:2], { 2'b00, inst[10:6] }, { 2'b00, inst[15:11] }, { 2'b00, inst[10:6] });
+    gp_regs[{ 2'b00, inst[10:6] }] <= alu_op_result(inst[5:2], { 2'b00, inst[10:6] }, { 2'b00, inst[15:11] });
   endfunction
   // Mini inst format:
   // [ ... ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
@@ -217,22 +218,56 @@ module lobster_CPU
   // [ 13 bits immediate ][ 5 bits reg ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
   // 0                16                  32
   // iiii iiii iiii iDDD DDoo oomm mmdd dd10
+  //
+  // For both stores and loads:
+  // [ 6 bits A reg ][ 6 bits B reg ][ 6 bits dest reg ][ 4 bits OP ][ 4 bits memory ][ 4 bits deleg ][ 10 ]
+  // 0                16                  32
+  // AAAA AABB BBBB DDDD DDoo oomm mmdd dd10
+  // Load address in register D, then perform OP between B and the
+  // value stored at D - save on A
   function automatic void sinst_execute(
     input [31:0] inst
   );
-    //wire [3:0] sinst_op;        // Operation
+    //wire [3:0] sinst_op     = ;        // Operation
     //wire [3:0] sinst_mem    = inst[9:6];        // Memory operation
     //wire [4:0] sinst_reg_d  = inst[18:14];
     //wire [12:0] sinst_imm13 = inst[31:19];
+
+    // For load/store:
+    //wire [5:0] sinst_reg_d  = inst[19:14];
+    //wire [5:0] sinst_reg_b  = inst[25:20];
+    //wire [5:0] sinst_reg_a  = inst[31:26];
     if(inst[9:6] == MEM_NOOP) begin
+      // TODO: Account for sizes (eg. trim/truncate)
       // Register D is used for the arithmethic & also used
       // to store the result
-      $display("%m: executing mini insn Op(%x), Imm13=%x, R%x", inst[5:2], inst[31:19], inst[18:14]);
-      gp_regs[{ 2'b00, inst[18:14] }] = alu_op_imm_result(inst[5:2], { 115'b00, inst[31:19] }, gp_regs[{ 2'b00, inst[18:14] }]);
-    end else begin
-
+      $display("%m: executing mini IMM insn Op(%x), Imm13=%x, R%x", inst[5:2], inst[31:19], inst[18:14]);
+      gp_regs[{ 2'b00, inst[18:14] }] = alu_op_imm_result(inst[5:2], gp_regs[{ 2'b00, inst[18:14] }], { 115'b00, inst[31:19] });
+    end else if(inst[9:6] == MEM_LOAD) begin
+      // TODO: A smarter way to store multiple stuff
+      $display("%m: buffering mini Load insn Op(%x), RA=%x, RB=%x, RD=%x", inst[5:2], inst[31:26], inst[25:20], inst[19:14]);
+      // TODO: Not parallel safe!
+      // TODO: Maybe we should place it on RD + 64 aka. RD | 0x40? so we make some fine use fo those extra missing bits on the encoding!
+      // Save the address from RD into the dbus so we can tell it to load shit
+      //dbus_load_addr <= gp_regs[{ 1'b0, inst[19:14] }][ADDR_WIDTH - 1:0];
+      dbus_load_insn[dbus_load_cnt] <= inst; // Store instruction aswell!
+      dbus_load_cnt <= dbus_load_cnt + 1;
+      dbus_mode <= DBUS_LOAD;
     end
   endfunction
+
+  // Execute a mini instruction after a DBUS RDY signal
+  function automatic void sinst_dbus_execute(
+    input [31:0] inst
+  );
+    if(inst[9:6] == MEM_LOAD) begin
+      gp_regs[{ 1'b1, inst[31:26] }] <= alu_op_imm_result(inst[5:2], gp_regs[{ 1'b1, inst[25:20] }], { 64'b0, data_in });
+      dbus_load_exec_cnt <= dbus_load_exec_cnt + 1;
+    end else begin
+      // Ignore...
+    end
+  endfunction
+
   // ---------------------------------------------------------------------------
   // Control
   // ---------------------------------------------------------------------------
@@ -261,10 +296,23 @@ module lobster_CPU
   localparam PIPELINE_EXEC  = 2'b00; // Executing
   localparam PIPELINE_DBUS  = 2'b01; // Interacting with data bus
   reg [1:0] dbus_mode;
+  // Load buffers
+  reg [ADDR_WIDTH - 1:0] dbus_load_addr[0:63]; // Store the address to load
+  reg [31:0] dbus_load_insn[0:63]; // Instruction (stored)
+  reg [5:0] dbus_load_exec_cnt; // Counter of the current executing insn
+  reg [5:0] dbus_load_cnt; // Counter for keeping track of the current load buffer
+  reg [63:0] dbus_store_buffer[0:63];
   localparam DBUS_NOP   = 2'b00; // No-op
   localparam DBUS_FETCH = 2'b01; // Fetching from RAM
   localparam DBUS_LOAD  = 2'b10; // Reading from RAM
   localparam DBUS_STORE = 2'b11; // Writing to RAM
+
+  lobster_execman execman(
+    .rst(rst),
+    .clk(clk),
+    .addr_in(addr_in),
+    .data_in(data_in)
+  );
 
   always @(posedge clk) begin
     we <= 0;

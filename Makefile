@@ -35,7 +35,8 @@ run: build
 
 build: obj_dir/Vlobster_CPU
 
-obj_dir/Vlobster_CPU: rtl/lobster.sv main.cpp rtl/cache.sv
+obj_dir/Vlobster_CPU: rtl/lobster.sv main.cpp rtl/cache.sv rtl/alu.sv \
+	rtl/execman.sv
 	$(VERILATOR) $(VERILATOR_FLAGS) --top-module lobster_CPU \
 		main.cpp $< \
 		-CFLAGS "$(sdl2-config --cflags)" \
