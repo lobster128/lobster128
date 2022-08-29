@@ -181,6 +181,9 @@ module lobster_execman
   localparam REG_SP   = 7'd2;             // Stack pointer
   localparam REG_FP   = 7'd3;             // Frame pointer
 
+  wire [127:0] pc = gp_regs[REG_PC];
+  assign ip_out = pc[ADDR_WIDTH - 1:0];
+
   reg [63:0] insn_holder[0:NUM_INSN_ENTRIES - 1];
   reg [12:0] insn_holder_cnt;
 
@@ -240,12 +243,14 @@ module lobster_execman
   always @(posedge clk) begin
     $display("%m: data_in=0x%x", data_in);
     i_cache_we <= 1; // Enable writing by default
+    gp_regs[REG_PC] <= gp_regs[REG_PC] + 8; // Automatically increment
     if(inst_prefix == PREFIX_MICROINST) begin
       $display("%m: executing microinst quadruples");
       gp_regs[ue_ra_select[0]] <= ue_ra_valout[0];
       gp_regs[ue_ra_select[1]] <= ue_ra_valout[1];
       gp_regs[ue_ra_select[2]] <= ue_ra_valout[2];
       gp_regs[ue_ra_select[3]] <= ue_ra_valout[3];
+      gp_regs[REG_PC] <= 8;
     end else if(inst_prefix == PREFIX_MINIINST) begin
       $display("%m: executing mini inst pairs");
       if(!me_mem_enable[0]) begin // Immediate
@@ -259,6 +264,10 @@ module lobster_execman
       end else begin
 
       end
+    end else begin
+      // TODO: Invalid
+      gp_regs[REG_PC] <= gp_regs[REG_PC];
+      $display("%m: Invalid insn %x", data_in);
     end
   end
 

@@ -85,6 +85,7 @@ module lobster_CPU
       pipeline_active[PIPELINE_EXEC] <= 1; // Reset the pipeline
       pipeline_active[PIPELINE_DBUS] <= 1;
       dbus_mode <= DBUS_FETCH;
+      ce <= 1;
     end
   end
 endmodule
