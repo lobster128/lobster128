@@ -676,10 +676,10 @@ index c57d78f82c4..f5c07c6c463 100644
  @AMDEP_TRUE@@am__include@ @am__quote@config/$(DEPDIR)/tc-m32r.Po@am__quote@
 diff --git a/gas/config/tc-lobster128.c b/gas/config/tc-lobster128.c
 new file mode 100644
-index 00000000000..b04a43fc41a
+index 00000000000..997923a6efe
 --- /dev/null
 +++ b/gas/config/tc-lobster128.c
-@@ -0,0 +1,466 @@
+@@ -0,0 +1,500 @@
 +/* tc-lobster128.c -- Assemble code for lobster128
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -770,29 +770,51 @@ index 00000000000..b04a43fc41a
 +  return s;
 +}
 +
++static bool
++parse_is_register_operand(char *s)
++{
++  if (s[0] == 'z' && s[1] == 'e' && s[2] == 'r' && s[3] == 'o')
++  {
++    return true;
++  }
++  else if (s[0] == 'p' && s[1] == 'c')
++  {
++    return true;
++  }
++  else if (s[0] == 'r')
++  {
++    int reg = atoi(&s[1]);
++    if ((reg < 0) || (reg > 128))
++    {
++      return false;
++    }
++    return true;
++  }
++  return false;
++}
++
 +static int
 +parse_register_operand(char **ptr)
 +{
 +  int reg;
 +  char *s = *ptr;
-+  
 +  if (s[0] == 'z' && s[1] == 'e' && s[2] == 'r' && s[3] == 'o')
 +  {
 +    *ptr += 4;
-+    return 0;
++    reg = 0;
 +  }
-+  if (s[0] == 'p' && s[1] == 'c')
++  else if (s[0] == 'p' && s[1] == 'c')
 +  {
 +    *ptr += 2;
-+    return 1;
++    reg = 1;
 +  }
-+  if (s[0] == 'r' || s[0] == 'R')
++  else if (s[0] == 'r')
 +  {
 +    *ptr += 1;
-+    reg = atoi(&s[1]);
++    reg = atoi(*ptr);
 +    if ((reg < 0) || (reg > 128))
 +    {
-+      as_bad(_("illegal register number"));
++      as_bad(_("Illegal register number %d"), reg);
 +      ignore_rest_of_line();
 +      return -1;
 +    }
@@ -803,7 +825,7 @@ index 00000000000..b04a43fc41a
 +  }
 +  else
 +  {
-+    as_bad(_("illegal register number"));
++    as_bad(_("Illegal register %s"), s);
 +    ignore_rest_of_line();
 +    return -1;
 +  }
@@ -833,11 +855,11 @@ index 00000000000..b04a43fc41a
 +  *op_end = 0;
 +
 +  if (nlen == 0)
-+    as_bad(_("can't find opcode "));
++    as_bad(_("Can't find opcode "));
 +  lobster128_opc_info_t *opcode = (lobster128_opc_info_t *)str_hash_find(opcode_hash_control, op_start);
 +  if (opcode == NULL)
 +  {
-+    as_bad(_("unknown opcode %s"), op_start);
++    as_bad(_("Unknown opcode \"%s\""), op_start);
 +    return;
 +  }
 +  *op_end = pend;
@@ -856,53 +878,65 @@ index 00000000000..b04a43fc41a
 +    /* Obtain registers */
 +    int rd = parse_register_operand(&op_end);
 +    if (*op_end != ',')
-+      as_warn(_("expecting comma delimited register operands"));
++      as_warn(_("Expecting comma delimited register operands"));
 +    op_end++;
 +    int rs = parse_register_operand(&op_end);
 +    if(rd >= 0x20 || rs >= 0x20)
-+      as_bad(_("register is out of scope for micro-instruction"));
++      as_bad(_("Register is out of scope for micro-instruction"));
++    if (*op_end != 0)
++      as_warn(_("Extra stuff on line ignored"));
 +    
 +    unsigned short iword = opcode->opcode[0] & 0x3f;
 +    iword |= ((rs << 5) + rd) << 6; /* 4bits op, 2bit prefix */
-+    while (ISSPACE(*op_end))
-+      op_end++;
-+    if (*op_end != 0)
-+      as_warn(_("extra stuff on line ignored"));
-+    
 +    md_number_to_chars(p, iword, 2);
 +    dwarf2_emit_insn(2);
-+  } else if (opcode->type == MINI_IMM_OP) {
++  } else if ((opcode->type & MINI_OP) != 0) {
 +    char *p = frag_more(4);
 +    while (ISSPACE(*op_end))
 +      op_end++;
 +
 +    /* Obtain registers */
 +    int rd = parse_register_operand(&op_end);
-+    if(rd >= 0x20)
-+      as_bad(_("register is out of scope for mini-instruction"));
 +    if (*op_end != ',')
-+      as_warn(_("expecting comma delimited register operands"));
++      as_warn(_("Expecting comma delimited register operands"));
 +    op_end++;
 +
-+    /* Parse the immediate */
-+    op_end = parse_exp_save_ilp(op_end, &arg);
-+    fix_new_exp(frag_now,
-+                (p - frag_now->fr_literal),
-+                2,
-+                &arg,
-+                0,
-+                BFD_RELOC_LOBSTER128_13);
 +    unsigned long lword = opcode->opcode[0];
-+    lword |= (rd) << 14;
-+    while (ISSPACE(*op_end))
++    if(opcode->type == MINI_IMM_OP)
++      goto mini_imm;
++    else if(opcode->type == MINI_REG_OP)
++      goto mini_reg;
++
++    /* Auto deduction */
++    if (parse_is_register_operand(op_end)) { /* Register */
++      as_warn(_("Use \"%sr\" instead of \"%s\" for safety"), opcode->name, opcode->name);
++      lword |= SINST_MEMOP(MEM_MOVE);
++mini_reg:
++      int ra = parse_register_operand(&op_end);
++      if (*op_end != ',')
++        as_warn(_("Expecting comma delimited register operands"));
 +      op_end++;
-+    if (*op_end != 0)
-+      as_warn(_("extra stuff on line ignored"));
-+    
++      int rb = parse_register_operand(&op_end);
++      if(rd >= 0x40 || ra >= 0x40 || rb >= 0x40)
++        as_bad(_("Register is out of scope for mini-instruction"));
++      lword |= ((ra << 12) | (rb << 6) | rd) << 14;
++    } else { /* 13-bit immediate */
++      as_warn(_("Use \"%si\" instead of \"%s\" for safety"), opcode->name, opcode->name);
++      lword |= SINST_MEMOP(MEM_IMM);
++mini_imm:
++      if(rd >= 0x20)
++        as_bad(_("Register is out of scope for mini-instruction"));
++      op_end = parse_exp_save_ilp(op_end, &arg);
++      fix_new_exp(frag_now,
++                  (p - frag_now->fr_literal),
++                  2,
++                  &arg,
++                  0,
++                  BFD_RELOC_LOBSTER128_13);
++      lword |= (rd) << 14;
++    }
 +    md_number_to_chars(p, lword, 4);
 +    dwarf2_emit_insn(4);
-+  } else if (opcode->type == MINI_OP) {
-+    abort();
 +  } else {
 +    abort();
 +  }
@@ -910,7 +944,7 @@ index 00000000000..b04a43fc41a
 +  while (ISSPACE(*op_end))
 +    op_end++;
 +  if (*op_end != 0)
-+    as_warn(_("extra stuff on line ignored"));
++    as_warn(_("Extra stuff on line ignored"));
 +
 +  if (pending_reloc)
 +    as_bad(_("Something forgot to clean up\n"));
@@ -1258,10 +1292,10 @@ index 00000000000..e1e8e95fdbb
 +#endif /* _ELF_LOBSTER128_H */
 diff --git a/include/opcode/lobster128.h b/include/opcode/lobster128.h
 new file mode 100644
-index 00000000000..94335986d24
+index 00000000000..8c382bc72b0
 --- /dev/null
 +++ b/include/opcode/lobster128.h
-@@ -0,0 +1,86 @@
+@@ -0,0 +1,89 @@
 +/* Definitions for decoding the lobster128 opcode table.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1326,6 +1360,7 @@ index 00000000000..94335986d24
 +#define MEM_STORE16 0b0110
 +#define MEM_STORE32 0b1010
 +#define MEM_STORE64 0b1110
++#define MEM_MOVE 0b0011
 +
 +#define UINST(op) { ((op) << 2) | PREFIX_MICROINST, 0, 0, 0 }
 +#define SINST_MEMOP(memop) ((memop) << 6)
@@ -1333,10 +1368,12 @@ index 00000000000..94335986d24
 +
 +typedef enum lobster128_opc_type_t
 +{
-+  MICRO_OP, /* 16-bits */
-+  MINI_IMM_OP, /* 32-bits, immediate */
-+  MINI_OP, /* 32-bits */
-+  MACRO_OP, /* 64-bits */
++  MICRO_OP = 0, /* 16-bits */
++  MINI_OP = 1, /* 32-bits */
++  MACRO_OP = 2, /* 64-bits */
++
++  MINI_IMM_OP = MINI_OP | 0x40, /* 32-bits, immediate */
++  MINI_REG_OP = MINI_OP | 0x80, /* 32-bits, reg-to-reg */
 +} lobster128_opc_type_t;
 +
 +typedef struct lobster128_opc_info_t
@@ -1346,7 +1383,7 @@ index 00000000000..94335986d24
 +  const char *          name;
 +} lobster128_opc_info_t;
 +
-+#define LOBSTER128_NUM_OPCODES 112
++#define LOBSTER128_NUM_OPCODES 160
 +extern const lobster128_opc_info_t lobster128_opc_info[LOBSTER128_NUM_OPCODES];
 diff --git a/ld/Makefile.am b/ld/Makefile.am
 index d31021c13e2..b0b290c3c3e 100644
@@ -1501,10 +1538,10 @@ index 2c4c1348099..efc7d84b392 100644
  extern int print_insn_m68hc12		(bfd_vma, disassemble_info *);
 diff --git a/opcodes/lobster128-dis.c b/opcodes/lobster128-dis.c
 new file mode 100644
-index 00000000000..cf7b68abac9
+index 00000000000..6dc4402100d
 --- /dev/null
 +++ b/opcodes/lobster128-dis.c
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,127 @@
 +/* Disassemble lobster128 instructions.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1561,15 +1598,23 @@ index 00000000000..cf7b68abac9
 +  "set", "rem", "sex", "push", "pop", "ext"
 +};
 +
-+static const char *deleg_prefixes[7] = {
++static const char *deleg_prefixes[16] = {
 +  "", /* ALU */
 +  "f", /* FPU */
 +  "v", /* VPU */
 +  "vf", /* VFPU */
-+
++  "u0",
++  "u1",
++  "u2",
++  "u3",
++  "u4",
++  "u5",
++  "u6",
++  "u7",
++  "u8",
 +  /* TODO: Use correct values for this */
 +  "c", /* Control */
-+  "", /* Move/memory */
++  "u9", /* Move/memory */
 +  "l", /* Atomic locked operation */
 +};
 +
@@ -1586,9 +1631,9 @@ index 00000000000..cf7b68abac9
 +  bfd_vma iword = info->endian == BFD_ENDIAN_BIG ? bfd_getb16 (buffer) : bfd_getl16 (buffer);
 +  /* We will start from the bottom down, micro insntruction first */
 +  if((iword & 0x03) == PREFIX_MICROINST) {
-+    char op = (iword >> 2) & 0x0f; /* Extract nibble 4-bits for opcode */
-+    char rd = (iword >> 6) & 0x1f;
-+    char rs = (iword >> 11) & 0x1f;
++    int op = (iword >> 2) & 0x0f; /* Extract nibble 4-bits for opcode */
++    int rd = (iword >> 6) & 0x1f;
++    int rs = (iword >> 11) & 0x1f;
 +    fpr(stream, "u.%sr\t%s, %s", op_names[op], reg_names[rd], reg_names[rs]);
 +    return 2;
 +  } else if((iword & 0x03) == PREFIX_MINIINST) {
@@ -1596,17 +1641,24 @@ index 00000000000..cf7b68abac9
 +    if ((status = info->read_memory_func (addr, buffer, 4, info)))
 +      goto fail;
 +    bfd_vma lword = info->endian == BFD_ENDIAN_BIG ? bfd_getb32 (buffer) : bfd_getl32 (buffer);
-+    char del = (lword >> 2) & 0x0f; /* Delegator */
++    int del = (lword >> 2) & 0x0f; /* Delegator */
 +    const char *delprefix = deleg_prefixes[del];
 +    delprefix = delprefix ? delprefix : "\0";
-+    char memop = (lword >> 6) & 0x0f; /* Memory operation */
-+    char op = (lword >> 10) & 0x0f; /* Extract nibble 4-bits for opcode */
-+    char rd = (lword >> 14) & 0x1f;
-+    if(memop == MEM_IMM) {
++    int memop = (lword >> 6) & 0x0f; /* Memory operation */
++    int op = (lword >> 10) & 0x0f; /* Extract nibble 4-bits for opcode */
++    if((memop & 0x3) == MEM_IMM) {
 +      unsigned short imm13 = (lword >> 19) & 0x1fff;
++      int rd = (lword >> 14) & 0x1f;
 +      fpr(stream, "m.%s%si\t%s, %i", delprefix, op_names[op], reg_names[rd], imm13);
 +    } else {
-+      fpr(stream, "m.%s%sm\t%s, %i", delprefix, op_names[op], reg_names[rd], 0);
++      int rd = (lword >> 14) & 0x3f;
++      int ra = ((lword >> 12) >> 14) & 0x3f;
++      int rb = ((lword >> 6) >> 14) & 0x3f;
++      if((memop & 0x3) == MEM_MOVE) {
++        fpr(stream, "m.%s%sr\t%s,%s,%s", delprefix, op_names[op], reg_names[rd], reg_names[ra], reg_names[rb]);
++      } else {
++        fpr(stream, "m.%s%sm\t%s,%s,%s", delprefix, op_names[op], reg_names[rd], reg_names[ra], reg_names[rb]);
++      }
 +    }
 +    return 4;
 +  } else {
@@ -1619,10 +1671,10 @@ index 00000000000..cf7b68abac9
 +}
 diff --git a/opcodes/lobster128-opc.c b/opcodes/lobster128-opc.c
 new file mode 100644
-index 00000000000..3f550fa3f1d
+index 00000000000..3395b6dd864
 --- /dev/null
 +++ b/opcodes/lobster128-opc.c
-@@ -0,0 +1,140 @@
+@@ -0,0 +1,189 @@
 +/* lobster128-opc.c -- Definitions for lobster128 opcodes.
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -1664,55 +1716,6 @@ index 00000000000..3f550fa3f1d
 +  { UINST(XLU_PUSH), MICRO_OP, "u.pushr" },
 +  { UINST(XLU_POP), MICRO_OP, "u.popr" },
 +  { UINST(XLU_EXT), MICRO_OP, "u.extr" },
-+  /* Mini instructions */
-+  { SINST(XLU_ADD, DELEG_ALU, 0), MINI_OP, "m.add" },
-+  { SINST(XLU_SUB, DELEG_ALU, 0), MINI_OP, "m.sub" },
-+  { SINST(XLU_AND, DELEG_ALU, 0), MINI_OP, "m.and" },
-+  { SINST(XLU_NOT, DELEG_ALU, 0), MINI_OP, "m.not" },
-+  { SINST(XLU_LSH, DELEG_ALU, 0), MINI_OP, "m.lsh" },
-+  { SINST(XLU_RSH, DELEG_ALU, 0), MINI_OP, "m.rsh" },
-+  { SINST(XLU_OR, DELEG_ALU, 0), MINI_OP, "m.or" },
-+  { SINST(XLU_XOR, DELEG_ALU, 0), MINI_OP, "m.xor" },
-+  { SINST(XLU_MUL, DELEG_ALU, 0), MINI_OP, "m.mul" },
-+  { SINST(XLU_DIV, DELEG_ALU, 0), MINI_OP, "m.div" },
-+  { SINST(XLU_SET, DELEG_ALU, 0), MINI_OP, "m.set" },
-+  { SINST(XLU_REM, DELEG_ALU, 0), MINI_OP, "m.rem" },
-+  { SINST(XLU_SEX, DELEG_ALU, 0), MINI_OP, "m.sex" },
-+  { SINST(XLU_PUSH, DELEG_ALU, 0), MINI_OP, "m.push" },
-+  { SINST(XLU_POP, DELEG_ALU, 0), MINI_OP, "m.pop" },
-+  { SINST(XLU_EXT, DELEG_ALU, 0), MINI_OP, "m.ext" },
-+  { SINST(XLU_ADD, DELEG_FPU, 0), MINI_OP, "m.fadd" },
-+  { SINST(XLU_SUB, DELEG_FPU, 0), MINI_OP, "m.fsub" },
-+  { SINST(XLU_AND, DELEG_FPU, 0), MINI_OP, "m.fand" },
-+  { SINST(XLU_NOT, DELEG_FPU, 0), MINI_OP, "m.fnot" },
-+  { SINST(XLU_LSH, DELEG_FPU, 0), MINI_OP, "m.flsh" },
-+  { SINST(XLU_RSH, DELEG_FPU, 0), MINI_OP, "m.frsh" },
-+  { SINST(XLU_OR, DELEG_FPU, 0), MINI_OP, "m.for" },
-+  { SINST(XLU_XOR, DELEG_FPU, 0), MINI_OP, "m.fxor" },
-+  { SINST(XLU_MUL, DELEG_FPU, 0), MINI_OP, "m.fmul" },
-+  { SINST(XLU_DIV, DELEG_FPU, 0), MINI_OP, "m.fdiv" },
-+  { SINST(XLU_SET, DELEG_FPU, 0), MINI_OP, "m.fset" },
-+  { SINST(XLU_REM, DELEG_FPU, 0), MINI_OP, "m.frem" },
-+  { SINST(XLU_SEX, DELEG_FPU, 0), MINI_OP, "m.fsex" },
-+  { SINST(XLU_PUSH, DELEG_FPU, 0), MINI_OP, "m.fpush" },
-+  { SINST(XLU_POP, DELEG_FPU, 0), MINI_OP, "m.fpop" },
-+  { SINST(XLU_EXT, DELEG_FPU, 0), MINI_OP, "m.fext" },
-+  { SINST(XLU_ADD, DELEG_VPU, 0), MINI_OP, "m.vadd" },
-+  { SINST(XLU_SUB, DELEG_VPU, 0), MINI_OP, "m.vsub" },
-+  { SINST(XLU_AND, DELEG_VPU, 0), MINI_OP, "m.vand" },
-+  { SINST(XLU_NOT, DELEG_VPU, 0), MINI_OP, "m.vnot" },
-+  { SINST(XLU_LSH, DELEG_VPU, 0), MINI_OP, "m.vlsh" },
-+  { SINST(XLU_RSH, DELEG_VPU, 0), MINI_OP, "m.vrsh" },
-+  { SINST(XLU_OR, DELEG_VPU, 0), MINI_OP, "m.vor" },
-+  { SINST(XLU_XOR, DELEG_VPU, 0), MINI_OP, "m.vxor" },
-+  { SINST(XLU_MUL, DELEG_VPU, 0), MINI_OP, "m.vmul" },
-+  { SINST(XLU_DIV, DELEG_VPU, 0), MINI_OP, "m.vdiv" },
-+  { SINST(XLU_SET, DELEG_VPU, 0), MINI_OP, "m.vset" },
-+  { SINST(XLU_REM, DELEG_VPU, 0), MINI_OP, "m.vrem" },
-+  { SINST(XLU_SEX, DELEG_VPU, 0), MINI_OP, "m.vsex" },
-+  { SINST(XLU_PUSH, DELEG_VPU, 0), MINI_OP, "m.vpush" },
-+  { SINST(XLU_POP, DELEG_VPU, 0), MINI_OP, "m.vpop" },
-+  { SINST(XLU_EXT, DELEG_VPU, 0), MINI_OP, "m.vext" },
 +  /* Immediate mini instructions */
 +  { SINST(XLU_ADD, DELEG_ALU, MEM_IMM), MINI_IMM_OP, "m.addi" },
 +  { SINST(XLU_SUB, DELEG_ALU, MEM_IMM), MINI_IMM_OP, "m.subi" },
@@ -1762,4 +1765,102 @@ index 00000000000..3f550fa3f1d
 +  { SINST(XLU_PUSH, DELEG_VPU, MEM_IMM), MINI_IMM_OP, "m.vpushi" },
 +  { SINST(XLU_POP, DELEG_VPU, MEM_IMM), MINI_IMM_OP, "m.vpopi" },
 +  { SINST(XLU_EXT, DELEG_VPU, MEM_IMM), MINI_IMM_OP, "m.vexti" },
++  /* Register mini instructions */
++  { SINST(XLU_ADD, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.addr" },
++  { SINST(XLU_SUB, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.subr" },
++  { SINST(XLU_AND, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.andr" },
++  { SINST(XLU_NOT, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.notr" },
++  { SINST(XLU_LSH, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.lshr" },
++  { SINST(XLU_RSH, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.rshr" },
++  { SINST(XLU_OR, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.orr" },
++  { SINST(XLU_XOR, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.xorr" },
++  { SINST(XLU_MUL, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.mulr" },
++  { SINST(XLU_DIV, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.divr" },
++  { SINST(XLU_SET, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.setr" },
++  { SINST(XLU_REM, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.remr" },
++  { SINST(XLU_SEX, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.sexr" },
++  { SINST(XLU_PUSH, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.pushr" },
++  { SINST(XLU_POP, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.popr" },
++  { SINST(XLU_EXT, DELEG_ALU, MEM_MOVE), MINI_REG_OP, "m.extr" },
++  { SINST(XLU_ADD, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.faddr" },
++  { SINST(XLU_SUB, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fsubr" },
++  { SINST(XLU_AND, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fandr" },
++  { SINST(XLU_NOT, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fnotr" },
++  { SINST(XLU_LSH, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.flshr" },
++  { SINST(XLU_RSH, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.frshr" },
++  { SINST(XLU_OR, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.forr" },
++  { SINST(XLU_XOR, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fxorr" },
++  { SINST(XLU_MUL, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fmulr" },
++  { SINST(XLU_DIV, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fdivr" },
++  { SINST(XLU_SET, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fsetr" },
++  { SINST(XLU_REM, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fremr" },
++  { SINST(XLU_SEX, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fsexr" },
++  { SINST(XLU_PUSH, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fpushr" },
++  { SINST(XLU_POP, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fpopr" },
++  { SINST(XLU_EXT, DELEG_FPU, MEM_MOVE), MINI_REG_OP, "m.fextr" },
++  { SINST(XLU_ADD, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vaddr" },
++  { SINST(XLU_SUB, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vsubr" },
++  { SINST(XLU_AND, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vandr" },
++  { SINST(XLU_NOT, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vnotr" },
++  { SINST(XLU_LSH, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vlshr" },
++  { SINST(XLU_RSH, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vrshr" },
++  { SINST(XLU_OR, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vorr" },
++  { SINST(XLU_XOR, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vxorr" },
++  { SINST(XLU_MUL, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vmulr" },
++  { SINST(XLU_DIV, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vdivr" },
++  { SINST(XLU_SET, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vsetr" },
++  { SINST(XLU_REM, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vremr" },
++  { SINST(XLU_SEX, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vsexr" },
++  { SINST(XLU_PUSH, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vpushr" },
++  { SINST(XLU_POP, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vpopr" },
++  { SINST(XLU_EXT, DELEG_VPU, MEM_MOVE), MINI_REG_OP, "m.vextr" },
++  /* Mini instructions */
++  { SINST(XLU_ADD, DELEG_ALU, 0), MINI_OP, "m.add" },
++  { SINST(XLU_SUB, DELEG_ALU, 0), MINI_OP, "m.sub" },
++  { SINST(XLU_AND, DELEG_ALU, 0), MINI_OP, "m.and" },
++  { SINST(XLU_NOT, DELEG_ALU, 0), MINI_OP, "m.not" },
++  { SINST(XLU_LSH, DELEG_ALU, 0), MINI_OP, "m.lsh" },
++  { SINST(XLU_RSH, DELEG_ALU, 0), MINI_OP, "m.rsh" },
++  { SINST(XLU_OR, DELEG_ALU, 0), MINI_OP, "m.or" },
++  { SINST(XLU_XOR, DELEG_ALU, 0), MINI_OP, "m.xor" },
++  { SINST(XLU_MUL, DELEG_ALU, 0), MINI_OP, "m.mul" },
++  { SINST(XLU_DIV, DELEG_ALU, 0), MINI_OP, "m.div" },
++  { SINST(XLU_SET, DELEG_ALU, 0), MINI_OP, "m.set" },
++  { SINST(XLU_REM, DELEG_ALU, 0), MINI_OP, "m.rem" },
++  { SINST(XLU_SEX, DELEG_ALU, 0), MINI_OP, "m.sex" },
++  { SINST(XLU_PUSH, DELEG_ALU, 0), MINI_OP, "m.push" },
++  { SINST(XLU_POP, DELEG_ALU, 0), MINI_OP, "m.pop" },
++  { SINST(XLU_EXT, DELEG_ALU, 0), MINI_OP, "m.ext" },
++  { SINST(XLU_ADD, DELEG_FPU, 0), MINI_OP, "m.fadd" },
++  { SINST(XLU_SUB, DELEG_FPU, 0), MINI_OP, "m.fsub" },
++  { SINST(XLU_AND, DELEG_FPU, 0), MINI_OP, "m.fand" },
++  { SINST(XLU_NOT, DELEG_FPU, 0), MINI_OP, "m.fnot" },
++  { SINST(XLU_LSH, DELEG_FPU, 0), MINI_OP, "m.flsh" },
++  { SINST(XLU_RSH, DELEG_FPU, 0), MINI_OP, "m.frsh" },
++  { SINST(XLU_OR, DELEG_FPU, 0), MINI_OP, "m.for" },
++  { SINST(XLU_XOR, DELEG_FPU, 0), MINI_OP, "m.fxor" },
++  { SINST(XLU_MUL, DELEG_FPU, 0), MINI_OP, "m.fmul" },
++  { SINST(XLU_DIV, DELEG_FPU, 0), MINI_OP, "m.fdiv" },
++  { SINST(XLU_SET, DELEG_FPU, 0), MINI_OP, "m.fset" },
++  { SINST(XLU_REM, DELEG_FPU, 0), MINI_OP, "m.frem" },
++  { SINST(XLU_SEX, DELEG_FPU, 0), MINI_OP, "m.fsex" },
++  { SINST(XLU_PUSH, DELEG_FPU, 0), MINI_OP, "m.fpush" },
++  { SINST(XLU_POP, DELEG_FPU, 0), MINI_OP, "m.fpop" },
++  { SINST(XLU_EXT, DELEG_FPU, 0), MINI_OP, "m.fext" },
++  { SINST(XLU_ADD, DELEG_VPU, 0), MINI_OP, "m.vadd" },
++  { SINST(XLU_SUB, DELEG_VPU, 0), MINI_OP, "m.vsub" },
++  { SINST(XLU_AND, DELEG_VPU, 0), MINI_OP, "m.vand" },
++  { SINST(XLU_NOT, DELEG_VPU, 0), MINI_OP, "m.vnot" },
++  { SINST(XLU_LSH, DELEG_VPU, 0), MINI_OP, "m.vlsh" },
++  { SINST(XLU_RSH, DELEG_VPU, 0), MINI_OP, "m.vrsh" },
++  { SINST(XLU_OR, DELEG_VPU, 0), MINI_OP, "m.vor" },
++  { SINST(XLU_XOR, DELEG_VPU, 0), MINI_OP, "m.vxor" },
++  { SINST(XLU_MUL, DELEG_VPU, 0), MINI_OP, "m.vmul" },
++  { SINST(XLU_DIV, DELEG_VPU, 0), MINI_OP, "m.vdiv" },
++  { SINST(XLU_SET, DELEG_VPU, 0), MINI_OP, "m.vset" },
++  { SINST(XLU_REM, DELEG_VPU, 0), MINI_OP, "m.vrem" },
++  { SINST(XLU_SEX, DELEG_VPU, 0), MINI_OP, "m.vsex" },
++  { SINST(XLU_PUSH, DELEG_VPU, 0), MINI_OP, "m.vpush" },
++  { SINST(XLU_POP, DELEG_VPU, 0), MINI_OP, "m.vpop" },
++  { SINST(XLU_EXT, DELEG_VPU, 0), MINI_OP, "m.vext" },
 +};
