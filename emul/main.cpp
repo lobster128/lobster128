@@ -210,12 +210,16 @@ int main(int argc, char **argv, char **env)
             gdbstub_breakpoint_hit(gdb);
         }
 
+        ctx.count = 50;
         while (ctx.count)
         {
             ctx.step();
             ctx.count--;
         }
+        break;
+#if 0
         gdbstub_tick(gdb);
+#endif
     }
     gdbstub_term(gdb);
     return 0;

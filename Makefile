@@ -61,7 +61,7 @@ gcc:
 	-git clone git://gcc.gnu.org/git/gcc.git $@
 	cd $@ && git apply ../gcc-patch.diff
 
-build-gcc-lobster128/Makefile:
+build-gcc-lobster128/Makefile: gcc
 	mkdir -p build-gcc-lobster128 $(PREFIX)
 	cd build-gcc-lobster128 && ../gcc/configure $(GCC_CONFIG_OPT)
 
@@ -79,7 +79,7 @@ binutils:
 	-git clone https://github.com/bminor/binutils-gdb $@
 	cd $@ && git apply ../binutils-patch.diff
 
-build-binutils-lobster128/Makefile:
+build-binutils-lobster128/Makefile: binutils
 	mkdir -p build-binutils-lobster128 $(PREFIX)
 	cd build-binutils-lobster128 && ../binutils/configure $(BINUTILS_CONFIG_OPT)
 

@@ -95,6 +95,7 @@ module lobster_mini_exec
   localparam MEM_LOAD32  = 4'b1001;
   localparam MEM_LOAD64  = 4'b1101;
   localparam MEM_STORE   = 2'b10;         // Store
+  localparam MEM_MOVE    = 2'b11;         // Move (usually reg-to-reg)
   localparam MEM_STORE8  = 4'b0010;
   localparam MEM_STORE16 = 4'b0110;
   localparam MEM_STORE32 = 4'b1010;

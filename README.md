@@ -14,6 +14,10 @@
 * [ ] Fully pipelined with minimal stalls.
 * [ ] Hardware task switch.
 * [ ] VLIW instructions (aka. not RISC).
+* [ ] Register colourer.
+* [ ] Instruction scheduling.
+* [ ] Unaligned access support.
+* [ ] Memory address colouring.
 
 # Building
 Pre-requirements:
