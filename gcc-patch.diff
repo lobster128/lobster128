@@ -1,17 +1,3 @@
-diff --git a/config.guess b/config.guess
-index 1972fda8eb0..3a3c543ceb9 100755
---- a/config.guess
-+++ b/config.guess
-@@ -995,6 +995,9 @@ EOF
-     k1om:Linux:*:*)
- 	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
- 	exit ;;
-+	lobster128:Linux:*:*)
-+	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
-+	exit ;;
-     loongarch32:Linux:*:* | loongarch64:Linux:*:* | loongarchx32:Linux:*:*)
- 	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
- 	exit ;;
 diff --git a/config.sub b/config.sub
 index 38f3d037a78..9fe774727ee 100755
 --- a/config.sub
@@ -24,39 +10,11 @@ index 38f3d037a78..9fe774727ee 100755
  			| loongarch32 | loongarch64 | loongarchx32 \
  			| m32c | m32r | m32rle \
  			| m5200 | m68000 | m680[012346]0 | m68360 | m683?2 | m68k \
-diff --git a/configure b/configure
-index 81c034b553f..5fec4c973af 100755
---- a/configure
-+++ b/configure
-@@ -4026,6 +4026,9 @@ case "${target}" in
-   wasm32-*-*)
-     noconfigdirs="$noconfigdirs ld"
-     ;;
-+  lobster128-*-*)
-+    noconfigdirs="$noconfigdirs"
-+    ;;
-   loongarch*-*-linux*)
-     ;;
-   loongarch*-*-*)
-diff --git a/configure.ac b/configure.ac
-index 13f8c5f2a9f..b03e2142191 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1283,6 +1283,9 @@ case "${target}" in
-   wasm32-*-*)
-     noconfigdirs="$noconfigdirs ld"
-     ;;
-+  lobster128-*-*)
-+    noconfigdirs="$noconfigdirs"
-+    ;;
-   loongarch*-*-linux*)
-     ;;
-   loongarch*-*-*)
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 02f58970db0..2b83c6f006e 100644
+index f4e757bd853..89fe55261a3 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -453,6 +453,11 @@ mips*-*-*)
+@@ -452,6 +452,11 @@ mips*-*-*)
  	extra_objs="frame-header-opt.o"
  	extra_options="${extra_options} g.opt fused-madd.opt mips/mips-tables.opt"
  	;;
@@ -68,19 +26,19 @@ index 02f58970db0..2b83c6f006e 100644
  loongarch*-*-*)
  	cpu_type=loongarch
  	extra_headers="larchintrin.h"
-@@ -2502,7 +2507,12 @@ riscv*-*-freebsd*)
- 	# automatically detect that GAS supports it, yet we require it.
+@@ -2420,6 +2425,13 @@ riscv*-*-freebsd*)
  	gcc_cv_initfini_array=yes
  	;;
--
+ 
 +lobster128*-*-linux* | lobster128*-*-elf*)
 +	gas=yes
 +	gnu_ld=yes
-+	tm_file="${tm_file} dbxelf.h elfos.h newlib-stdint.h"
++	tm_file="${tm_file} elfos.h newlib-stdint.h"
 +	tmake_file="${tmake_file}"
 +	;;
++
  loongarch*-*-linux*)
- 	tm_file="dbxelf.h elfos.h gnu-user.h linux.h linux-android.h glibc-stdint.h ${tm_file}"
+ 	tm_file="elfos.h gnu-user.h linux.h linux-android.h glibc-stdint.h ${tm_file}"
  	tm_file="${tm_file} loongarch/gnu-user.h loongarch/linux.h"
 diff --git a/gcc/config/lobster128/constraints.md b/gcc/config/lobster128/constraints.md
 new file mode 100644
@@ -219,10 +177,10 @@ index 00000000000..92eca311d45
 +
 diff --git a/gcc/config/lobster128/lobster128.cc b/gcc/config/lobster128/lobster128.cc
 new file mode 100644
-index 00000000000..ac7e6395ec3
+index 00000000000..c613f5368d2
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.cc
-@@ -0,0 +1,560 @@
+@@ -0,0 +1,574 @@
 +/* Subroutines used for code generation on Vitesse lobster128 processors
 +   Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -292,7 +250,22 @@ index 00000000000..ac7e6395ec3
 +
 +void lobster128_init_builtins(void)
 +{
++}
 +
++static rtx
++lobster128_push(rtx val)
++{
++  rtx arg_reg = gen_rtx_REG(Pmode, ARG_POINTER_REGNUM);
++  emit_insn(gen_subti3(arg_reg, arg_reg, GEN_INT(GET_MODE_SIZE(Pmode))));
++  return emit_move_insn(gen_rtx_MEM(Pmode, arg_reg), val);
++}
++
++static rtx
++lobster128_pop(rtx val)
++{
++  rtx arg_reg = gen_rtx_REG(Pmode, ARG_POINTER_REGNUM);
++  emit_insn(gen_addti3(arg_reg, arg_reg, GEN_INT(GET_MODE_SIZE(Pmode))));
++  return emit_move_insn(val, gen_rtx_MEM(Pmode, arg_reg));
 +}
 +
 +/* Worker function for TARGET_SETUP_INCOMING_VARARGS.  */
@@ -304,19 +277,13 @@ index 00000000000..ac7e6395ec3
 +  CUMULATIVE_ARGS *cum = get_cumulative_args(cum_v);
 +  int regs = LOBSTER128_LAST - cum->used_regs;
 +
-+  *pretend_size = regs < 0 ? 0 : GET_MODE_SIZE(TImode) * regs;
++  *pretend_size = regs < 0 ? 0 : GET_MODE_SIZE(Pmode) * regs;
 +
 +  if (no_rtl)
 +    return;
-+
++  
 +  for (int regno = cum->used_regs; regno < LOBSTER128_MAX_ARG_REGNO; regno++)
-+  {
-+    rtx reg = gen_rtx_REG(TImode, regno);
-+    rtx slot = gen_rtx_PLUS(Pmode,
-+                            gen_rtx_REG(TImode, ARG_POINTER_REGNUM),
-+                            GEN_INT(GET_MODE_SIZE(TImode) * ((regno - 4))));
-+    emit_move_insn(gen_rtx_MEM(TImode, slot), reg);
-+  }
++    lobster128_push(gen_rtx_REG(Pmode, regno));
 +}
 +
 +/* Worker function for TARGET_TRAMPOLINE_INIT.  */
@@ -337,7 +304,7 @@ index 00000000000..ac7e6395ec3
 +lobster128_return_in_memory(const_tree type, const_tree fntype ATTRIBUTE_UNUSED)
 +{
 +  const HOST_WIDE_INT size = int_size_in_bytes(type);
-+  return (size == -1 || size > GET_MODE_SIZE(TImode));
++  return size == -1 || size > GET_MODE_SIZE(TImode);
 +}
 +
 +/* Zero initialization is OK for all current fields.  */
@@ -351,10 +318,9 @@ index 00000000000..ac7e6395ec3
 +static bool
 +lobster128_reg_ok_for_base_p(const_rtx reg, bool strict)
 +{
-+  if (strict && REGNO_OK_FOR_BASE_P (REGNO (reg)))
++  if (strict && REGNO_OK_FOR_BASE_P(REGNO(reg)))
 +    return true;
-+  else if (!strict
-+	   && ((REGNO (reg) < LOBSTER128_LAST) || !HARD_REGISTER_P (reg)))
++  else if (!strict && ((REGNO(reg) < LOBSTER128_LAST) || !HARD_REGISTER_P(reg)))
 +    return true;
 +  else
 +    return false;
@@ -369,22 +335,22 @@ index 00000000000..ac7e6395ec3
 +  gcc_assert(ADDR_SPACE_GENERIC_P(as));
 +  if (REG_P(x) && lobster128_reg_ok_for_base_p(x, strict_p))
 +    return true;
-+  
-+  switch(GET_CODE(x))
++
++  switch (GET_CODE(x))
 +  {
-+    case PLUS:
-+      if(REG_P(XEXP(x, 0)) && lobster128_reg_ok_for_base_p(XEXP(x, 0), strict_p) && CONST_INT_P(XEXP(x, 1)) && IN_RANGE(INTVAL(XEXP(x, 1)), 0, 0xffffffffffffffff))
-+      {
-+        return true;
-+      }
-+      break;
-+    case SYMBOL_REF:
-+    case LABEL_REF:
-+    case CONST:
-+    case CONST_INT:
++  case PLUS:
++    if (REG_P(XEXP(x, 0)) && lobster128_reg_ok_for_base_p(XEXP(x, 0), strict_p) && CONST_INT_P(XEXP(x, 1)) && IN_RANGE(INTVAL(XEXP(x, 1)), 0, 0xffffffffffffffff))
++    {
 +      return true;
-+    default:
-+      break;
++    }
++    break;
++  case SYMBOL_REF:
++  case LABEL_REF:
++  case CONST:
++  case CONST_INT:
++    return true;
++  default:
++    break;
 +  }
 +  return false;
 +}
@@ -552,15 +518,15 @@ index 00000000000..ac7e6395ec3
 +  lobster128_compute_frame();
 +  if (flag_stack_usage_info)
 +    current_function_static_stack_size = cfun->machine->size_for_adjusting_sp;
-+  
++
 +  rtx insn;
 +  /* Save callee-saved registers.  */
 +  for (int regno = 4; regno < FIRST_PSEUDO_REGISTER; regno++)
 +  {
 +    if (df_regs_ever_live_p(regno) && !call_used_or_fixed_reg_p(regno))
 +    {
-+      /*insn = emit_insn(gen_movti_push(stack_pointer_rtx, gen_rtx_REG(Pmode, regno)));
-+      RTX_FRAME_RELATED_P(insn) = 1;*/
++      insn = lobster128_push(gen_rtx_REG(Pmode, regno));
++      RTX_FRAME_RELATED_P(insn) = 1;
 +    }
 +  }
 +
@@ -613,15 +579,19 @@ index 00000000000..ac7e6395ec3
 +      emit_move_insn(reg, GEN_INT(-cfun->machine->callee_saved_reg_size));
 +      emit_insn(gen_addti3(reg, reg, hard_frame_pointer_rtx));
 +    }
-+    for (int regno = FIRST_PSEUDO_REGISTER; regno-- > 0;)
++    for (int regno = FIRST_PSEUDO_REGISTER; regno-- > 4; )
 +      if (!call_used_or_fixed_reg_p(regno) && df_regs_ever_live_p(regno))
-+      {
-+        rtx preg = gen_rtx_REG(Pmode, regno);
-+        emit_insn(gen_movti_pop(reg, preg));
-+      }
++        lobster128_pop(gen_rtx_REG(Pmode, regno));
 +  }
 +
 +  emit_jump_insn(gen_returner());
++}
++
++static rtx
++lobster128_libcall_value (machine_mode mode,
++                          const_rtx fun ATTRIBUTE_UNUSED)
++{
++  return gen_rtx_REG (mode, RETURN_ADDRESS_POINTER_REGNUM);
 +}
 +
 +/* The PRINT_OPERAND_ADDRESS worker.  */
@@ -779,13 +749,15 @@ index 00000000000..ac7e6395ec3
 +#define TARGET_SETUP_INCOMING_VARARGS lobster128_setup_incoming_varargs
 +#undef TARGET_TRAMPOLINE_INIT
 +#define TARGET_TRAMPOLINE_INIT lobster128_trampoline_init
++#undef TARGET_LIBCALL_VALUE
++#define TARGET_LIBCALL_VALUE lobster128_libcall_value
 +
 +struct gcc_target targetm = TARGET_INITIALIZER;
 +
 +#include "gt-lobster128.h"
 diff --git a/gcc/config/lobster128/lobster128.h b/gcc/config/lobster128/lobster128.h
 new file mode 100644
-index 00000000000..8cfaf3828f4
+index 00000000000..75eb02d4f55
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.h
 @@ -0,0 +1,485 @@
@@ -887,12 +859,12 @@ index 00000000000..8cfaf3828f4
 +/* Define this macro to the minimum alignment enforced by hardware
 +   for the stack pointer on this machine.  The definition is a C
 +   expression for the desired alignment (measured in bits).  */
-+#define STACK_BOUNDARY 8
++#define STACK_BOUNDARY 64
 +
 +/* Normal alignment required for function parameters on the stack, in
 +   bits.  All stack parameters receive at least this much alignment
 +   regardless of data type.  */
-+#define PARM_BOUNDARY 8
++#define PARM_BOUNDARY 64
 +
 +/* No data type wants to be aligned rounder than this.  */
 +#define BIGGEST_ALIGNMENT 128
@@ -902,7 +874,7 @@ index 00000000000..8cfaf3828f4
 +
 +/* Set this nonzero if move instructions will actually fail to work
 +   when given unaligned data.  */
-+#define STRICT_ALIGNMENT 0
++#define STRICT_ALIGNMENT 64
 +
 +/* Storage Layout */
 +
@@ -911,7 +883,7 @@ index 00000000000..8cfaf3828f4
 +#define WORDS_BIG_ENDIAN 0
 +
 +/* Alignment required for a function entry point, in bits.  */
-+#define FUNCTION_BOUNDARY 8
++#define FUNCTION_BOUNDARY 64
 +
 +/* Define this macro as a C expression which is nonzero if accessing
 +   less than a word of memory (i.e. a `char' or a `short') is no
@@ -1276,10 +1248,10 @@ index 00000000000..8cfaf3828f4
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..c7d21d454e2
+index 00000000000..7081f28bd04
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
-@@ -0,0 +1,372 @@
+@@ -0,0 +1,439 @@
 +;;  lobster128.md	     Machine Description for lobster128 processors
 +;;  Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -1332,101 +1304,168 @@ index 00000000000..c7d21d454e2
 +(define_insn "nop"
 +  [(const_int 0)]
 +  ""
-+  "z.nop")
++  "u.add r0,r0")
 +
 +;; -------------------------------------------------------------------------
 +;; Micro-arithmethic instruction ops
 +;; -------------------------------------------------------------------------
-+(define_insn "addti3"
-+  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r,r,r")
++(define_insn "addti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (plus:TI
-+      (match_operand:TI 1 "lobster128_ureg_operand" "0,0,0")
-+      (match_operand:TI 2 "lobster128_ureg_operand" "r,i,m")))]
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.addr %0,%2"
++  "u.add %0,%1"
 +  [(set_attr "type" "micro")])
 +
-+(define_insn "subti3"
-+  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r,r,r")
++(define_insn "subti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (minus:TI
-+      (match_operand:TI 1 "lobster128_ureg_operand" "0,0,0")
-+      (match_operand:TI 2 "lobster128_ureg_operand" "r,i,m")))]
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.addr %0,%2"
++  "u.sub %0,%1"
 +  [(set_attr "type" "micro")])
 +
-+(define_insn "multi3"
-+  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r,r,r")
++(define_insn "multi2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (mult:TI
-+      (match_operand:TI 1 "lobster128_ureg_operand" "0,0,0")
-+      (match_operand:TI 2 "lobster128_ureg_operand" "r,i,m")))]
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.addr %0,%2"
++  "u.mul %0,%1"
 +  [(set_attr "type" "micro")])
 +
-+(define_insn "divti3"
-+  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r")
++(define_insn "divti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (div:TI
-+      (match_operand:TI 1 "lobster128_ureg_operand" "0")
-+      (match_operand:TI 2 "lobster128_ureg_operand" "r")))]
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.divr %0,%2"
++  "u.div %0,%1"
 +  [(set_attr "type" "micro")])
 +
-+(define_insn "iorti3"
-+  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r")
++(define_insn "iorti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (ior:TI
-+      (match_operand:TI 1 "lobster128_ureg_operand" "0")
-+      (match_operand:TI 2 "lobster128_ureg_operand" "r")))]
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.orr %0,%2"
++  "u.or %0,%1"
 +  [(set_attr "type" "micro")])
 +
-+(define_insn "xorti3"
-+  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r")
++(define_insn "xorti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (xor:TI
-+      (match_operand:TI 1 "lobster128_ureg_operand" "0")
-+      (match_operand:TI 2 "lobster128_ureg_operand" "r")))]
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.xorr %0,%2"
++  "u.xor %0,%1"
 +  [(set_attr "type" "micro")])
 +
-+(define_insn "movti2"
++(define_insn "ashrti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
++    (ashiftrt:TI
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
++  ""
++  "u.rsh %0,%1"
++  [(set_attr "type" "micro")])
++
++(define_insn "ashlti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
++    (ashift:TI
++      (match_dup 0)
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
++  ""
++  "u.lsh %0,%1"
++  [(set_attr "type" "micro")])
++
++(define_insn "*movti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r")
 +    (match_operand:TI 1 "lobster128_ureg_operand" "r"))]
 +  ""
-+  "u.setr %0,%1"
++  "u.set %0,%1"
++  [(set_attr "type" "micro")])
++
++;; -------------------------------------------------------------------------
++;; Mini-arithmethic instruc<mode>on ops
++;; -------------------------------------------------------------------------
++(define_insn "add<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (plus:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.add %0,%1,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "sub<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (minus:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "r")))]
++  ""
++  "m.sub %0,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "mul<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (mult:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.mul %0,%1,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "div<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (div:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.div %0,%1,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "ior<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (ior:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.or %0,%1,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "xor<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (xor:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.xor %0,%1,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "ashr<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (ashiftrt:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.rsh %0,%1,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "ashl<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++    (ashift:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
++      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++  ""
++  "m.lsh %0,%1,%2"
 +  [(set_attr "type" "micro")])
 +
 +;; -------------------------------------------------------------------------
 +;; Move instructions
 +;; -------------------------------------------------------------------------
-+;; Push a register onto the stack
-+(define_insn "mov<mode>_push"
-+  [(set (mem:MODE (minus:MODE
-+      (match_operand:MODE 0 "lobster128_general_movsrc_operand" "=r,r,r")
-+      (const_int 16)))
-+    (match_operand:MODE 1 "lobster128_mreg_operand" "r,i,m"))]
-+  ""
-+  "@
-+  m.pushr<lenx> %0,%1
-+  m.pushi<lenx> %0,%1
-+  m.pushm<lenx> %0,%1"
-+  [(set_attr "type" "mini")])
-+
-+;; Pop a register from the stack
-+(define_insn "mov<mode>_pop"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "=r,r,r")
-+    (mem:MODE (plus:MODE
-+      (match_operand:MODE 1 "lobster128_general_movsrc_operand" "r,i,m")
-+      (const_int 16))))]
-+  ""
-+  "@
-+  m.popr<lenx> %0,%1
-+  m.popi<lenx> %0,%1
-+  m.popm<lenx> %0,%1"
-+  [(set_attr "type" "mini")])
-+
 +(define_expand "mov<mode>"
 +  [(set (match_operand:MODE 0 "general_operand" "")
 +	      (match_operand:MODE 1 "general_operand" ""))]
@@ -1459,8 +1498,8 @@ index 00000000000..c7d21d454e2
 +}")
 +
 +(define_insn "*mov<mode>"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "=r,r,r,r,W,r,m,r")
-+	(match_operand:MODE 1 "lobster128_general_movsrc_operand" "O,r,M,i,r,W,r,m"))]
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "=r,Wm")
++	(match_operand:MODE 1 "lobster128_general_movsrc_operand" "OrMiWm,r"))]
 +  "register_operand (operands[0], <MODE>mode)
 +    || register_operand (operands[1], <MODE>mode)"
 +  "*
@@ -1471,33 +1510,33 @@ index 00000000000..c7d21d454e2
 +
 +(define_insn "movstr<mode>"
 +  [(set (reg:MODE 0) (const_int 0))
-+  (parallel [(set (match_operand:MODE 0 "nonimmediate_operand" "=m,m")
-+    (match_operand:MODE 1 "lobster128_general_movsrc_operand" "m,m"))
-+    (match_operand:MODE 2 "lobster128_arith_operand" "i,r")
++  (parallel [(set (match_operand:MODE 0 "nonimmediate_operand" "=m")
++    (match_operand:MODE 1 "lobster128_general_movsrc_operand" "WMr"))
++    (match_operand:MODE 2 "lobster128_arith_operand" "rWM")
 +    (clobber (reg:CC CC_REG))])]
 +  ""
 +  "l.set<lenx> %0,%1,%2"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "zero_extend<mode>ti2"
-+  [(set (match_operand:TI 0 "register_operand" "=r")
-+	  (zero_extend:TI (match_operand:MODE 1 "nonimmediate_operand" "")))]
++  [(set (match_operand:TI 0 "lobster128_mreg_operand" "=r")
++	  (zero_extend:TI (match_operand:MODE 1 "lobster128_arith_operand" "rWM")))]
 +  ""
-+  "m.extr<lenx> %0,%1"
++  "m.ext<lenx> %0,%1"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "sign_extend<mode>ti2"
-+  [(set (match_operand:TI 0 "register_operand" "=r")
-+	  (sign_extend:TI (match_operand:MODE 1 "nonimmediate_operand" "")))]
++  [(set (match_operand:TI 0 "lobster128_mreg_operand" "=r")
++	  (sign_extend:TI (match_operand:MODE 1 "lobster128_arith_operand" "rWM")))]
 +  ""
-+  "m.sexr<lenx> %0,%1"
++  "m.sex<lenx> %0,%1"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "ptr_extend<mode>"
-+  [(set (match_operand:TI 0 "register_operand" "=r")
-+	  (zero_extend:TI (match_operand:MODE 1 "register_operand" "r")))]
++  [(set (match_operand:TI 0 "lobster128_mreg_operand" "=r")
++	  (zero_extend:TI (match_operand:MODE 1 "lobster128_arith_operand" "rWM")))]
 +  ""
-+  "m.setr<lenx> %0,%1"
++  "m.set<lenx> %0,%1"
 +  [(set_attr "type" "mini")])
 +
 +;; -------------------------------------------------------------------------
@@ -1577,7 +1616,7 @@ index 00000000000..c7d21d454e2
 +})
 +
 +(define_insn "*call"
-+  [(call (mem:TI (match_operand:TI 0 "nonmemory_operand" "i,r"))
++  [(call (mem:TI (match_operand:TI 0 "nonmemory_operand" "ir"))
 +	 (match_operand 1 "" ""))]
 +  ""
 +  "z.call %1")
@@ -1651,7 +1690,7 @@ index 00000000000..c7d21d454e2
 +(define_insn "returner"
 +  [(return)]
 +  "reload_completed"
-+  "z.ret.owo")
++  "z.ret")
 diff --git a/gcc/config/lobster128/lobster128.opt b/gcc/config/lobster128/lobster128.opt
 new file mode 100644
 index 00000000000..6aa28006001
@@ -1738,33 +1777,6 @@ index 00000000000..dbd368a9479
 +  int regno = REGNO (op);
 +  return (regno < 0x40 || regno >= FIRST_PSEUDO_REGISTER);
 +})
-diff --git a/gcc/lra-int.h b/gcc/lra-int.h
-index 04baefef348..710c9483226 100644
---- a/gcc/lra-int.h
-+++ b/gcc/lra-int.h
-@@ -26,7 +26,7 @@ along with GCC; see the file COPYING3.	If not see
- /* The parameter used to prevent infinite reloading for an insn.  Each
-    insn operands might require a reload and, if it is a memory, its
-    base and index registers might require a reload too.	 */
--#define LRA_MAX_INSN_RELOADS (MAX_RECOG_OPERANDS * 3)
-+#define LRA_MAX_INSN_RELOADS (MAX_RECOG_OPERANDS * 5)
- 
- typedef struct lra_live_range *lra_live_range_t;
- 
-diff --git a/libgcc/config.host b/libgcc/config.host
-index 9a28b10ac7f..41f984fdee2 100644
---- a/libgcc/config.host
-+++ b/libgcc/config.host
-@@ -136,6 +136,9 @@ hppa*-*-*)
- lm32*-*-*)
- 	cpu_type=lm32
- 	;;
-+lobster128*)
-+	cpu_type=lobster128
-+	;;
- loongarch*-*-*)
- 	cpu_type=loongarch
- 	tmake_file="loongarch/t-loongarch"
 diff --git a/libgcc/config/lobster128/crti.S b/libgcc/config/lobster128/crti.S
 new file mode 100644
 index 00000000000..063d2025a33
@@ -1908,29 +1920,3 @@ index 00000000000..7874081fdab
 +# define strong_alias(name, aliasname) _strong_alias(name, aliasname)
 +# define _strong_alias(name, aliasname) \
 +  extern __typeof (name) aliasname __attribute__ ((alias (#name)));
-diff --git a/libstdc++-v3/configure b/libstdc++-v3/configure
-index 9e2ee865481..c9e04770a6f 100755
---- a/libstdc++-v3/configure
-+++ b/libstdc++-v3/configure
-@@ -29241,7 +29241,7 @@ else
-     case "${target}" in
-       *-rtems*)
-         case "${target}" in
--          bfin* | lm32* | mips* | moxie* | or1k* | v850*)
-+          bfin* | lm32* | lobster128* | mips* | moxie* | or1k* | v850*)
-             ;;
-           *)
-             $as_echo "#define HAVE_TLS 1" >>confdefs.h
-diff --git a/libstdc++-v3/configure.ac b/libstdc++-v3/configure.ac
-index b351622bf46..8caca87552b 100644
---- a/libstdc++-v3/configure.ac
-+++ b/libstdc++-v3/configure.ac
-@@ -357,7 +357,7 @@ else
-     case "${target}" in
-       *-rtems*)
-         case "${target}" in
--          bfin* | lm32* | mips* | moxie* | or1k* | v850*)
-+          bfin* | lm32* | lobster128* | mips* | moxie* | or1k* | v850*)
-             ;;
-           *)
-             AC_DEFINE(HAVE_TLS)

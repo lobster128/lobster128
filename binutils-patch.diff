@@ -64,7 +64,7 @@ index c67bacddfdc..87dc5728bc5 100644
      &bfd_m32c_arch,
      &bfd_m32r_arch,
 diff --git a/bfd/bfd-in2.h b/bfd/bfd-in2.h
-index 6aefdd7cdb2..17f2f36cd9f 100644
+index 79fcc4eb912..0fb969ddf30 100644
 --- a/bfd/bfd-in2.h
 +++ b/bfd/bfd-in2.h
 @@ -1880,6 +1880,8 @@ enum bfd_architecture
@@ -88,10 +88,10 @@ index 6aefdd7cdb2..17f2f36cd9f 100644
  
  typedef enum bfd_reloc_code_real bfd_reloc_code_real_type;
 diff --git a/bfd/config.bfd b/bfd/config.bfd
-index 8c7be5da38a..b158d8110d7 100644
+index a79a0e2bf5b..bd78b815719 100644
 --- a/bfd/config.bfd
 +++ b/bfd/config.bfd
-@@ -798,6 +798,10 @@ case "${targ}" in
+@@ -797,6 +797,10 @@ case "${targ}" in
      targ_selvecs=lm32_elf32_vec
      ;;
  
@@ -523,10 +523,10 @@ index 00000000000..1d8bef6ff61
 +
 +#include "elf64-target.h"
 diff --git a/bfd/libbfd.h b/bfd/libbfd.h
-index c766722efb0..23677697667 100644
+index 68d0c4278b3..2ea4a9c79a4 100644
 --- a/bfd/libbfd.h
 +++ b/bfd/libbfd.h
-@@ -3494,6 +3494,9 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
+@@ -3505,6 +3505,9 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
    "BFD_RELOC_LARCH_TLS_GD_HI20",
    "BFD_RELOC_LARCH_32_PCREL",
    "BFD_RELOC_LARCH_RELAX",
@@ -556,10 +556,10 @@ index 89b6f7fd352..f93433636d1 100644
    BFD_RELOC_UNUSED
  CODE_FRAGMENT
 diff --git a/bfd/targets.c b/bfd/targets.c
-index 8ad3ef366ce..77ed21b4373 100644
+index 1ec8acdb03f..598f55bbb1e 100644
 --- a/bfd/targets.c
 +++ b/bfd/targets.c
-@@ -766,6 +766,7 @@ extern const bfd_target ip2k_elf32_vec;
+@@ -772,6 +772,7 @@ extern const bfd_target ip2k_elf32_vec;
  extern const bfd_target iq2000_elf32_vec;
  extern const bfd_target lm32_elf32_vec;
  extern const bfd_target lm32_elf32_fdpic_vec;
@@ -567,7 +567,7 @@ index 8ad3ef366ce..77ed21b4373 100644
  extern const bfd_target loongarch_elf64_vec;
  extern const bfd_target loongarch_elf32_vec;
  extern const bfd_target loongarch64_pei_vec;
-@@ -1357,6 +1358,7 @@ static const bfd_target * const _bfd_target_vector[] =
+@@ -1363,6 +1364,7 @@ static const bfd_target * const _bfd_target_vector[] =
  	&z8k_coff_vec,
  
  #ifdef BFD64
@@ -1228,10 +1228,10 @@ index 00000000000..df8cdd1c57b
 +
 +#define md_section_align(SEGMENT, SIZE)     (SIZE)
 diff --git a/gas/configure.tgt b/gas/configure.tgt
-index 62f806bdfe8..aa505962788 100644
+index 9f2b6720bd7..0caca2f0671 100644
 --- a/gas/configure.tgt
 +++ b/gas/configure.tgt
-@@ -278,6 +278,8 @@ case ${generic_target} in
+@@ -279,6 +279,8 @@ case ${generic_target} in
    iq2000-*-elf)				fmt=elf ;;
  
    lm32-*-*)				fmt=elf ;;
