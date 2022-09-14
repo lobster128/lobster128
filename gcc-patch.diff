@@ -177,10 +177,10 @@ index 00000000000..92eca311d45
 +
 diff --git a/gcc/config/lobster128/lobster128.cc b/gcc/config/lobster128/lobster128.cc
 new file mode 100644
-index 00000000000..c613f5368d2
+index 00000000000..6ee87811f16
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.cc
-@@ -0,0 +1,574 @@
+@@ -0,0 +1,564 @@
 +/* Subroutines used for code generation on Vitesse lobster128 processors
 +   Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -250,22 +250,7 @@ index 00000000000..c613f5368d2
 +
 +void lobster128_init_builtins(void)
 +{
-+}
 +
-+static rtx
-+lobster128_push(rtx val)
-+{
-+  rtx arg_reg = gen_rtx_REG(Pmode, ARG_POINTER_REGNUM);
-+  emit_insn(gen_subti3(arg_reg, arg_reg, GEN_INT(GET_MODE_SIZE(Pmode))));
-+  return emit_move_insn(gen_rtx_MEM(Pmode, arg_reg), val);
-+}
-+
-+static rtx
-+lobster128_pop(rtx val)
-+{
-+  rtx arg_reg = gen_rtx_REG(Pmode, ARG_POINTER_REGNUM);
-+  emit_insn(gen_addti3(arg_reg, arg_reg, GEN_INT(GET_MODE_SIZE(Pmode))));
-+  return emit_move_insn(val, gen_rtx_MEM(Pmode, arg_reg));
 +}
 +
 +/* Worker function for TARGET_SETUP_INCOMING_VARARGS.  */
@@ -277,13 +262,16 @@ index 00000000000..c613f5368d2
 +  CUMULATIVE_ARGS *cum = get_cumulative_args(cum_v);
 +  int regs = LOBSTER128_LAST - cum->used_regs;
 +
-+  *pretend_size = regs < 0 ? 0 : GET_MODE_SIZE(Pmode) * regs;
++  *pretend_size = regs < 0 ? 0 : GET_MODE_SIZE(TImode) * regs;
 +
 +  if (no_rtl)
 +    return;
 +  
++  rtx sp_reg = gen_rtx_REG(TImode, STACK_POINTER_REGNUM);
 +  for (int regno = cum->used_regs; regno < LOBSTER128_MAX_ARG_REGNO; regno++)
-+    lobster128_push(gen_rtx_REG(Pmode, regno));
++    emit_insn(gen_movti_push(sp_reg,
++                             gen_rtx_REG(TImode, regno),
++                             GEN_INT(GET_MODE_SIZE(TImode))));
 +}
 +
 +/* Worker function for TARGET_TRAMPOLINE_INIT.  */
@@ -292,9 +280,9 @@ index 00000000000..c613f5368d2
 +{
 +  emit_block_move(m_tramp, assemble_trampoline_template(),
 +                  GEN_INT(TRAMPOLINE_SIZE), BLOCK_OP_NORMAL);
-+  rtx mem = adjust_address(m_tramp, TImode, 16);
++  rtx mem = adjust_address(m_tramp, TImode, 8);
 +  emit_move_insn(mem, chain_value);
-+  mem = adjust_address(m_tramp, TImode, 32);
++  mem = adjust_address(m_tramp, TImode, 16);
 +  rtx fnaddr = XEXP(DECL_RTL(fndecl), 0);
 +  emit_move_insn(mem, fnaddr);
 +}
@@ -340,9 +328,7 @@ index 00000000000..c613f5368d2
 +  {
 +  case PLUS:
 +    if (REG_P(XEXP(x, 0)) && lobster128_reg_ok_for_base_p(XEXP(x, 0), strict_p) && CONST_INT_P(XEXP(x, 1)) && IN_RANGE(INTVAL(XEXP(x, 1)), 0, 0xffffffffffffffff))
-+    {
 +      return true;
-+    }
 +    break;
 +  case SYMBOL_REF:
 +  case LABEL_REF:
@@ -378,7 +364,7 @@ index 00000000000..c613f5368d2
 +
 +  int size;
 +  if (lobster128_pass_by_reference(cum_v, arg))
-+    size = 4;
++    size = GET_MODE_SIZE(TImode);
 +  else if (arg.type)
 +  {
 +    if (AGGREGATE_TYPE_P(arg.type))
@@ -388,7 +374,7 @@ index 00000000000..c613f5368d2
 +  else
 +    size = GET_MODE_SIZE(arg.mode);
 +
-+  int bytes_left = ((cum->used_regs - 4) * GET_MODE_SIZE(TImode));
++  int bytes_left = ((cum->used_regs - LOBSTER128_FIRST) * GET_MODE_SIZE(TImode));
 +  if (size > bytes_left)
 +    return bytes_left;
 +  else
@@ -401,11 +387,10 @@ index 00000000000..c613f5368d2
 +{
 +  rtx addr;
 +  if (incoming_p)
-+    addr = plus_constant(Pmode, arg_pointer_rtx, 2 * UNITS_PER_WORD);
++    addr = plus_constant(DImode, arg_pointer_rtx, 2 * UNITS_PER_WORD);
 +  else
-+    addr = plus_constant(Pmode, stack_pointer_rtx, -UNITS_PER_WORD);
-+
-+  rtx mem = gen_rtx_MEM(Pmode, addr);
++    addr = plus_constant(DImode, stack_pointer_rtx, -UNITS_PER_WORD);
++  rtx mem = gen_rtx_MEM(DImode, addr);
 +  MEM_NOTRAP_P(mem) = 1;
 +  return mem;
 +}
@@ -487,9 +472,9 @@ index 00000000000..c613f5368d2
 +  cfun->machine->callee_saved_reg_size = 0;
 +
 +  /* Save callee-saved registers.  */
-+  for (int regno = 0; regno < FIRST_PSEUDO_REGISTER; regno++)
++  for (int regno = LOBSTER128_FIRST; regno < FIRST_PSEUDO_REGISTER; regno++)
 +    if (df_regs_ever_live_p(regno) && (!call_used_or_fixed_reg_p(regno)))
-+      cfun->machine->callee_saved_reg_size += 16;
++      cfun->machine->callee_saved_reg_size += GET_MODE_SIZE(TImode);
 +
 +  cfun->machine->size_for_adjusting_sp =
 +      crtl->args.pretend_args_size + cfun->machine->local_vars_size + (ACCUMULATE_OUTGOING_ARGS ? (HOST_WIDE_INT)crtl->outgoing_args_size : 0);
@@ -518,14 +503,17 @@ index 00000000000..c613f5368d2
 +  lobster128_compute_frame();
 +  if (flag_stack_usage_info)
 +    current_function_static_stack_size = cfun->machine->size_for_adjusting_sp;
-+
++  
++  rtx sp_reg = gen_rtx_REG(TImode, STACK_POINTER_REGNUM);
 +  rtx insn;
 +  /* Save callee-saved registers.  */
-+  for (int regno = 4; regno < FIRST_PSEUDO_REGISTER; regno++)
++  for (int regno = LOBSTER128_FIRST; regno < FIRST_PSEUDO_REGISTER; regno++)
 +  {
 +    if (df_regs_ever_live_p(regno) && !call_used_or_fixed_reg_p(regno))
 +    {
-+      insn = lobster128_push(gen_rtx_REG(Pmode, regno));
++      insn = emit_insn(gen_movti_push(sp_reg,
++                                      gen_rtx_REG(TImode, regno),
++                                      GEN_INT(GET_MODE_SIZE(TImode))));
 +      RTX_FRAME_RELATED_P(insn) = 1;
 +    }
 +  }
@@ -536,8 +524,8 @@ index 00000000000..c613f5368d2
 +    int i = cfun->machine->size_for_adjusting_sp;
 +    while ((i >= max_micro_move))
 +    {
-+      insn = emit_insn(gen_subti3(stack_pointer_rtx,
-+                                  stack_pointer_rtx,
++      insn = emit_insn(gen_subti3(sp_reg,
++                                  sp_reg,
 +                                  GEN_INT(max_micro_move)));
 +      RTX_FRAME_RELATED_P(insn) = 1;
 +      i -= max_micro_move;
@@ -545,18 +533,18 @@ index 00000000000..c613f5368d2
 +    /* TODO: We could do better and generate a Z.PUSH / Z.POP */
 +    if (i <= max_micro_move)
 +    {
-+      insn = emit_insn(gen_subti3(stack_pointer_rtx,
-+                                  stack_pointer_rtx,
++      insn = emit_insn(gen_subti3(sp_reg,
++                                  sp_reg,
 +                                  GEN_INT(i)));
 +      RTX_FRAME_RELATED_P(insn) = 1;
 +    }
 +    else
 +    {
-+      rtx reg = gen_rtx_REG(Pmode, 8);
++      rtx reg = gen_rtx_REG(TImode, 8);
 +      insn = emit_move_insn(reg, GEN_INT(i));
 +      RTX_FRAME_RELATED_P(insn) = 1;
-+      insn = emit_insn(gen_subti3(stack_pointer_rtx,
-+                                  stack_pointer_rtx,
++      insn = emit_insn(gen_subti3(sp_reg,
++                                  sp_reg,
 +                                  reg));
 +      RTX_FRAME_RELATED_P(insn) = 1;
 +    }
@@ -567,31 +555,33 @@ index 00000000000..c613f5368d2
 +{
 +  if (cfun->machine->callee_saved_reg_size != 0)
 +  {
-+    rtx reg = gen_rtx_REG(Pmode, 8);
++    rtx hfp_reg = gen_rtx_REG(TImode, HARD_FRAME_POINTER_REGNUM);
++    rtx reg = gen_rtx_REG(TImode, 8);
 +    if (cfun->machine->callee_saved_reg_size <= 255)
 +    {
-+      emit_move_insn(reg, hard_frame_pointer_rtx);
++      emit_move_insn(reg, hfp_reg);
 +      emit_insn(gen_subti3(reg, reg,
 +                           GEN_INT(cfun->machine->callee_saved_reg_size)));
 +    }
 +    else
 +    {
 +      emit_move_insn(reg, GEN_INT(-cfun->machine->callee_saved_reg_size));
-+      emit_insn(gen_addti3(reg, reg, hard_frame_pointer_rtx));
++      emit_insn(gen_addti3(reg, reg, hfp_reg));
 +    }
-+    for (int regno = FIRST_PSEUDO_REGISTER; regno-- > 4; )
++    for (int regno = FIRST_PSEUDO_REGISTER; regno-- > LOBSTER128_FIRST;)
 +      if (!call_used_or_fixed_reg_p(regno) && df_regs_ever_live_p(regno))
-+        lobster128_pop(gen_rtx_REG(Pmode, regno));
++        emit_insn(gen_movti_pop(hfp_reg,
++                                gen_rtx_REG(TImode, regno),
++                                GEN_INT(GET_MODE_SIZE(TImode))));
 +  }
-+
 +  emit_jump_insn(gen_returner());
 +}
 +
 +static rtx
-+lobster128_libcall_value (machine_mode mode,
-+                          const_rtx fun ATTRIBUTE_UNUSED)
++lobster128_libcall_value(machine_mode mode,
++                         const_rtx fun ATTRIBUTE_UNUSED)
 +{
-+  return gen_rtx_REG (mode, RETURN_ADDRESS_POINTER_REGNUM);
++  return gen_rtx_REG(mode, RETURN_ADDRESS_POINTER_REGNUM);
 +}
 +
 +/* The PRINT_OPERAND_ADDRESS worker.  */
@@ -757,7 +747,7 @@ index 00000000000..c613f5368d2
 +#include "gt-lobster128.h"
 diff --git a/gcc/config/lobster128/lobster128.h b/gcc/config/lobster128/lobster128.h
 new file mode 100644
-index 00000000000..75eb02d4f55
+index 00000000000..f96dd4d5135
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.h
 @@ -0,0 +1,485 @@
@@ -1031,16 +1021,16 @@ index 00000000000..75eb02d4f55
 +   incoming return address at the beginning of any function, before
 +   the prologue.  */
 +#define INCOMING_RETURN_ADDR_RTX					\
-+  gen_frame_mem (Pmode,							\
-+		 plus_constant (Pmode, stack_pointer_rtx, UNITS_PER_WORD))
++  gen_frame_mem (DImode,							\
++		 plus_constant (DImode, stack_pointer_rtx, UNITS_PER_WORD))
 +
 +/* Describe how we implement __builtin_eh_return.  */
 +#define EH_RETURN_DATA_REGNO(N)	((N) < 4 ? (N+2) : INVALID_REGNUM)
 +
 +/* Store the return handler into the call frame.  */
 +#define EH_RETURN_HANDLER_RTX						\
-+  gen_frame_mem (Pmode,							\
-+		 plus_constant (Pmode, frame_pointer_rtx, UNITS_PER_WORD))
++  gen_frame_mem (DImode,							\
++		 plus_constant (DImode, frame_pointer_rtx, UNITS_PER_WORD))
 +
 +/* The register number of the stack pointer register, which must also
 +   be a fixed register according to `FIXED_REGISTERS'.  */
@@ -1194,11 +1184,11 @@ index 00000000000..75eb02d4f55
 +/* Specify the machine mode that pointers have.
 +   After generation of rtl, the compiler makes no further distinction
 +   between pointers and any other objects of this machine mode.  */
-+#define Pmode TImode
++#define Pmode DImode
 +
 +/* An alias for the machine mode used for memory references to
 +   functions being called, in `call' RTL expressions.  */
-+#define FUNCTION_MODE TImode
++#define FUNCTION_MODE DImode
 +
 +/* Maximum number of registers that can appear in a valid memory
 +   address.  */
@@ -1248,10 +1238,10 @@ index 00000000000..75eb02d4f55
 +  } while (0)
 diff --git a/gcc/config/lobster128/lobster128.md b/gcc/config/lobster128/lobster128.md
 new file mode 100644
-index 00000000000..7081f28bd04
+index 00000000000..35a169fb72c
 --- /dev/null
 +++ b/gcc/config/lobster128/lobster128.md
-@@ -0,0 +1,439 @@
+@@ -0,0 +1,560 @@
 +;;  lobster128.md	     Machine Description for lobster128 processors
 +;;  Copyright (C) 2003-2022 Free Software Foundation, Inc.
 +
@@ -1304,7 +1294,7 @@ index 00000000000..7081f28bd04
 +(define_insn "nop"
 +  [(const_int 0)]
 +  ""
-+  "u.add r0,r0")
++  "u.add\tr0,r0")
 +
 +;; -------------------------------------------------------------------------
 +;; Micro-arithmethic instruction ops
@@ -1312,155 +1302,237 @@ index 00000000000..7081f28bd04
 +(define_insn "addti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (plus:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.add %0,%1"
++  "u.add\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "subti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (minus:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.sub %0,%1"
++  "u.sub\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "multi2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (mult:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.mul %0,%1"
++  "u.mul\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "divti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (div:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.div %0,%1"
++  "u.div\t%0,%1"
++  [(set_attr "type" "micro")])
++
++(define_insn "modti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
++    (mod:TI
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
++  ""
++  "u.mod\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "iorti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (ior:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.or %0,%1"
++  "u.or\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "xorti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (xor:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.xor %0,%1"
++  "u.xor\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "ashrti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (ashiftrt:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.rsh %0,%1"
++  "u.rsh\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "ashlti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
 +    (ashift:TI
-+      (match_dup 0)
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
 +      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
 +  ""
-+  "u.lsh %0,%1"
++  "u.lsh\t%0,%1"
++  [(set_attr "type" "micro")])
++
++(define_insn "lshrti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
++    (lshiftrt:TI
++      (match_operand:TI 2 "lobster128_ureg_operand" "0")
++      (match_operand:TI 1 "lobster128_ureg_operand" "r")))]
++  ""
++  "u.lsh\t%0,%1"
++  [(set_attr "type" "micro")])
++
++(define_insn "notti2"
++  [(set (match_operand:TI 0 "lobster128_ureg_operand" "+r")
++    (not:TI
++      (ior:TI
++        (match_operand:TI 2 "lobster128_ureg_operand" "0")
++        (match_operand:TI 1 "lobster128_ureg_operand" "r"))))]
++  ""
++  "u.not\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "*movti2"
 +  [(set (match_operand:TI 0 "lobster128_ureg_operand" "=r")
 +    (match_operand:TI 1 "lobster128_ureg_operand" "r"))]
 +  ""
-+  "u.set %0,%1"
++  "u.set\t%0,%1"
 +  [(set_attr "type" "micro")])
 +
 +;; -------------------------------------------------------------------------
 +;; Mini-arithmethic instruc<mode>on ops
 +;; -------------------------------------------------------------------------
 +(define_insn "add<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (plus:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,i")))]
 +  ""
-+  "m.add %0,%1,%2"
++  "@
++  m.addr\t%0,%1,%2
++  m.addi\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
++;(insn/f 11 3 12 (set (reg/f:TI 2 sp)
++;        (minus:TI (reg/f:TI 2 sp)
++;            (const_int 8 [0x8]))) "test.c":2:1 -1
++;     (nil)
 +(define_insn "sub<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (minus:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "r")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.sub %0,%2"
++  "@
++  m.subr\t%0,%1,%2
++  m.subi\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "mul<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (mult:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.mul %0,%1,%2"
++  "@
++  m.mulr\t%0,%1,%2
++  m.muli\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "div<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (div:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.div %0,%1,%2"
++  "@
++  m.divr\t%0,%1,%2
++  m.divi\t%0,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "mod<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
++    (mod:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
++  ""
++  "@
++  m.modr\t%0,%1,%2
++  m.modi\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "ior<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (ior:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.or %0,%1,%2"
++  "@
++  m.orr\t%0,%1,%2
++  m.ori\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "xor<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (xor:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.xor %0,%1,%2"
++  "@
++  m.xorr\t%0,%1,%2
++  m.xori\t%0,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "not<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
++    (not:MODE
++      (ior:MODE
++        (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++        (match_operand:MODE 2 "lobster128_mini_operand" "r,M"))))]
++  ""
++  "@
++  m.notr\t%0,%1,%2
++  m.noti\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "ashr<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (ashiftrt:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.rsh %0,%1,%2"
++  "@
++  m.rshr\t%0,%1,%2
++  m.rshi\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +(define_insn "ashl<mode>3"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r")
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
 +    (ashift:MODE
-+      (match_operand:MODE 1 "lobster128_mreg_operand" "r")
-+      (match_operand:MODE 2 "lobster128_arith_operand" "rWM")))]
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
 +  ""
-+  "m.lsh %0,%1,%2"
++  "@
++  m.lshr\t%0,%1,%2
++  m.lshi\t%0,%2"
++  [(set_attr "type" "micro")])
++
++(define_insn "lshr<mode>3"
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "+r,r")
++    (lshiftrt:MODE
++      (match_operand:MODE 1 "lobster128_mreg_operand" "r,0")
++      (match_operand:MODE 2 "lobster128_mini_operand" "r,M")))]
++  ""
++  "@
++  m.lshr\t%0,%1,%2
++  m.lshi\t%0,%2"
 +  [(set_attr "type" "micro")])
 +
 +;; -------------------------------------------------------------------------
@@ -1475,7 +1547,7 @@ index 00000000000..7081f28bd04
 +  if(<MODE>mode == TImode)
 +  {
 +    /* If this is a store, force the value into a register.  */
-+    if ( (reload_in_progress || reload_completed))
++    if (!(reload_in_progress || reload_completed))
 +    {
 +      if (MEM_P (operands[0]))
 +      {
@@ -1497,46 +1569,85 @@ index 00000000000..7081f28bd04
 +  }
 +}")
 +
++(define_insn "mov<mode>_push"
++  [(set (mem:MODE (minus:TI
++      (match_operand:TI 0 "lobster128_mreg_operand" "r")
++      (match_operand:TI 2 "immediate_operand" "i")))
++	  (match_operand:MODE 1 "lobster128_mini_operand" "ri"))]
++  ""
++  "m.push<lenx>\t%0,%1 #%2"
++  [(set_attr "type" "mini")])
++
++(define_insn "*mov<mode>_pop"
++  [(set (match_operand:MODE 1 "lobster128_mreg_operand" "=r")
++    (mem:MODE (minus:TI
++      (match_operand:TI 0 "lobster128_mini_operand" "r")
++      (match_operand:TI 2 "immediate_operand" "i"))))]
++  ""
++  "m.push<lenx>\t%0,%1 #%2"
++  [(set_attr "type" "mini")])
++
++(define_insn "mov<mode>_pop"
++  [(set (match_operand:MODE 1 "lobster128_mreg_operand" "=r")
++    (mem:MODE (plus:TI
++      (match_operand:TI 0 "lobster128_mini_operand" "ri")
++      (match_operand:TI 2 "immediate_operand" "i"))))]
++  ""
++  "m.pop<lenx>\t%0,%1 #%2"
++  [(set_attr "type" "mini")])
++
++; TODO: Expand into sequences of instructions for loading full value only using
++; the 13-bit instructions lol
 +(define_insn "*mov<mode>"
-+  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "=r,Wm")
-+	(match_operand:MODE 1 "lobster128_general_movsrc_operand" "OrMiWm,r"))]
++  [(set (match_operand:MODE 0 "lobster128_mreg_operand" "=r,r,r,r,r")
++	(match_operand:MODE 1 "lobster128_mini_operand" "O,r,M,W,i"))]
 +  "register_operand (operands[0], <MODE>mode)
 +    || register_operand (operands[1], <MODE>mode)"
-+  "*
-+{
-+  return \"m.set<lenx> %0,%1\";
-+}"
++  "@
++  m.xorr<lenx>\t%0,%1
++  m.setr<lenx>\t%0,%1
++  m.seti<lenx>\t%0,%1
++  m.setl<lenx>\t%0,%1
++  z.seti<lenx>\t%0,%1"
++  [(set_attr "type" "mini")])
++
++(define_insn "*mov<mode>_indirect"
++  [(set (match_operand:MODE 0 "nonimmediate_operand" "=W")
++	(match_operand:MODE 1 "lobster128_mini_operand" "r"))]
++  "register_operand (operands[0], <MODE>mode)
++    || register_operand (operands[1], <MODE>mode)"
++  "m.sets<lenx>\t%0,%1"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "movstr<mode>"
 +  [(set (reg:MODE 0) (const_int 0))
 +  (parallel [(set (match_operand:MODE 0 "nonimmediate_operand" "=m")
-+    (match_operand:MODE 1 "lobster128_general_movsrc_operand" "WMr"))
++    (match_operand:MODE 1 "lobster128_mini_operand" "r"))
 +    (match_operand:MODE 2 "lobster128_arith_operand" "rWM")
 +    (clobber (reg:CC CC_REG))])]
 +  ""
-+  "l.set<lenx> %0,%1,%2"
++  "l.set<lenx>\t%0,%1,%2"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "zero_extend<mode>ti2"
 +  [(set (match_operand:TI 0 "lobster128_mreg_operand" "=r")
 +	  (zero_extend:TI (match_operand:MODE 1 "lobster128_arith_operand" "rWM")))]
 +  ""
-+  "m.ext<lenx> %0,%1"
++  "m.ext<lenx>\t%0,%1"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "sign_extend<mode>ti2"
 +  [(set (match_operand:TI 0 "lobster128_mreg_operand" "=r")
 +	  (sign_extend:TI (match_operand:MODE 1 "lobster128_arith_operand" "rWM")))]
 +  ""
-+  "m.sex<lenx> %0,%1"
++  "m.sex<lenx>\t%0,%1"
 +  [(set_attr "type" "mini")])
 +
 +(define_insn "ptr_extend<mode>"
 +  [(set (match_operand:TI 0 "lobster128_mreg_operand" "=r")
 +	  (zero_extend:TI (match_operand:MODE 1 "lobster128_arith_operand" "rWM")))]
 +  ""
-+  "m.set<lenx> %0,%1"
++  "m.set<lenx>\t%0,%1"
 +  [(set_attr "type" "mini")])
 +
 +;; -------------------------------------------------------------------------
@@ -1547,7 +1658,7 @@ index 00000000000..7081f28bd04
 +	 (match_operand:MODE 0 "register_operand" "r")
 +	 (match_operand:MODE 1 "lobster128_arith_operand" "")))]
 +  ""
-+  "z.cmp<lenx> %0,%1")
++  "z.cmp<lenx>\t%0,%1")
 +
 +;; -------------------------------------------------------------------------
 +;; Branch instructions
@@ -1608,7 +1719,7 @@ index 00000000000..7081f28bd04
 +;; -------------------------------------------------------------------------
 +
 +(define_expand "call"
-+  [(call (match_operand:TI 0 "memory_operand" "")
++  [(call (match_operand:DI 0 "memory_operand" "")
 +		(match_operand 1 "general_operand" ""))]
 +  ""
 +{
@@ -1616,14 +1727,14 @@ index 00000000000..7081f28bd04
 +})
 +
 +(define_insn "*call"
-+  [(call (mem:TI (match_operand:TI 0 "nonmemory_operand" "ir"))
++  [(call (mem:DI (match_operand:DI 0 "nonmemory_operand" "ir"))
 +	 (match_operand 1 "" ""))]
 +  ""
 +  "z.call %1")
 +
 +(define_expand "call_value"
 +  [(set (match_operand 0 "" "")
-+		(call (match_operand:TI 1 "memory_operand" "")
++		(call (match_operand:DI 1 "memory_operand" "")
 +		 (match_operand 2 "" "")))]
 +  ""
 +{
@@ -1632,20 +1743,20 @@ index 00000000000..7081f28bd04
 +
 +(define_insn "*call_value"
 +  [(set (match_operand 0 "register_operand" "=r")
-+	(call (mem:TI (match_operand:TI 1 "immediate_operand" "i"))
++	(call (mem:DI (match_operand:DI 1 "immediate_operand" "i"))
 +	      (match_operand 2 "" "")))]
 +  ""
 +  "z.call %1")
 +
 +(define_insn "*call_value_indirect"
 +  [(set (match_operand 0 "register_operand" "=r")
-+	(call (mem:TI (match_operand:TI 1 "register_operand" "r"))
++	(call (mem:DI (match_operand:DI 1 "register_operand" "r"))
 +	      (match_operand 2 "" "")))]
 +  ""
 +  "z.call %1")
 +
 +(define_insn "indirect_jump"
-+  [(set (pc) (match_operand:TI 0 "nonimmediate_operand" "r"))]
++  [(set (pc) (match_operand:DI 0 "nonimmediate_operand" "r"))]
 +  ""
 +  "z.jr %0")
 +
@@ -1718,7 +1829,7 @@ index 00000000000..6aa28006001
 +; <http://www.gnu.org/licenses/>.
 diff --git a/gcc/config/lobster128/predicates.md b/gcc/config/lobster128/predicates.md
 new file mode 100644
-index 00000000000..dbd368a9479
+index 00000000000..5c92da713f5
 --- /dev/null
 +++ b/gcc/config/lobster128/predicates.md
 @@ -0,0 +1,55 @@
@@ -1741,7 +1852,7 @@ index 00000000000..dbd368a9479
 +;; along with GCC; see the file COPYING3.  If not see
 +;; <http://www.gnu.org/licenses/>.
 +
-+(define_predicate "lobster128_general_movsrc_operand"
++(define_predicate "lobster128_mini_operand"
 +  (match_code "mem,const_int,reg,subreg,symbol_ref,label_ref,const")
 +  "{
 +    return general_operand (op, mode);

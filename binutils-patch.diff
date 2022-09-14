@@ -676,10 +676,10 @@ index c57d78f82c4..f5c07c6c463 100644
  @AMDEP_TRUE@@am__include@ @am__quote@config/$(DEPDIR)/tc-m32r.Po@am__quote@
 diff --git a/gas/config/tc-lobster128.c b/gas/config/tc-lobster128.c
 new file mode 100644
-index 00000000000..997923a6efe
+index 00000000000..7e44c976608
 --- /dev/null
 +++ b/gas/config/tc-lobster128.c
-@@ -0,0 +1,500 @@
+@@ -0,0 +1,498 @@
 +/* tc-lobster128.c -- Assemble code for lobster128
 +   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 +
@@ -909,7 +909,6 @@ index 00000000000..997923a6efe
 +
 +    /* Auto deduction */
 +    if (parse_is_register_operand(op_end)) { /* Register */
-+      as_warn(_("Use \"%sr\" instead of \"%s\" for safety"), opcode->name, opcode->name);
 +      lword |= SINST_MEMOP(MEM_MOVE);
 +mini_reg:
 +      int ra = parse_register_operand(&op_end);
@@ -921,7 +920,6 @@ index 00000000000..997923a6efe
 +        as_bad(_("Register is out of scope for mini-instruction"));
 +      lword |= ((ra << 12) | (rb << 6) | rd) << 14;
 +    } else { /* 13-bit immediate */
-+      as_warn(_("Use \"%si\" instead of \"%s\" for safety"), opcode->name, opcode->name);
 +      lword |= SINST_MEMOP(MEM_IMM);
 +mini_imm:
 +      if(rd >= 0x20)
@@ -1671,7 +1669,7 @@ index 00000000000..6dc4402100d
 +}
 diff --git a/opcodes/lobster128-opc.c b/opcodes/lobster128-opc.c
 new file mode 100644
-index 00000000000..3395b6dd864
+index 00000000000..0fdafb61531
 --- /dev/null
 +++ b/opcodes/lobster128-opc.c
 @@ -0,0 +1,189 @@
@@ -1700,22 +1698,22 @@ index 00000000000..3395b6dd864
 +
 +const lobster128_opc_info_t lobster128_opc_info[LOBSTER128_NUM_OPCODES] = {
 +  /* Micro instructions */
-+  { UINST(XLU_ADD), MICRO_OP, "u.addr" },
-+  { UINST(XLU_SUB), MICRO_OP, "u.subr" },
-+  { UINST(XLU_AND), MICRO_OP, "u.andr" },
-+  { UINST(XLU_NOT), MICRO_OP, "u.notr" },
-+  { UINST(XLU_LSH), MICRO_OP, "u.lshr" },
-+  { UINST(XLU_RSH), MICRO_OP, "u.rshr" },
-+  { UINST(XLU_OR), MICRO_OP, "u.orr" },
-+  { UINST(XLU_XOR), MICRO_OP, "u.xorr" },
-+  { UINST(XLU_MUL), MICRO_OP, "u.mulr" },
-+  { UINST(XLU_DIV), MICRO_OP, "u.divr" },
++  { UINST(XLU_ADD), MICRO_OP, "u.add" },
++  { UINST(XLU_SUB), MICRO_OP, "u.sub" },
++  { UINST(XLU_AND), MICRO_OP, "u.and" },
++  { UINST(XLU_NOT), MICRO_OP, "u.not" },
++  { UINST(XLU_LSH), MICRO_OP, "u.lsh" },
++  { UINST(XLU_RSH), MICRO_OP, "u.rsh" },
++  { UINST(XLU_OR), MICRO_OP, "u.or" },
++  { UINST(XLU_XOR), MICRO_OP, "u.xor" },
++  { UINST(XLU_MUL), MICRO_OP, "u.mul" },
++  { UINST(XLU_DIV), MICRO_OP, "u.div" },
 +  { UINST(XLU_SET), MICRO_OP, "u.set" },
-+  { UINST(XLU_REM), MICRO_OP, "u.remr" },
-+  { UINST(XLU_SEX), MICRO_OP, "u.sexr" },
-+  { UINST(XLU_PUSH), MICRO_OP, "u.pushr" },
-+  { UINST(XLU_POP), MICRO_OP, "u.popr" },
-+  { UINST(XLU_EXT), MICRO_OP, "u.extr" },
++  { UINST(XLU_REM), MICRO_OP, "u.rem" },
++  { UINST(XLU_SEX), MICRO_OP, "u.sex" },
++  { UINST(XLU_PUSH), MICRO_OP, "u.push" },
++  { UINST(XLU_POP), MICRO_OP, "u.pop" },
++  { UINST(XLU_EXT), MICRO_OP, "u.ext" },
 +  /* Immediate mini instructions */
 +  { SINST(XLU_ADD, DELEG_ALU, MEM_IMM), MINI_IMM_OP, "m.addi" },
 +  { SINST(XLU_SUB, DELEG_ALU, MEM_IMM), MINI_IMM_OP, "m.subi" },
